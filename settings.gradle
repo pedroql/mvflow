@@ -1,1 +1,3 @@
 rootProject.name = 'mvflow'
+
+include 'mvflow-core'
