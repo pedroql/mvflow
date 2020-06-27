@@ -6,23 +6,26 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+
+// These tests are long, contrived, and hard to read. Suggestions to improve them are most welcome!
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class MVFlowTest {
 
-    @BeforeEach
-    fun setUp() {
-    }
-
     @Test
     fun `reducer calls are serialized`() {
+        // In this test we create a flow and a view. We made the reducer function be very slow and
+        // emit several actions quickly. If we don't synchronize access to the reducer function,
+        // the same initial state would be fed to several mutations and the last one to complete
+        // would win, overriding the other mutations that overlapped with it.
+        //
         // in order to verify this test works, remove the use of the mutex in the implementation
+        // and the test should fail
         var lastCounterValue = -1
         runBlockingTest {
             lateinit var collectionJob: Job
-            val flow = MVFlow<State, Unit, Mutation>(
+            val flow = MVFlow<IntState, Unit, Mutation>(
                 initialState = 0,
                 handler = { _, _ ->
                     flowOf(1, 2, 3)
@@ -30,9 +33,9 @@ internal class MVFlowTest {
                 },
                 reducer = { state, mutation ->
                     runBlockingTest {
-                        println("reducer delaying")
+                        debug("reducer delaying")
                         delay(500)
-                        println("reducer done")
+                        debug("reducer done")
                     }
                     state + mutation
                 },
@@ -41,10 +44,10 @@ internal class MVFlowTest {
                 actionCoroutineContext = this.coroutineContext
             )
 
-            val view = object : MviView<State, Unit> {
-                override fun render(state: State) {
+            val view = object : MviView<IntState, Unit> {
+                override fun render(state: IntState) {
                     lastCounterValue = state
-                    println("state at $currentTime")
+                    debug("state at $currentTime")
                 }
 
                 override fun actions() = List(3) { Unit }.asFlow()
@@ -56,7 +59,7 @@ internal class MVFlowTest {
 
                 // we need to override this because we need to terminate the job that does the
                 // collection
-                override fun receiveStates(stateProducerBlock: () -> Flow<State>) {
+                override fun receiveStates(stateProducerBlock: () -> Flow<IntState>) {
                     // make sure this implementation stays up to date with the default definition
                     collectionJob = coroutineScope.launch {
                         stateProducerBlock().collect { state ->
@@ -142,11 +145,84 @@ internal class MVFlowTest {
 
     @Test
     fun `handler calls are concurrent`() {
+        // This method simulates a handler that takes much longer to emit something from the first
+        // action and emits something quickly from the second action.
+        // The state is a Pair<Int, Int>. We will count the first and second elements of the pair
+        // separately, but we insert a bigger delay when counting the pair.first. This means the
+        // expected sequence of values is (0, 0) -> (0, 1) -> (1, 1) although we try to increment
+        // the first element first.
+        data class Action(val value: Int)
+
+        val values = mutableListOf<PairState>()
+        runBlockingTest {
+
+            val flow = MVFlow<PairState, Action, Mutation>(
+                initialState = Pair(0, 0),
+                handler = { state, action ->
+                    flowOf(action.value).onStart {
+                        debug("handler delaying ${action.value} at $currentTime")
+                        if (action.value == 0) {
+                            delay(500)
+                        } else {
+                            delay(50)
+                        }
+                        debug("handler done for action ${action.value} at $currentTime")
+                    }
+                },
+                reducer = { state, mutation ->
+                    if (mutation == 0) {
+                        state.copy(first = state.first + 1)
+                    } else {
+                        state.copy(second = state.second + 1)
+                    }
+                },
+                mvflowCoroutineScope = this,
+                defaultLogger = { debug(it) },
+                actionCoroutineContext = this.coroutineContext
+            )
+
+            lateinit var collectionJob: Job
+            val view = object : MviView<Pair<Int, Int>, Action> {
+                override fun render(state: Pair<Int, Int>) {
+                    values.add(state)
+                    debug("state at $currentTime")
+                }
+
+                override fun actions() = flowOf(Action(0), Action(1))
+                    .onEach { delay(20) }
+                    .buffer()
+
+                override val coroutineScope: CoroutineScope
+                    get() = this@runBlockingTest
+
+                override fun receiveStates(stateProducerBlock: () -> Flow<PairState>) {
+                    collectionJob = coroutineScope.launch {
+                        stateProducerBlock().collect { state ->
+                            render(state)
+                        }
+                    }
+                }
+            }
+
+            flow.takeView(view)
+            advanceUntilIdle()
+            collectionJob.cancelAndJoin()
+        }
+        assertEquals(
+            listOf(
+                Pair(0, 0),
+                Pair(0, 1),
+                Pair(1, 1)
+            ),
+            values
+        )
     }
 }
 
 private fun debug(msg: String) {
     println(msg)
 }
-private typealias State = Int
+
+private typealias IntState = Int
+private typealias PairState = Pair<Int, Int>
 private typealias Mutation = Int
