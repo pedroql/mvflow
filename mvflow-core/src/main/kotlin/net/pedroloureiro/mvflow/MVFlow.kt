@@ -1,21 +1,10 @@
 package net.pedroloureiro.mvflow
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlin.coroutines.CoroutineContext
 
 typealias Handler<State, Action, Mutation> = (State, Action) -> Flow<Mutation>
 typealias Reducer<State, Mutation> = (State, Mutation) -> State
@@ -30,6 +19,7 @@ interface MviView<State, Action> {
 
     // the following method could have a better name (and maybe doesn't need to exist here)
     fun receiveStates(stateProducerBlock: () -> Flow<State>) {
+        // make sure the test in [MVFlowTest] is in sync with this implementation
         coroutineScope.launch(stateDispatcher) {
             stateProducerBlock().collect { state ->
                 render(state)
@@ -46,29 +36,29 @@ class MVFlow<State, Action, Mutation>(
     initialState: State,
     private val handler: Handler<State, Action, Mutation>,
     private val reducer: Reducer<State, Mutation>,
-    private val coroutineScope: CoroutineScope,
+    private val mvflowCoroutineScope: CoroutineScope,
     private val defaultLogger: Logger = {},
-    private val actionDispatcher: CoroutineDispatcher = Dispatchers.Default
+    private val actionCoroutineContext: CoroutineContext = Dispatchers.Default
 ) {
 
     private val state = MutableStateFlow(initialState)
     private val mutex = Mutex()
 
-    fun acceptView(
+    fun takeView(
         view: MviView<State, Action>,
         initialActions: List<Action> = emptyList(),
         logger: Logger = defaultLogger
     ) {
-        handleViewActions(view, initialActions, logger)
         sendStateUpdatesIntoView(view, logger)
+        handleViewActions(view, initialActions, logger)
     }
 
     fun addExternalActions(
         actions: Flow<Action>,
         logger: Logger = defaultLogger
     ) {
-        coroutineScope.launch {
-            actions.collectIntoHandler(coroutineScope, logger)
+        mvflowCoroutineScope.launch {
+            actions.collectIntoHandler(mvflowCoroutineScope, logger)
         }
     }
 
@@ -95,7 +85,7 @@ class MVFlow<State, Action, Mutation>(
         initialActions: List<Action>,
         logger: Logger
     ) {
-        view.coroutineScope.launch(actionDispatcher) {
+        view.coroutineScope.launch(actionCoroutineContext) {
             view
                 .actions()
                 .onStart {
@@ -113,7 +103,7 @@ class MVFlow<State, Action, Mutation>(
         coroutineScope: CoroutineScope,
         logger: Logger
     ) {
-        this.collect { action ->
+        collect { action ->
             logger.invoke("Received action $action")
             handler.invoke(state.value, action)
                 .onEach { mutation ->

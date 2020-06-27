@@ -1,6 +1,10 @@
 # To do ✔️
 ## General
 
+* Write a README.md file for the project as a whole
+
+* Write docs in a github.io page
+
 * Add a micro module to enable copy paste of one single file to get the most functionality of this library
 
 * Add ability to set listeners of what is happening in the MVI loop
@@ -84,8 +88,13 @@ Having it in the API allows the view to customize how it receives updates. For e
 This can greatly help reusing views. Each view could declare it's own generics and in each place you want to 
 use them you map your current state into the state of this view and also map the view actions into the
  actions in your particular loop. 
+  
+* MVFlow probably should use a hypervisor scheduler. If one child fails, do we want the others to be
+ cancelled? (Maybe this could be a parameter) 
  
- * Tests to write:
+* Probably should call `buffer` in the actions so that slow handlers don't block whatever is emitting actions
+ 
+* Tests to write:
 
    * The reducer is called in a thread-safe way. 
    * The actions don't wait for the handler to process them (the view is not blocked if this happens)
@@ -94,7 +103,9 @@ use them you map your current state into the state of this view and also map the
     not render intermediary states
    * When the MVFlow object scope is destroyed, everything stops
    * When the View scope is destroyed, the view actions and view updates stop
-     
+   * Ensure that (unlike what happened while writing tests) between setting up the view actions and
+    subscribing the state to the view, there can't be missed events
+   * Test what happens when actions, handler, and reducer throw exceptions
 
 ## Android
 
