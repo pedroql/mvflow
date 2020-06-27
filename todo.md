@@ -95,10 +95,6 @@ use them you map your current state into the state of this view and also map the
 * Probably should call `buffer` in the actions so that slow handlers don't block whatever is emitting actions
  
 * Tests to write:
-
-   * The reducer is called in a thread-safe way. 
-   * The actions don't wait for the handler to process them (the view is not blocked if this happens)
-     * Either coming from view or external actions
    * If the view takes a long time to render a state and since then 2+ states come through, the view does
     not render intermediary states
    * When the MVFlow object scope is destroyed, everything stops
