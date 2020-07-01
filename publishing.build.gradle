@@ -1,0 +1,39 @@
+apply plugin: "maven-publish"
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier "sources"
+}
+
+publishing {
+    // https://docs.gradle.org/5.0/dsl/org.gradle.api.publish.maven.MavenPublication.html
+    publications {
+        MVFlowPublication(MavenPublication) {
+            from components.java
+            artifact sourceJar
+            pom {
+                description = "Simple MVI architecture using Kotlin Flows"
+                url = "https://github.com/pedroql/mfflow"
+                licenses {
+                    license {
+                        name = 'The MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                        distribution = 'repo'
+                    }
+                }
+                scm {
+                    connection = "scm:git:https://github.com/pedroql/mvflow.git"
+                    developerConnection = "scm:git:git@github.com/pedroql/mvflow.git"
+                    url = "https://github.com/pedroql/mfflow"
+                }
+            }
+        }
+
+    }
+    repositories {
+        maven {
+            url = uri("$buildDir/local-maven-repository")
+            name = "local"
+        }
+    }
+}
