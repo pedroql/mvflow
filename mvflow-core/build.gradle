@@ -15,3 +15,6 @@ tasks.test {
         events("passed", "skipped", "failed")
     }
 }
+
+// project description is sent to Bintray during bintrayUpload task
+project.description = "Core functionality of MVFlow"
