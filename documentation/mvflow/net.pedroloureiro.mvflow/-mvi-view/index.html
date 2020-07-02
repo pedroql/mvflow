@@ -1,0 +1,58 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>MviView - mvflow</title>
+<link href="../../../style.css" rel="stylesheet">
+</HEAD>
+<BODY>
+<a href="../../index.html">mvflow</a>&nbsp;/&nbsp;<a href="../index.html">net.pedroloureiro.mvflow</a>&nbsp;/&nbsp;<a href="./index.html">MviView</a><br/>
+<br/>
+<h1>MviView</h1>
+<code><span class="keyword">interface </span><span class="identifier">MviView</span><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">, </span><span class="identifier">Action</span><span class="symbol">&gt;</span></code> <a href="https://github.com/pedroql/mvflow/blob/master/mvflow-core/src/main/kotlin/net/pedroloureiro/mvflow/MVFlow.kt#L13">(source)</a>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="coroutine-scope.html">coroutineScope</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">coroutineScope</span><span class="symbol">: </span><span class="identifier">CoroutineScope</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="state-dispatcher.html">stateDispatcher</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">stateDispatcher</span><span class="symbol">: </span><span class="identifier">CoroutineDispatcher</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="actions.html">actions</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">actions</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Flow</span><span class="symbol">&lt;</span><span class="identifier">Action</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="receive-states.html">receiveStates</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">receiveStates</span><span class="symbol">(</span><span class="identifier" id="net.pedroloureiro.mvflow.MviView$receiveStates(kotlin.Function0((kotlinx.coroutines.flow.Flow((net.pedroloureiro.mvflow.MviView.State)))))/stateProducerBlock">stateProducerBlock</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">Flow</span><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="render.html">render</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="identifier" id="net.pedroloureiro.mvflow.MviView$render(net.pedroloureiro.mvflow.MviView.State)/state">state</span><span class="symbol">:</span>&nbsp;<span class="identifier">State</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
