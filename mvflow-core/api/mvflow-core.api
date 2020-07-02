@@ -1,0 +1,22 @@
+public final class net/pedroloureiro/mvflow/MVFlow {
+	public fun <init> (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun addExternalActions (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun addExternalActions$default (Lnet/pedroloureiro/mvflow/MVFlow;Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public final fun takeView (Lnet/pedroloureiro/mvflow/MviView;Ljava/util/List;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun takeView$default (Lnet/pedroloureiro/mvflow/MVFlow;Lnet/pedroloureiro/mvflow/MviView;Ljava/util/List;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public abstract interface class net/pedroloureiro/mvflow/MviView {
+	public abstract fun actions ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	public abstract fun getStateDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
+	public abstract fun receiveStates (Lkotlin/jvm/functions/Function0;)V
+	public abstract fun render (Ljava/lang/Object;)V
+}
+
+public final class net/pedroloureiro/mvflow/MviView$DefaultImpls {
+	public static fun getStateDispatcher (Lnet/pedroloureiro/mvflow/MviView;)Lkotlinx/coroutines/CoroutineDispatcher;
+	public static fun receiveStates (Lnet/pedroloureiro/mvflow/MviView;Lkotlin/jvm/functions/Function0;)V
+}
+

@@ -1,0 +1,6 @@
+
+apply plugin: 'binary-compatibility-validator'
+
+apiValidation {
+    ignoredProjects += ["mvflow"]
+}
