@@ -1,0 +1,37 @@
+dokka {
+    // https://github.com/Kotlin/dokka#using-dokka
+    outputFormat = 'html'
+    outputDirectory = "${project.rootDir}/documentation"
+
+    subProjects = ["mvflow-core"]
+    configuration {
+        jdkVersion = 8
+        reportUndocumented = false
+
+        sourceLink {
+            // Unix based directory relative path to the root of the project (where you execute gradle respectively).
+            path = "./"
+            // URL showing where the source code can be accessed through the web browser
+            url = "https://github.com/pedroql/mvflow/blob/master/"
+            // Suffix which is used to append the line number to the URL. Use #L for GitHub
+            lineSuffix = "#L"
+        }
+
+//      // Disable linking to online kotlin-stdlib documentation
+//      noStdlibLink = false
+//
+//      // Disable linking to online JDK documentation
+//      noJdkLink = false
+
+
+//      // Allows linking to documentation of the project's dependencies (generated with Javadoc or Dokka)
+//      // Repeat for multiple links
+//      externalDocumentationLink {
+//          // Root URL of the generated documentation to link with. The trailing slash is required!
+//          url = new URL("https://example.com/docs/")
+//
+//          // If package-list file is located in non-standard location
+//          // packageListUrl = new URL("file:///home/user/localdocs/package-list")
+//      }
+    }
+}
