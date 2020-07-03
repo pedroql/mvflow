@@ -7,17 +7,24 @@ build/
 # Local configuration file (sdk path, etc)
 local.properties
 
+# https://intellij-support.jetbrains.com/hc/en-us/articles/206544839-How-to-manage-projects-under-Version-Control-Systems
+# https://www.toptal.com/developers/gitignore/api/jetbrains
+
 # IntelliJ
 *.iml
-.idea
+.idea/shelf
+.idea/modules.xml
+.idea/caches
+.idea/misc.xml
 
 # Original recommended exclusion list:
-#.idea/workspace.xml
-#.idea/tasks.xml
+.idea/workspace.xml
+.idea/tasks.xml
 #.idea/gradle.xml
-#.idea/assetWizardSettings.xml
-#.idea/dictionaries
-#.idea/libraries
+.idea/assetWizardSettings.xml
+.idea/dictionaries
+.idea/libraries
+
 ## Android Studio 3 in .gitignore file.
 #.idea/caches
 #.idea/modules.xml
@@ -26,3 +33,16 @@ local.properties
 #
 # Version control
 #vcs.xml
+
+# Gradle and Maven with auto-import
+# When using Gradle or Maven with auto-import, you should exclude module files,
+# since they will be recreated, and may cause churn.  Uncomment if using
+# auto-import.
+.idea/artifacts
+.idea/compiler.xml
+.idea/jarRepositories.xml
+# .idea/modules.xml # duplicated above
+.idea/*.iml
+.idea/modules
+# *.iml # duplicated above
+*.ipr
