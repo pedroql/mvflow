@@ -1,7 +1,20 @@
 package net.pedroloureiro.mvflow
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.test.runBlockingTest
@@ -106,7 +119,6 @@ internal class MVFlowTest {
                 .buffer()
                 .onEach { debug("Emitting action $it") }
 
-
             // usually with view coroutine scope, here using runBlockingTest
             // usually with stateDispatcher (Main) but can be overridden in the MviView interface
             val stateJob = launch {
@@ -131,7 +143,6 @@ internal class MVFlowTest {
                             // usually with the mvflow scope
                             .launchIn(this)
                     }
-
             }
             // state flow never terminates so we need to let the flows progress and then terminate the
             // state job. I find this preferable to hard-coding a number of events
