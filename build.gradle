@@ -9,6 +9,8 @@ plugins {
     id "com.jfrog.bintray" version "1.8.5" apply false
     id "org.jetbrains.dokka" version "0.10.1"
     id "org.jmailen.kotlinter" version "2.4.1" apply false
+    // when updating detekt, also update toolversion from detekt.build.gradle
+    id "io.gitlab.arturbosch.detekt" version "1.10.0" apply false
 }
 
 allprojects {
@@ -17,6 +19,7 @@ allprojects {
 
     repositories {
         mavenCentral()
+        jcenter()
     }
 }
 
@@ -25,6 +28,7 @@ subprojects {
     apply plugin: "org.jmailen.kotlinter"
     apply from: "$rootDir/publishing.build.gradle"
     apply from: "$rootDir/bintray.build.gradle"
+    apply from: "$rootDir/detekt.build.gradle"
 
     dependencies {
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
