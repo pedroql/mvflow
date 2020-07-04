@@ -1,0 +1,16 @@
+apply plugin: 'io.gitlab.arturbosch.detekt'
+
+detekt {
+    toolVersion = "1.10.0"
+    reports {
+        xml {
+            enabled = false
+        }
+        html {
+            enabled = true
+        }
+        txt {
+            enabled = true
+        }
+    }
+}
