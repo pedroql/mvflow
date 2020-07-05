@@ -3,7 +3,6 @@ package net.pedroloureiro.mvflow
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
@@ -43,7 +42,6 @@ interface MviView<State, Action> {
         get() = Dispatchers.Main
 }
 
-@ExperimentalCoroutinesApi
 class MVFlow<State, Action, Mutation>(
     initialState: State,
     private val handler: Handler<State, Action, Mutation>,
@@ -52,7 +50,6 @@ class MVFlow<State, Action, Mutation>(
     private val defaultLogger: Logger = {},
     private val actionCoroutineContext: CoroutineContext = Dispatchers.Default
 ) {
-
     private val state = MutableStateFlow(initialState)
     private val mutex = Mutex()
 

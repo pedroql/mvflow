@@ -29,11 +29,7 @@ subprojects {
     apply from: "$rootDir/publishing.build.gradle"
     apply from: "$rootDir/bintray.build.gradle"
     apply from: "$rootDir/detekt.build.gradle"
-
-    dependencies {
-        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-        implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.7"
-    }
+    apply from: "$rootDir/kotlin.build.gradle"
 }
 
 apply from: "$rootDir/dokka.build.gradle"
