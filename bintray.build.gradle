@@ -34,11 +34,7 @@ afterEvaluate {
 }
 
 static private def readProperty(propertyName) {
-    def value = System.getProperty(propertyName) ?: System.getenv(propertyName)
-    if (value == null) {
-        throw new NullPointerException("Missing property $propertyName")
-    }
-    return value
+    return System.getProperty(propertyName) ?: System.getenv(propertyName)
 }
 
 private static def readVcsTag() {
