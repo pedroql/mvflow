@@ -1,0 +1,35 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - name: Cache Gradle packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        restore-keys: ${{ runner.os }}-gradle
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: 'Build (Compile, lint, checkApi, test, etc)'
+      run: ./gradlew build
+    - name: Archive build reports artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-reports
+        path: '**/build/reports'
+        # not sure this will work when we get multiple modules
