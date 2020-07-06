@@ -25,11 +25,11 @@ allprojects {
 
 subprojects {
     apply plugin: "org.jetbrains.kotlin.jvm"
-    apply plugin: "org.jmailen.kotlinter"
     apply from: "$rootDir/publishing.build.gradle"
     apply from: "$rootDir/bintray.build.gradle"
     apply from: "$rootDir/detekt.build.gradle"
     apply from: "$rootDir/kotlin.build.gradle"
+    apply from: "$rootDir/kotlinter.build.gradle"
 }
 
 apply from: "$rootDir/dokka.build.gradle"
