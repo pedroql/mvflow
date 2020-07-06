@@ -1,7 +1,6 @@
 package net.pedroloureiro.mvflow
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
@@ -23,7 +22,6 @@ import org.junit.jupiter.api.Test
 
 // These tests are long, contrived, and hard to read. Suggestions to improve them are most welcome!
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class MVFlowTest {
 
     @Test
@@ -169,7 +167,7 @@ internal class MVFlowTest {
 
             val flow = MVFlow<PairState, Action, Mutation>(
                 initialState = Pair(0, 0),
-                handler = { state, action ->
+                handler = { _, action ->
                     flowOf(action.value).onStart {
                         debug("handler delaying ${action.value} at $currentTime")
                         if (action.value == 0) {
