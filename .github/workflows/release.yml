@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Meta information
+      run: 'echo Event ref: ${{ github.ref }} Commit hash: ${{ github.sha }}'
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
@@ -30,7 +32,7 @@ jobs:
         key: ${{ runner.os }}-${{ github.sha }}
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: 'Build (Compile, lint, checkApi, test, etc)'
+    - name: Build (Compile, lint, checkApi, test, etc)
       run: ./gradlew build
     - name: Archive build reports artifacts
       uses: actions/upload-artifact@v2
