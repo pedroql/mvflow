@@ -1,4 +1,5 @@
 name: Prepare release
+
 # This workflow repeats all of the ci.yml... Should try to avoid that
 
 on:
