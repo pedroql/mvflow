@@ -25,11 +25,6 @@ jobs:
         path: ~/.gradle/caches
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: ${{ runner.os }}-gradle
-#     - name: Cache build folder for this commit
-#       uses: actions/cache@v2
-#       with:
-#         path: '**/build'
-#         key: ${{ runner.os }}-${{ github.sha }}
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build (Compile, lint, checkApi, test, etc)
@@ -53,6 +48,7 @@ jobs:
         uses: metcalfc/changelog-generator@v0.4.0
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
+          base-ref: af882b5cfbd4f59fe48cd4aa8ae7236dfc5904cc
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
