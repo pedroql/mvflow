@@ -15,7 +15,9 @@ plugins {
 
 allprojects {
     group = "net.pedroloureiro.mvflow"
-    version = "0.0.1"
+    // when CI is making a release from a git tag, it will pass in the version
+    // manually specify it with ./gradlew ... -DVERSION_OVERRIDE=123
+    version = System.getProperty("VERSION_OVERRIDE", "0.0.1-SNAPSHOT")
 
     repositories {
         mavenCentral()
