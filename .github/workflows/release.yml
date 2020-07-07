@@ -25,11 +25,11 @@ jobs:
         path: ~/.gradle/caches
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: ${{ runner.os }}-gradle
-    - name: Cache build folder on commit ${{ github.sha }}
-      uses: actions/cache@v2
-      with:
-        path: '**/build'
-        key: ${{ runner.os }}-${{ github.sha }}
+#     - name: Cache build folder for this commit
+#       uses: actions/cache@v2
+#       with:
+#         path: '**/build'
+#         key: ${{ runner.os }}-${{ github.sha }}
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build (Compile, lint, checkApi, test, etc)
