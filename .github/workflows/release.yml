@@ -46,7 +46,8 @@ jobs:
     - name: Ensure documentation is up to date
       run: |
         ./gradlew --no-daemon dokka
-        git diff --exit-code
+        # the next command will list documentation files out of date. Please run ./gradlew dokka
+        git diff --exit-code --name-only
 
   release:
     name: Create GitHub Release
