@@ -45,6 +45,7 @@ jobs:
         path: '**/build/reports'
 
   release:
+    name: Create GitHub Release
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -79,6 +80,7 @@ jobs:
         run: "echo Is prerelease? ${{ contains( steps.parse_tag.outputs.VERSION, 'RC') ||  contains( steps.parse_tag.outputs.VERSION, 'SNAPSHOT') }}"
 
   publish:
+    name: Publish to Bintray
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -101,8 +103,10 @@ jobs:
         restore-keys: ${{ runner.os }}-gradle
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Upload to bintray tagged version ${{ github.ref }}
+    - name: Upload to bintray
       env:
         VCS_TAG: ${{ steps.parse_tag.outputs.NAME }}
+        BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
+        BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
       run: ./gradlew --no-daemon -DVERSION_OVERRIDE=${{  steps.parse_tag.outputs.VERSION }} bintrayUpload
 
