@@ -1,0 +1,47 @@
+name: Build project
+
+#########
+# This workflow needs to be kept in sync with release.yml
+#########
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Meta information
+      run: 'echo Event ref: ${{ github.ref }} Commit hash: ${{ github.sha }}'
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - name: Cache Gradle packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        restore-keys: ${{ runner.os }}-gradle
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build (Compile, lint, checkApi, test, etc)
+      run: ./gradlew --no-daemon build
+    - name: Archive build reports artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-reports
+        path: '**/build/reports'
+    - name: Ensure documentation is up to date
+      run: |
+        ./gradlew --no-daemon dokka
+        # the next command will list documentation files out of date. Please run ./gradlew dokka
+        # commenting out because of dokka writing absolute paths which breaks this on other computers
+        #git diff --exit-code --name-only
+        git diff --name-only

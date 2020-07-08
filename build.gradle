@@ -15,7 +15,9 @@ plugins {
 
 allprojects {
     group = "net.pedroloureiro.mvflow"
-    version = "0.0.1"
+    // when CI is making a release from a git tag, it will pass in the version
+    // manually specify it with ./gradlew ... -DVERSION_OVERRIDE=123
+    version = System.getProperty("VERSION_OVERRIDE", "0.0.1-SNAPSHOT")
 
     repositories {
         mavenCentral()
@@ -25,11 +27,11 @@ allprojects {
 
 subprojects {
     apply plugin: "org.jetbrains.kotlin.jvm"
-    apply plugin: "org.jmailen.kotlinter"
     apply from: "$rootDir/publishing.build.gradle"
     apply from: "$rootDir/bintray.build.gradle"
     apply from: "$rootDir/detekt.build.gradle"
     apply from: "$rootDir/kotlin.build.gradle"
+    apply from: "$rootDir/kotlinter.build.gradle"
 }
 
 apply from: "$rootDir/dokka.build.gradle"

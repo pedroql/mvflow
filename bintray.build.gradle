@@ -26,7 +26,7 @@ afterEvaluate {
                 vcsTag = readVcsTag()
             }
 //            publish = true  //[Default: false]
-            dryRun = true   //[Default: false]
+//            dryRun = true   //[Default: false]
 //            override = true //[Default: false] Whether to override version artifacts already published
         }
     }

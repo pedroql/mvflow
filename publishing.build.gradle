@@ -13,7 +13,7 @@ publishing {
             artifact sourceJar
             pom {
                 description = "Simple MVI architecture using Kotlin Flows"
-                url = "https://github.com/pedroql/mfflow"
+                url = "https://github.com/pedroql/mvflow"
                 licenses {
                     license {
                         name = 'The MIT License'
@@ -24,7 +24,7 @@ publishing {
                 scm {
                     connection = "scm:git:https://github.com/pedroql/mvflow.git"
                     developerConnection = "scm:git:git@github.com/pedroql/mvflow.git"
-                    url = "https://github.com/pedroql/mfflow"
+                    url = "https://github.com/pedroql/mvflow"
                 }
             }
         }

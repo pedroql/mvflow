@@ -1,0 +1,5 @@
+apply plugin: "org.jmailen.kotlinter"
+
+kotlinter {
+    reporters += ["html"]
+}
