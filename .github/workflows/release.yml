@@ -74,9 +74,9 @@ jobs:
           release_name: ${{ steps.parse_tag.outputs.VERSION }}
           body: ${{ steps.changelog.outputs.changelog }}
           draft: true
-          prerelease: '${{ contains( steps.parse_tag.outputs.VERSION, "RC") ||  contains( steps.parse_tag.outputs.VERSION, "SNAPSHOT") }}'
+          prerelease: "${{ contains( steps.parse_tag.outputs.VERSION, 'RC') ||  contains( steps.parse_tag.outputs.VERSION, 'SNAPSHOT') }}"
       - name: Debug prerelease
-        run: 'echo Is prerelease? ${{ contains( steps.parse_tag.outputs.VERSION, "RC") ||  contains( steps.parse_tag.outputs.VERSION, "SNAPSHOT") }}'
+        run: "echo Is prerelease? ${{ contains( steps.parse_tag.outputs.VERSION, 'RC') ||  contains( steps.parse_tag.outputs.VERSION, 'SNAPSHOT') }}"
 
   publish:
     runs-on: ubuntu-latest
