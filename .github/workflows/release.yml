@@ -45,7 +45,8 @@ jobs:
         path: '**/build/reports'
     - name: Ensure documentation is up to date
       run: |
-        ./gradlew dokka && git --return-code git --diff
+        ./gradlew dokka
+        git diff --exit-code
 
   release:
     name: Create GitHub Release
