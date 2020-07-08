@@ -1,4 +1,4 @@
-name: Prepare release
+name: Build and prepare release
 
 # This workflow repeats all of the ci.yml... Should try to avoid that
 
@@ -43,6 +43,9 @@ jobs:
       with:
         name: build-reports
         path: '**/build/reports'
+    - name: Ensure documentation is up to date
+      run: |
+        ./gradlew dokka && git --return-code git --diff
 
   release:
     name: Create GitHub Release

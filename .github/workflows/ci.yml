@@ -1,4 +1,4 @@
-name: Build projects
+name: Build project
 
 #########
 # This workflow needs to be kept in sync with release.yml
@@ -39,3 +39,6 @@ jobs:
         name: build-reports
         path: '**/build/reports'
         # not sure this will work when we get multiple modules
+    - name: Ensure documentation is up to date
+      run: |
+        ./gradlew dokka && git --return-code git --diff
