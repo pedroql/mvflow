@@ -40,5 +40,5 @@ jobs:
         path: '**/build/reports'
     - name: Ensure documentation is up to date
       run: |
-        ./gradlew dokka
+        ./gradlew --no-daemon dokka
         git diff --exit-code
