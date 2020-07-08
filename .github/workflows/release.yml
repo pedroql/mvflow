@@ -14,10 +14,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set release name
-      run: 'echo ::set-env name=RELEASE_NAME::$(echo ${GITHUB_REF:11})'
+    - name: Print webhook information
+      run: 'cat ${{ github.event_path }}'
+    - name: Extract pushed tag name
+      id: parse_tag
+      # outputs: tag NAME (v1.0.0) and tag VERSION (1.0.0)
+      run: |
+        echo ::set-output name=NAME::${GITHUB_REF#refs/tags/}
+        echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
     - name: Meta information
-      run: 'echo Event ref: ${{ github.ref }} Release name ${{ RELEASE_NAME }} Commit hash: ${{ github.sha }}'
+      run: 'echo Event ref: ${{ github.ref }} Tag name ${{ steps.parse_tag.outputs.NAME }} Commit hash: ${{ github.sha }}'
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
@@ -31,7 +37,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build (Compile, lint, checkApi, test, etc)
-      run: ./gradlew --no-daemon -DVERSION_OVERRIDE=${{ RELEASE_NAME }} build
+      run: ./gradlew --no-daemon -DVERSION_OVERRIDE=${{ steps.parse_tag.outputs.VERSION }} build
     - name: Archive build reports artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -45,8 +51,12 @@ jobs:
       # To use this repository's private action, you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Set release name
-        run: echo ::set-env name=RELEASE_NAME::$(echo ${GITHUB_REF:11})
+      - name: Extract pushed tag name
+        id: parse_tag
+        # outputs: tag NAME (v1.0.0) and tag VERSION (1.0.0)
+        run: |
+          echo ::set-output name=NAME::${GITHUB_REF#refs/tags/}
+          echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
       - name: Generate changelog
         # https://github.com/metcalfc/changelog-generator
         id: changelog
@@ -60,19 +70,25 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ env.RELEASE_NAME }}
+          tag_name: ${{ steps.parse_tag.outputs.NAME }}
+          release_name: ${{ steps.parse_tag.outputs.VERSION }}
           body: ${{ steps.changelog.outputs.changelog }}
           draft: true
-          prerelease: '${{ contains( ${{ env.RELEASE_NAME }}, "RC") }}'
+          prerelease: '${{ contains( steps.parse_tag.outputs.VERSION, "RC") ||  contains( steps.parse_tag.outputs.VERSION, "SNAPSHOT") }}'
+      - name: Debug prerelease
+        run: 'echo Is prerelease? ${{ contains( steps.parse_tag.outputs.VERSION, "RC") ||  contains( steps.parse_tag.outputs.VERSION, "SNAPSHOT") }}'
 
   publish:
     runs-on: ubuntu-latest
     needs: build
     steps:
     - uses: actions/checkout@v2
-    - name: Set release name
-      run: echo ::set-env name=RELEASE_NAME::$(echo ${GITHUB_REF:11})
+    - name: Extract pushed tag name
+      id: parse_tag
+      # outputs: tag NAME (v1.0.0) and tag VERSION (1.0.0)
+      run: |
+        echo ::set-output name=NAME::${GITHUB_REF#refs/tags/}
+        echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
@@ -87,6 +103,6 @@ jobs:
       run: chmod +x gradlew
     - name: Upload to bintray tagged version ${{ github.ref }}
       env:
-        VCS_TAG: ${{ github.ref }}
-      run: ./gradlew --no-daemon -DVERSION_OVERRIDE=${{ RELEASE_NAME }} bintrayUpload
+        VCS_TAG: ${{ steps.parse_tag.outputs.NAME }}
+      run: ./gradlew --no-daemon -DVERSION_OVERRIDE=${{  steps.parse_tag.outputs.VERSION }} bintrayUpload
 
