@@ -7,14 +7,14 @@ dependencies {
 compileKotlin {
     kotlinOptions {
         freeCompilerArgs += ["-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"]
-        allWarningsAsErrors = true
+        allWarningsAsErrors = System.getProperty("all.warnings.as.errors", "true").toBoolean()
     }
 }
 
 compileTestKotlin {
     kotlinOptions {
         freeCompilerArgs += ["-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"]
-        allWarningsAsErrors = true
+        allWarningsAsErrors = System.getProperty("all.warnings.as.errors", "true").toBoolean()
     }
 }
 
