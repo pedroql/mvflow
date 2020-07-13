@@ -35,3 +35,22 @@ dokka {
 //      }
     }
 }
+
+task removeAbsolutePathsFromDokkaFiles {
+    doLast {
+        fileTree("${project.rootDir}/documentation/").matching {
+            include "**/index-outline.html"
+        }
+                .forEach { File file ->
+                    //println("Removing hardcoded paths mentioning '${file.parent}/' from file ${file.path}")
+                    ant.replace(
+                            file: file,
+                            // remove the path all the way to the parent of this file
+                            token: "${file.parent}/",
+                            value: ""
+                    )
+                }
+    }
+}
+
+dokka.finalizedBy removeAbsolutePathsFromDokkaFiles
