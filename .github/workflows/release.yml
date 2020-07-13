@@ -48,8 +48,7 @@ jobs:
         ./gradlew --no-daemon dokka
         # the next command will list documentation files out of date. Please run ./gradlew dokka
         # commenting out because of dokka writing absolute paths which breaks this on other computers
-        #git diff --exit-code --name-only
-        git diff --name-only
+        git diff --exit-code --name-only
 
   release:
     name: Create GitHub Release
