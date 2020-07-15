@@ -145,8 +145,6 @@ class MVFlow<State, Action, Mutation>(
                 }
                 .onEach {
                     stateBroadcastChannel.offer(it)
-                    // TODO verify if this duplicates events when the view is destroyed yet the mvi object remains for
-                    // the next instance
                 }
         }
     }
