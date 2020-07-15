@@ -18,7 +18,7 @@ class ViewFake<State, Action>(
         view = object : MviView<State, Action> {
             override fun render(state: State) {
                 // no real rendering happening
-                TODO()
+                throw IllegalStateException("Should never be called")
             }
 
             override fun actions() = actionsFlow

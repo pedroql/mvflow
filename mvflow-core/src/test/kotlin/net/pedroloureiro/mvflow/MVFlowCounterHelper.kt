@@ -1,30 +1,38 @@
 package net.pedroloureiro.mvflow
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.onEach
 
+/**
+ * This class makes it easier to create a mvflow and view of a simple counter
+ */
 internal object MVFlowCounterHelper {
     fun createFlowAndView(
         actionsFlow: Flow<Action>,
-        coroutineScope: CoroutineScope
+        coroutineScope: CoroutineScope,
+        delayMutations: Boolean = true
     ) =
         createMVFlow(
-            coroutineScope
+            coroutineScope,
+            delayMutations
         ) to createViewFake(actionsFlow, coroutineScope)
 
     fun createViewFake(
         actionsFlow: Flow<Action>,
         coroutineScope: CoroutineScope
     ): ViewFake<State, Action> {
-        return ViewFake<State, Action>(
+        return ViewFake(
             actionsFlow,
             coroutineScope
         )
     }
 
     fun createMVFlow(
-        mvflowCoroutineScope: CoroutineScope
+        mvflowCoroutineScope: CoroutineScope,
+        delayMutations: Boolean = true
     ) =
         MVFlow<State, Action, Mutation>(
             State(0),
@@ -33,10 +41,20 @@ internal object MVFlowCounterHelper {
                     Action.Action1 -> flowOf(
                         Mutation.Increment(1)
                     )
+                        .onEach {
+                            if (delayMutations) {
+                                delay(50)
+                            }
+                        }
                     Action.Action2 -> flowOf(
                         Mutation.Multiply(2),
                         Mutation.Increment(-1)
                     )
+                        .onEach {
+                            if (delayMutations) {
+                                delay(40)
+                            }
+                        }
                 }
             },
             { state, mutation ->
