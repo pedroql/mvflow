@@ -349,11 +349,19 @@ And everyone who contributed towards those libraries (and their respective inspi
 ## Current state, feedback, and contributions
 
 ```
-Version 0.0.1
+Version 0.0.2
 ```
 
-Right now the library has been published for early feedback. APIs might change based on that. For 
-this reason, there are no published artifacts yet.
+Right now the library has been published for early feedback. We are still considering the best way to expose some 
+functionality so APIs may break in future releases.
+
+You can get it from maven central:
+
+```
+dependencies {
+    implementation 'net.pedroloureiro.mvflow:mvflow-core:0.0.2'
+}
+```
 
 **Please let us know what you think.** 
 
