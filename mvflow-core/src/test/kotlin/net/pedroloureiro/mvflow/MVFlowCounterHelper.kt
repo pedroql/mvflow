@@ -38,23 +38,25 @@ internal object MVFlowCounterHelper {
             State(0),
             { _, action ->
                 when (action) {
-                    Action.Action1 -> flowOf(
-                        Mutation.Increment(1)
-                    )
-                        .onEach {
-                            if (delayMutations) {
-                                delay(50)
+                    Action.Action1 ->
+                        flowOf(
+                            Mutation.Increment(1)
+                        )
+                            .onEach {
+                                if (delayMutations) {
+                                    delay(50)
+                                }
                             }
-                        }
-                    Action.Action2 -> flowOf(
-                        Mutation.Multiply(2),
-                        Mutation.Increment(-1)
-                    )
-                        .onEach {
-                            if (delayMutations) {
-                                delay(40)
+                    Action.Action2 ->
+                        flowOf(
+                            Mutation.Multiply(2),
+                            Mutation.Increment(-1)
+                        )
+                            .onEach {
+                                if (delayMutations) {
+                                    delay(40)
+                                }
                             }
-                        }
                 }
             },
             { state, mutation ->

@@ -214,7 +214,7 @@ internal class MVFlowStateObserversTest {
     }
 
     @Test
-    fun `late observer still receives latest state`()  = runBlockingTest {
+    fun `late observer still receives latest state`() = runBlockingTest {
         val template = defaultMvflow()
 
         lateinit var observerJob: Job

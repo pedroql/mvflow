@@ -75,7 +75,6 @@ class MVFlow<State, Action, Mutation>(
      */
     fun observeActions() = consumeActionFlow().map { it.first }
 
-
     /**
      * Observe actions taking place in this MVFlow object together with the current state (as of when the action was
      * handled).

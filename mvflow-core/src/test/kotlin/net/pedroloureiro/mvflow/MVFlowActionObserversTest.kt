@@ -41,7 +41,6 @@ internal class MVFlowActionObserversTest {
         assertEquals(5, observed.size)
     }
 
-
     @Test
     fun `able to observe midway through the action events`() = runBlockingTest {
         val template = defaultTemplate()
@@ -176,7 +175,7 @@ internal class MVFlowActionObserversTest {
     }
 
     @Test
-    fun `a slow observer doesn't impact the view`()  = runBlockingTest {
+    fun `a slow observer doesn't impact the view`() = runBlockingTest {
         val template = defaultTemplate()
 
         lateinit var actionJob: Job
