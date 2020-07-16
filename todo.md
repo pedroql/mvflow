@@ -4,6 +4,10 @@ In no particular order
 
 ## General
 
+* Ensure documenting public methods is required by CI
+
+* Confirm release automation is working
+
 * Write docs in a github.io page
 
 * Add ability to set listeners of what is happening in the MVI loop
@@ -97,6 +101,11 @@ This can greatly help reusing views. Each view could declare it's own generics a
  
 * Probably should call `buffer` in the actions so that slow handlers don't block whatever is 
 emitting actions
+
+* Consider changing from creating a class (MVFLow) to calling a factory or builder
+
+* Consider if it is correct to allow to observe actions, mutations, and states
+   * Maybe it would be a better alternative to allow the handler to emit new actions at any point 
  
 * Tests to write:
    * If the view takes a long time to render a state and since then 2+ states come through, the view

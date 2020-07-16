@@ -199,13 +199,13 @@ val handler: Handler<State, Action, Mutation> = { state, action ->
       when (action) {
           Action.LoadUsers -> {
               flow {
-                  emit(MainView.Mutation.StartedLoading)
+                  emit(Mutation.StartedLoading)
                   val users = userRepository.getUsers()
-                  emit(MainView.Mutation.UsersReceived(users))
+                  emit(Mutation.UsersReceived(users))
               }.catch { throwable ->
                   // network problems (and anything else) will come here
                   val messageToDisplay = throwableToMessage(throwable)
-                  emit(MainView.Mutation.ErrorLoading(messageToDisplay))
+                  emit(Mutation.ErrorLoading(messageToDisplay))
               }
           }
           is UserSelection -> {
@@ -227,7 +227,7 @@ you like. You can implement it as part of your Activity, Fragment, or your own c
 class MyActivity : AppCompatActivity(), MviView<State> {
     // could also be a Fragment, or a plain class you created.
     // note: not all code for UI functionality is included
-    private val actionChannel = Channel<MainView.Action>()
+    private val actionChannel = Channel<Action>()
     private val adapter = UserRecylerViewAdapter(actionChannel)
 
     fun setupUi() {
@@ -236,11 +236,11 @@ class MyActivity : AppCompatActivity(), MviView<State> {
             adapter = this@MyActivity.adapter
         }
         swipeRefreshLayout.setOnRefreshListener {
-            actionChannel.offer(MainView.Action.LoadUsers)
+            actionChannel.offer(Action.LoadUsers)
         }
     }
 
-    override fun render(state: MainView.State) {
+    override fun render(state: State) {
         errorMessage.visibility = if (state.hasError) View.VISIBLE else View.GONE
         swipeRefreshLayout.isRefreshing = state.isLoading
         adapter.users = state.users
@@ -349,11 +349,19 @@ And everyone who contributed towards those libraries (and their respective inspi
 ## Current state, feedback, and contributions
 
 ```
-Version 0.0.1
+Version 0.0.2
 ```
 
-Right now the library has been published for early feedback. APIs might change based on that. For 
-this reason, there are no published artifacts yet.
+Right now the library has been published for early feedback. We are still considering the best way to expose some 
+functionality so APIs may break in future releases.
+
+You can get it from maven central:
+
+```
+dependencies {
+    implementation 'net.pedroloureiro.mvflow:mvflow-core:0.0.2'
+}
+```
 
 **Please let us know what you think.** 
 

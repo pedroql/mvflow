@@ -3,12 +3,16 @@ package net.pedroloureiro.mvflow
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -51,7 +55,60 @@ class MVFlow<State, Action, Mutation>(
     private val actionCoroutineContext: CoroutineContext = Dispatchers.Default
 ) {
     private val state = MutableStateFlow(initialState)
+
+    /**
+     * stateBroadcastChannel is [kotlinx.coroutines.channels.Channel.Factory.CONFLATED] so it exhibits the same
+     * behaviour (receives the same events) that the view would receive.
+     */
+    private val stateBroadcastChannel = BroadcastChannel<State>(Channel.CONFLATED)
+    private val actionBroadcastChannel = BroadcastChannel<Pair<Action, State>>(Channel.BUFFERED)
+    private val mutationBroadcastChannel = BroadcastChannel<Mutation>(Channel.BUFFERED)
     private val mutex = Mutex()
+
+    private fun consumeActionFlow() = actionBroadcastChannel.openSubscription().consumeAsFlow()
+
+    /**
+     * Observe actions taking place in this MVFlow object.
+     *
+     * This is just a utility method that *you probably don't need*. Be mindful what you do with it. While this might
+     * make some functionality easier to implement, you are risking breaking the MVI concept and its advantages!
+     */
+    fun observeActions() = consumeActionFlow().map { it.first }
+
+    /**
+     * Observe actions taking place in this MVFlow object together with the current state (as of when the action was
+     * handled).
+     *
+     * This is just a utility method that *you probably don't need*. Be mindful what you do with it. While this might
+     * make some functionality easier to implement, you are risking breaking the MVI concept and its advantages!
+     *
+     */
+    fun observeActionsWithState() = consumeActionFlow()
+
+    /**
+     * Observe mutations taking place in this MVFlow object.
+     *
+     * This is just a utility method that *you probably don't need*. Be mindful what you do with it. While this might
+     * make some functionality easier to implement, you are risking breaking the MVI concept and its advantages!
+     *
+     * Note: the observer is informed just after the mutation is applied in the current state
+     */
+    fun observeMutations() = mutationBroadcastChannel.openSubscription().consumeAsFlow()
+
+    /**
+     * Observe the current state of this MVFlow object. When you subscribe, you also get the current value as the first
+     * emission.
+     *
+     * This is just a utility method that *you probably don't need*. Be mindful what you do with it. While this might
+     * make some functionality easier to implement, you are risking breaking the MVI concept and its advantages!
+     *
+     * Note: this uses a [kotlinx.coroutines.channels.Channel.Factory.CONFLATED] channel so the states you see might
+     * differ from the events the MVFlow object sees. If your observer or the view take too long collecting one value
+     * and two or more values are emitted during that time, only the latest one would be emitted to the slow collector
+     * (while the fast collecter could receive all of the values). In normal situations the collection should be very
+     * quick and skipping states should not matter due to immutability.
+     */
+    fun observeState() = stateBroadcastChannel.openSubscription().consumeAsFlow()
 
     fun takeView(
         view: MviView<State, Action>,
@@ -86,6 +143,9 @@ class MVFlow<State, Action, Mutation>(
                 .onEach {
                     logger.invoke("New state: $it")
                 }
+                .onEach {
+                    stateBroadcastChannel.offer(it)
+                }
         }
     }
 
@@ -114,12 +174,15 @@ class MVFlow<State, Action, Mutation>(
     ) {
         collect { action ->
             logger.invoke("Received action $action")
-            handler.invoke(state.value, action)
+            val currentValue = state.value
+            actionBroadcastChannel.offer(action to currentValue)
+            handler.invoke(currentValue, action)
                 .onEach { mutation ->
                     mutex.withLock {
                         logger.invoke("Applying mutation $mutation from action $action")
                         state.value = reducer.invoke(state.value, mutation)
                     }
+                    mutationBroadcastChannel.offer(mutation)
                 }
                 .launchIn(coroutineScope)
         }
