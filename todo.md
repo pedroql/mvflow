@@ -6,8 +6,6 @@ In no particular order
 
 * Ensure documenting public methods is required by CI
 
-* Confirm release automation is working
-
 * Write docs in a github.io page
 
 * Add ability to set listeners of what is happening in the MVI loop
