@@ -24,7 +24,8 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Handler is a function that receives the current state and an action that just happened and acts on it.
  *
- * It returns a [kotlinx.coroutines.flow.Flow] of Mutation which is the way it can mutate the current state if it needs to.
+ * It returns a [kotlinx.coroutines.flow.Flow] of Mutation which is the way it can mutate the current state if it needs
+ * to.
  *
  * Note: implementations should return straight away and do any operations inside the flow.
  *
