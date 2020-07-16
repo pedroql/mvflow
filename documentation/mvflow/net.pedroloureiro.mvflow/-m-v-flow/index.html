@@ -36,7 +36,7 @@
 <h4><a href="observe-actions.html">observeActions</a></h4>
 </td>
 <td>
-<p>Observe actions taking place in this MVFlow object</p>
+<p>Observe actions taking place in this MVFlow object.</p>
 <code><span class="keyword">fun </span><span class="identifier">observeActions</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Flow</span><span class="symbol">&lt;</span><span class="identifier">Action</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
@@ -44,6 +44,8 @@
 <h4><a href="observe-actions-with-state.html">observeActionsWithState</a></h4>
 </td>
 <td>
+<p>Observe actions taking place in this MVFlow object together with the current state (as of when the action was
+handled).</p>
 <code><span class="keyword">fun </span><span class="identifier">observeActionsWithState</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Flow</span><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html"><span class="identifier">Pair</span></a><span class="symbol">&lt;</span><span class="identifier">Action</span><span class="symbol">,</span>&nbsp;<span class="identifier">State</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
@@ -51,6 +53,7 @@
 <h4><a href="observe-mutations.html">observeMutations</a></h4>
 </td>
 <td>
+<p>Observe mutations taking place in this MVFlow object.</p>
 <code><span class="keyword">fun </span><span class="identifier">observeMutations</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Flow</span><span class="symbol">&lt;</span><span class="identifier">Mutation</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
@@ -58,6 +61,8 @@
 <h4><a href="observe-state.html">observeState</a></h4>
 </td>
 <td>
+<p>Observe the current state of this MVFlow object. When you subscribe, you also get the current value as the first
+emission.</p>
 <code><span class="keyword">fun </span><span class="identifier">observeState</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Flow</span><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
