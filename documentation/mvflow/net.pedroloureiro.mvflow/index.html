@@ -16,13 +16,15 @@
 <h4><a href="-handler.html">Handler</a></h4>
 </td>
 <td>
-<code><span class="keyword">typealias </span><span class="identifier">Handler</span><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">, </span><span class="identifier">Action</span><span class="symbol">, </span><span class="identifier">Mutation</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;<span class="symbol">(</span><span class="identifier">State</span><span class="symbol">,</span>&nbsp;<span class="identifier">Action</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">Flow</span><span class="symbol">&lt;</span><span class="identifier">Mutation</span><span class="symbol">&gt;</span></code></td>
+<p>Handler is a function that receives the current state and an action that just happened and acts on it.</p>
+<code><span class="keyword">typealias </span><span class="identifier">Handler</span><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">, </span><span class="identifier">Action</span><span class="symbol">, </span><span class="identifier">Mutation</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;<span class="symbol">(</span><span class="identifier">State</span><span class="symbol">,</span>&nbsp;<span class="identifier">Action</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/index.html"><span class="identifier">Flow</span></a><span class="symbol">&lt;</span><span class="identifier">Mutation</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="-logger.html">Logger</a></h4>
 </td>
 <td>
+<p>Logger is a lambda you can provide to allow you to do some debugging using your favourite approach for it.</p>
 <code><span class="keyword">typealias </span><span class="identifier">Logger</span>&nbsp;<span class="symbol">=</span>&nbsp;<span class="symbol">(</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
@@ -30,6 +32,7 @@
 <h4><a href="-m-v-flow/index.html">MVFlow</a></h4>
 </td>
 <td>
+<p>Class that runs all the MVI logic of this library.</p>
 <code><span class="keyword">class </span><span class="identifier">MVFlow</span><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">, </span><span class="identifier">Action</span><span class="symbol">, </span><span class="identifier">Mutation</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
@@ -37,6 +40,7 @@
 <h4><a href="-mvi-view/index.html">MviView</a></h4>
 </td>
 <td>
+<p>An interface for a View used in MVFlow</p>
 <code><span class="keyword">interface </span><span class="identifier">MviView</span><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">, </span><span class="identifier">Action</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
@@ -44,6 +48,7 @@
 <h4><a href="-reducer.html">Reducer</a></h4>
 </td>
 <td>
+<p>Reducer applies a Mutation to a State, returning the resulting State.</p>
 <code><span class="keyword">typealias </span><span class="identifier">Reducer</span><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">, </span><span class="identifier">Mutation</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;<span class="symbol">(</span><span class="identifier">State</span><span class="symbol">,</span>&nbsp;<span class="identifier">Mutation</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">State</span></code></td>
 </tr>
 </tbody>

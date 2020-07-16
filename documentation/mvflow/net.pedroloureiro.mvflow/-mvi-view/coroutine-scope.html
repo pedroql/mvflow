@@ -9,6 +9,8 @@
 <br/>
 <h1>coroutineScope</h1>
 <a name="net.pedroloureiro.mvflow.MviView$coroutineScope"></a>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">coroutineScope</span><span class="symbol">: </span><span class="identifier">CoroutineScope</span></code> <a href="https://github.com/pedroql/mvflow/blob/master/mvflow-core/src/main/kotlin/net/pedroloureiro/mvflow/MVFlow.kt#L33">(source)</a>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">coroutineScope</span><span class="symbol">: </span><a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/index.html"><span class="identifier">CoroutineScope</span></a></code> <a href="https://github.com/pedroql/mvflow/blob/master/mvflow-core/src/main/kotlin/net/pedroloureiro/mvflow/MVFlow.kt#L87">(source)</a>
+<p>The coroutine scope associated with this view. It must have the same lifecycle as the view.</p>
+<p>In Android, it can be <code>activity.lifecycleScope</code> or <code>fragment.viewLifecycleOwner.lifecycleScope</code></p>
 </BODY>
 </HTML>

@@ -39,8 +39,17 @@ jobs:
         name: build-reports
         path: '**/build/reports'
     - name: Ensure documentation is up to date
+      id: doc-check
       run: |
         ./gradlew --no-daemon dokka
         # the next command will list documentation files out of date. Please run ./gradlew dokka
-        # commenting out because of dokka writing absolute paths which breaks this on other computers
         git diff --exit-code --name-only
+    - name: Check which documentation files have changed
+      if: steps.doc-check.outcome == 'failure'
+      run: git diff > git-diff.txt
+    - name: Upload diff artifact of the documentation files
+      uses: actions/upload-artifact@v2
+      if: steps.doc-check.outcome == 'failure'
+      with:
+        name: git-diff
+        path: git-diff.txt

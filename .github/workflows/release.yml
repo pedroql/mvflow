@@ -44,11 +44,26 @@ jobs:
         name: build-reports
         path: '**/build/reports'
     - name: Ensure documentation is up to date
+      id: doc-check
       run: |
         ./gradlew --no-daemon dokka
         # the next command will list documentation files out of date. Please run ./gradlew dokka
-        # commenting out because of dokka writing absolute paths which breaks this on other computers
+        git diff --exit-code --name-only || echo ::set-output name=status::failure
+    - name: Check which documentation files have changed
+      if: steps.doc-check.outputs.status == 'failure'
+      run: git diff > git-diff.txt
+    - name: Upload diff artifact of the documentation files
+      uses: actions/upload-artifact@v2
+      if: steps.doc-check.outputs.status == 'failure'
+      with:
+        name: git-diff
+        path: git-diff.txt
+    - name: Fail build due to documentation being out of date
+      run: |
+        rm git-diff.txt
+        echo Documentation is out of date, you need to run ./gradlew dokka and try again. The following files have changed:
         git diff --exit-code --name-only
+
 
   release:
     name: Create GitHub Release
@@ -64,13 +79,27 @@ jobs:
         run: |
           echo ::set-output name=NAME::${GITHUB_REF#refs/tags/}
           echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
+      - name: Extract most recent tag
+        id: extract_previous_release_tag
+        run: |
+          git fetch --tags
+          echo ::set-output name=NAME::$(git tag --list 'v*' --sort=version:refname | grep  '^${{ steps.parse_tag.outputs.NAME }}$' --before-context=1 --after-context=0 | head -n 1)
+      - name: Sanity check
+        run: |
+          git tag --list 'v*' --sort=version:refname
+          echo break
+          git tag --list 'v*' --sort=version:refname | grep  '^${{ steps.parse_tag.outputs.NAME }}$' --before-context=1 --after-context=0
+          echo break break
+          git tag --list 'v*' --sort=version:refname | grep  '^${{ steps.parse_tag.outputs.NAME }}$' --before-context=1 --after-context=0 | head -n 1
+          echo final break
+          echo ${{ steps.extract_previous_release_tag.outputs.NAME }}
       - name: Generate changelog
         # https://github.com/metcalfc/changelog-generator
         id: changelog
         uses: metcalfc/changelog-generator@v0.4.0
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
-          base-ref: af882b5cfbd4f59fe48cd4aa8ae7236dfc5904cc
+          base-ref: ${{ steps.extract_previous_release_tag.outputs.NAME }}
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -82,8 +111,10 @@ jobs:
           body: ${{ steps.changelog.outputs.changelog }}
           draft: true
           prerelease: "${{ contains( steps.parse_tag.outputs.VERSION, 'RC') ||  contains( steps.parse_tag.outputs.VERSION, 'SNAPSHOT') }}"
-      - name: Debug prerelease
-        run: "echo Is prerelease? ${{ contains( steps.parse_tag.outputs.VERSION, 'RC') ||  contains( steps.parse_tag.outputs.VERSION, 'SNAPSHOT') }}"
+      - name: Debug my logic
+        run: |
+          echo Is prerelease? ${{ contains( steps.parse_tag.outputs.VERSION, 'RC') ||  contains( steps.parse_tag.outputs.VERSION, 'SNAPSHOT') }}
+          echo Previous release tag name: ${{ steps.extract_previous_release_tag.NAME }}
 
   publish:
     name: Publish to Bintray
