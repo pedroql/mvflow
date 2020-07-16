@@ -4,7 +4,7 @@ In no particular order
 
 ## Documentation
 
-* Ensure documenting public methods is required by CI
+* Ensure documenting public methods is required by CI (needs to wait for next version of dokka plugin)
 
 * Write docs in a github.io page
 

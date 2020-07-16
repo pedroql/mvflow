@@ -6,7 +6,7 @@ dokka {
     subProjects = ["mvflow-core"]
     configuration {
         jdkVersion = 8
-        reportUndocumented = false
+        reportUndocumented = true
 
         sourceLink {
             // Unix based directory relative path to the root of the project (where you execute gradle respectively).
