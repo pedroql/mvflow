@@ -8,6 +8,62 @@
 <a href="../index.html">mvflow</a>&nbsp;/&nbsp;<a href="index.html">net.pedroloureiro.mvflow</a>&nbsp;/&nbsp;<a href="./-handler.html">Handler</a><br/>
 <br/>
 <h1>Handler</h1>
-<code><span class="keyword">typealias </span><span class="identifier">Handler</span><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">, </span><span class="identifier">Action</span><span class="symbol">, </span><span class="identifier">Mutation</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;<span class="symbol">(</span><span class="identifier">State</span><span class="symbol">,</span>&nbsp;<span class="identifier">Action</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">Flow</span><span class="symbol">&lt;</span><span class="identifier">Mutation</span><span class="symbol">&gt;</span></code> <a href="https://github.com/pedroql/mvflow/blob/master/mvflow-core/src/main/kotlin/net/pedroloureiro/mvflow/MVFlow.kt#L24">(source)</a>
+<code><span class="keyword">typealias </span><span class="identifier">Handler</span><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">, </span><span class="identifier">Action</span><span class="symbol">, </span><span class="identifier">Mutation</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;<span class="symbol">(</span><span class="identifier">State</span><span class="symbol">,</span>&nbsp;<span class="identifier">Action</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/index.html"><span class="identifier">Flow</span></a><span class="symbol">&lt;</span><span class="identifier">Mutation</span><span class="symbol">&gt;</span></code> <a href="https://github.com/pedroql/mvflow/blob/master/mvflow-core/src/main/kotlin/net/pedroloureiro/mvflow/MVFlow.kt#L38">(source)</a>
+<p>Handler is a function that receives the current state and an action that just happened and acts on it.</p>
+<p>It returns a <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/index.html">kotlinx.coroutines.flow.Flow</a> of Mutation which is the way it can mutate the current state if it needs to.</p>
+<p>Note: implementations should return straight away and do any operations inside the flow.</p>
+<p>Keep also in mind that Mutations should indicate how to change the state, but should not rely on/assume what the
+current state is (as of when the action was emitted)</p>
+<pre><code class="lang-kotlin">// Good example: it returns a Flow immediately
+
+val good: Handler&lt;State, Action, Mutation&gt; = { _, _ -&gt;
+    flow {
+        slowOperation1()
+        emit(Mutation.A)
+        slowOperation2()
+        emit(Mutation.B)
+    }
+}
+
+// Bad example: doing something slow before returning flow
+
+val bad: Handler&lt;State, Action, Mutation&gt; = { _, _ -&gt;
+    slowOperation1()
+    flow {
+        emit(Mutation.A)
+        slowOperation2()
+        emit(Mutation.B)
+    }
+}</code></pre><pre><code class="lang-kotlin">// How to create good mutations:
+
+data class State(val counter: Int)
+sealed class Mutation {
+    data class Add(val amount: Int)
+    // The next mutation is a bad example, don't use it
+    data class SetValue(val newValue: Int)
+}
+
+// Good example - explain how to modify the state
+
+val good: Handler&lt;State, Action, Mutation&gt; = { _, _ -&gt;
+    // simulate long work
+    delay(1_000)
+    emit(Mutation.Add(1)
+}
+// [good] always works. Even if 3 actions are emitted quickly, each one will emit an adition of 1 and the
+// reducer will work properly
+
+// Bad example - don't assume that state is still up to date. That is the reducer's job.
+
+val bad: Handler&lt;State, Action, Mutation&gt; = { state, _ -&gt;
+    // simulate long work
+    delay(1_000)
+    emit(Mutation.SetValue(state.counter+1)
+}
+
+// [bad] has a bug. If several actions are emitted in less than a second (the time it takes to do the long
+// operation in this example), when each of these actions complete, it will emit a mutation to set the
+// value to initial state + 1, overriding the changes of the previous actions that meanwhile had changed the
+// current state.</code></pre>
 </BODY>
 </HTML>

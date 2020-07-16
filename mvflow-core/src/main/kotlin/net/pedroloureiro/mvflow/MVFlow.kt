@@ -21,18 +21,74 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * Handler is a function that receives the current state and an action that just happened and acts on it.
+ *
+ * It returns a [kotlinx.coroutines.flow.Flow] of Mutation which is the way it can mutate the current state if it needs to.
+ *
+ * Note: implementations should return straight away and do any operations inside the flow.
+ *
+ * Keep also in mind that Mutations should indicate how to change the state, but should not rely on/assume what the
+ * current state is (as of when the action was emitted)
+ *
+ * @sample MVFlowSamples.handler
+ *
+ * @sample MVFlowSamples.mutations
+ */
 typealias Handler<State, Action, Mutation> = (State, Action) -> Flow<Mutation>
+
+/**
+ * Reducer applies a Mutation to a State, returning the resulting State.
+ *
+ * Reducer invocations can't run in parallel so make sure this method returns quickly. It should only contain
+ * very simple logic to apply the mutation.
+ *
+ * @sample MVFlowSamples.reducer
+ */
 typealias Reducer<State, Mutation> = (State, Mutation) -> State
+
+/**
+ * Logger is a lambda you can provide to allow you to do some debugging using your favourite approach for it.
+ *
+ * You will receive information about when flows are started, completed, and emissions that are taking place (actions,
+ * mutations) as well as reducer invocations.
+ */
 typealias Logger = (String) -> Unit
 
+/**
+ * An interface for a View used in MVFlow
+ *
+ * @param State a class that defines what this class shows
+ * @param Action a class, usually a sealed class, that contains the information about all the interactions that can
+ * happen inside this view.
+ */
 interface MviView<State, Action> {
+    /**
+     * Function that renders the UI based on [state]
+     */
     fun render(state: State)
 
+    /**
+     * Function to return a [kotlinx.coroutines.flow.Flow] of the actions that the user makes inside this view
+     *
+     * You can create this in many ways, one suggestion is using
+     * [FlowBinding](https://github.com/ReactiveCircus/FlowBinding) or doing it yourself like in this sample:
+     *
+     * @sample MVFlowSamples.flow
+     */
     fun actions(): Flow<Action>
 
+    /**
+     * The coroutine scope associated with this view. It must have the same lifecycle as the view.
+     *
+     * In Android, it can be `activity.lifecycleScope` or `fragment.viewLifecycleOwner.lifecycleScope`
+     */
     val coroutineScope: CoroutineScope
 
-    // the following method could have a better name (and maybe doesn't need to exist here)
+    /**
+     * This optional method allows you to customize the handling of the [kotlinx.coroutines.flow.Flow] of states.
+     * You probably don't need to override this.
+     */
     fun receiveStates(stateProducerBlock: () -> Flow<State>) {
         // make sure the test in [MVFlowTest] is in sync with this implementation
         coroutineScope.launch(stateDispatcher) {
@@ -42,10 +98,23 @@ interface MviView<State, Action> {
         }
     }
 
+    /**
+     * The dispatcher used for dispatching state updates.
+     *
+     * You may need to change it for unit testing, but not for the real use of your app.
+     */
     val stateDispatcher: CoroutineDispatcher
         get() = Dispatchers.Main
 }
 
+/**
+ * Class that runs all the MVI logic of this library.
+ *
+ * @param State a class that holds all information about the current state represented in this MVFlow object.
+ * @param Action a class that represents all the interactions that can happen inside this view and associated
+ * information.
+ * @param Mutation a class that contains the instructions required to mutate the current state to a new state.
+ */
 class MVFlow<State, Action, Mutation>(
     initialState: State,
     private val handler: Handler<State, Action, Mutation>,
@@ -110,6 +179,15 @@ class MVFlow<State, Action, Mutation>(
      */
     fun observeState() = stateBroadcastChannel.openSubscription().consumeAsFlow()
 
+    /**
+     * Call this method when a new [MviView] is ready to render the state of this MVFlow object.
+     *
+     * @param view the view that will render the state.
+     * @param initialActions an optional list of Actions that can be passed to introduce an initial action into the
+     * screen (for example, to trigger a refresh of data).
+     * @param logger Optional [Logger] to log events inside this MVFlow object associated with this view (but not
+     * others).
+     */
     fun takeView(
         view: MviView<State, Action>,
         initialActions: List<Action> = emptyList(),
@@ -119,6 +197,17 @@ class MVFlow<State, Action, Mutation>(
         handleViewActions(view, initialActions, logger)
     }
 
+    /**
+     * This method adds an external source of actions into the MVFlow object.
+     *
+     * This might be useful if you need to update your state based on things happening outside the [MviView], such as
+     * timers, external database updates, push notifications, etc.
+     *
+     * @param actions the flow of events. You might want to have a look at
+     * [kotlinx.coroutines.flow.callbackFlow].
+     * @param logger Optional [Logger] to log events inside this MVFlow object associated with this external Flow (but
+     * not others).
+     */
     fun addExternalActions(
         actions: Flow<Action>,
         logger: Logger = defaultLogger

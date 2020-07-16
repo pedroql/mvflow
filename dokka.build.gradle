@@ -7,6 +7,7 @@ dokka {
     configuration {
         jdkVersion = 8
         reportUndocumented = true
+        samples = ['samples']
 
         sourceLink {
             // Unix based directory relative path to the root of the project (where you execute gradle respectively).
@@ -24,15 +25,16 @@ dokka {
 //      noJdkLink = false
 
 
-//      // Allows linking to documentation of the project's dependencies (generated with Javadoc or Dokka)
-//      // Repeat for multiple links
-//      externalDocumentationLink {
-//          // Root URL of the generated documentation to link with. The trailing slash is required!
-//          url = new URL("https://example.com/docs/")
-//
-//          // If package-list file is located in non-standard location
-//          // packageListUrl = new URL("file:///home/user/localdocs/package-list")
-//      }
+      // Allows linking to documentation of the project's dependencies (generated with Javadoc or Dokka)
+      // Repeat for multiple links
+      externalDocumentationLink {
+          // Root URL of the generated documentation to link with. The trailing slash is required!
+          url = new URL("https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/")
+
+          // If package-list file is located in non-standard location
+          // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/package-list
+          // packageListUrl = new URL("file:///home/user/localdocs/package-list")
+      }
     }
 }
 

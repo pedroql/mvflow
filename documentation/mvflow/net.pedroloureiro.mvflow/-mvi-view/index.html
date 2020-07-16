@@ -8,7 +8,14 @@
 <a href="../../index.html">mvflow</a>&nbsp;/&nbsp;<a href="../index.html">net.pedroloureiro.mvflow</a>&nbsp;/&nbsp;<a href="./index.html">MviView</a><br/>
 <br/>
 <h1>MviView</h1>
-<code><span class="keyword">interface </span><span class="identifier">MviView</span><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">, </span><span class="identifier">Action</span><span class="symbol">&gt;</span></code> <a href="https://github.com/pedroql/mvflow/blob/master/mvflow-core/src/main/kotlin/net/pedroloureiro/mvflow/MVFlow.kt#L28">(source)</a>
+<code><span class="keyword">interface </span><span class="identifier">MviView</span><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">, </span><span class="identifier">Action</span><span class="symbol">&gt;</span></code> <a href="https://github.com/pedroql/mvflow/blob/master/mvflow-core/src/main/kotlin/net/pedroloureiro/mvflow/MVFlow.kt#L65">(source)</a>
+<p>An interface for a View used in MVFlow</p>
+<h3>Parameters</h3>
+<p><a name="State"></a>
+<code>State</code> - a class that defines what this class shows</p>
+<p><a name="Action"></a>
+<code>Action</code> - a class, usually a sealed class, that contains the information about all the interactions that can
+happen inside this view.</p>
 <h3>Properties</h3>
 <table>
 <tbody>
@@ -17,14 +24,16 @@
 <h4><a href="coroutine-scope.html">coroutineScope</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">coroutineScope</span><span class="symbol">: </span><span class="identifier">CoroutineScope</span></code></td>
+<p>The coroutine scope associated with this view. It must have the same lifecycle as the view.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">coroutineScope</span><span class="symbol">: </span><a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/index.html"><span class="identifier">CoroutineScope</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="state-dispatcher.html">stateDispatcher</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">stateDispatcher</span><span class="symbol">: </span><span class="identifier">CoroutineDispatcher</span></code></td>
+<p>The dispatcher used for dispatching state updates.</p>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">stateDispatcher</span><span class="symbol">: </span><a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-dispatcher/index.html"><span class="identifier">CoroutineDispatcher</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -36,20 +45,24 @@
 <h4><a href="actions.html">actions</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">actions</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Flow</span><span class="symbol">&lt;</span><span class="identifier">Action</span><span class="symbol">&gt;</span></code></td>
+<p>Function to return a <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/index.html">kotlinx.coroutines.flow.Flow</a> of the actions that the user makes inside this view</p>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">actions</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/index.html"><span class="identifier">Flow</span></a><span class="symbol">&lt;</span><span class="identifier">Action</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="receive-states.html">receiveStates</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">receiveStates</span><span class="symbol">(</span><span class="identifier" id="net.pedroloureiro.mvflow.MviView$receiveStates(kotlin.Function0((kotlinx.coroutines.flow.Flow((net.pedroloureiro.mvflow.MviView.State)))))/stateProducerBlock">stateProducerBlock</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">Flow</span><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<p>This optional method allows you to customize the handling of the <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/index.html">kotlinx.coroutines.flow.Flow</a> of states.
+You probably don't need to override this.</p>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">receiveStates</span><span class="symbol">(</span><span class="identifier" id="net.pedroloureiro.mvflow.MviView$receiveStates(kotlin.Function0((kotlinx.coroutines.flow.Flow((net.pedroloureiro.mvflow.MviView.State)))))/stateProducerBlock">stateProducerBlock</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/index.html"><span class="identifier">Flow</span></a><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="render.html">render</a></h4>
 </td>
 <td>
+<p>Function that renders the UI based on <a href="render.html#net.pedroloureiro.mvflow.MviView$render(net.pedroloureiro.mvflow.MviView.State)/state">state</a></p>
 <code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="identifier" id="net.pedroloureiro.mvflow.MviView$render(net.pedroloureiro.mvflow.MviView.State)/state">state</span><span class="symbol">:</span>&nbsp;<span class="identifier">State</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
