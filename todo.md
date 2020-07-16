@@ -2,33 +2,55 @@
 
 In no particular order
 
-## General
+## Documentation
 
 * Ensure documenting public methods is required by CI
 
 * Write docs in a github.io page
 
-* Add ability to set listeners of what is happening in the MVI loop
+* Write blog posts
 
-* Think about how to do analytics (probably related with listeners)... Although maybe it should use 
-some sort of channels
+* Simplify readme in main project
 
-* Think about creating a DSL for this
+## Sample code to write
 
-* Write an example of reusing views. Example I thought is a recipe list where the header is also at
-the top of the detail view.
+* Base example (done in readme)
+
+* Android example, using a view model to retain the MVFlow object
+
+* Android example using a recycler view (could be the same as above)
+
+* Android example using live data
+
+* How to use observers
+
+* How to do analytics events
+
+  * When you press a button
+  * When a request succeeds or fails
+
+* Example of using a view with its own concept of state and action and then mapping this to two screens which use the 
+same view for slightly different things. (This shows a good practice as well as how to map views/actions - 
+functionality to be developed)
+
+## To consider
+
+Not sure we will do those things, but keeping track of some possibilities. Feedback welcome!
+
+* Creating a DSL
+
+* Split the View interface into separate interfaces (thanks for the suggestion!)
   
-   * Include example of some button where the action is different from the list to the
-  detail screen.
+  * This would help with the ability to map View state and actions, in order to enable reuse
   
-* Write an example of using this with recycler view (Android)
+* The `MviView` interface maybe should be defined inside
 
-* Setup a tool to monitor API changes
+* Consider changing from creating a class (MVFLow) to calling a factory or builder
 
-* Create/publish artifacts to make it easy for people to try this out
+* Reconsider if it is correct to allow to observe actions, mutations, and states
 
-* Setup CI to automatically run unit tests
-
+   * Maybe it would be a better alternative to allow the handler to emit new actions at any point 
+ 
 ## Core
 
 * Decide between View implementations 1 or 2 (or 3)
@@ -90,30 +112,25 @@ Having it in the API allows the view to customize how it receives updates. For e
 
 * Think about a way to allow a `MviView<A,B>.` to be converted to a `MviView<C, D>`
  
-This can greatly help reusing views. Each view could declare it's own generics and in each place you
+This can greatly help reusing views. Each view could declare its own generics and in each place you
  want to use them you map your current state into the state of this view and also map the view 
  actions into the actions in your particular loop. 
   
+---
+
 * Maybe MVFlow should use a hypervisor scheduler. If one child fails, do we want the others to be
  cancelled? (Maybe this could be a parameter) 
  
 * Probably should call `buffer` in the actions so that slow handlers don't block whatever is 
 emitting actions
 
-* Consider changing from creating a class (MVFLow) to calling a factory or builder
-
-* Consider if it is correct to allow to observe actions, mutations, and states
-   * Maybe it would be a better alternative to allow the handler to emit new actions at any point 
- 
 * Tests to write:
-   * If the view takes a long time to render a state and since then 2+ states come through, the view
-    does not render intermediary states
    * When the MVFlow object scope is destroyed, everything stops
    * When the View scope is destroyed, the view actions and view updates stop
    * Ensure that (unlike what happened while writing tests) between setting up the view actions and
     subscribing the state to the view, there can't be missed events
    * Test what happens when actions, handler, and reducer throw exceptions
-
+     
 ## Android
 
 * Ability to suspend state updates when the app is not resumed (or started)
