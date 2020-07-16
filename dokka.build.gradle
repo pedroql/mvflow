@@ -7,7 +7,7 @@ dokka {
     configuration {
         jdkVersion = 8
         reportUndocumented = true
-        samples = ['samples']
+        samples = ['dokka-samples']
 
         sourceLink {
             // Unix based directory relative path to the root of the project (where you execute gradle respectively).
