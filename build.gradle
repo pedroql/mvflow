@@ -1,9 +1,3 @@
-buildscript {
-    dependencies {
-        classpath "org.jetbrains.kotlinx:binary-compatibility-validator:0.2.3"
-    }
-}
-
 plugins {
     id "org.jetbrains.kotlin.jvm" version "1.3.72"
     id "com.jfrog.bintray" version "1.8.5" apply false
@@ -11,6 +5,7 @@ plugins {
     id "org.jmailen.kotlinter" version "2.4.1" apply false
     // when updating detekt, also update toolversion from detekt.build.gradle
     id "io.gitlab.arturbosch.detekt" version "1.10.0" apply false
+    id "org.jetbrains.kotlinx.binary-compatibility-validator" version "0.2.3"
 }
 
 allprojects {
