@@ -1,3 +1,4 @@
 rootProject.name = 'mvflow'
 
 include 'mvflow-core'
+include ':samples:android-app'

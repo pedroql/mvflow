@@ -1,4 +1,4 @@
-
 apiValidation {
-    ignoredProjects += ["mvflow"]
+    def sampleProjects = allprojects.findAll { it.path.startsWith(":samples") }.collect { it.name }
+    ignoredProjects += sampleProjects + ["mvflow"]
 }

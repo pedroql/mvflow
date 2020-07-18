@@ -1,7 +1,7 @@
 apply plugin: 'io.gitlab.arturbosch.detekt'
 
 detekt {
-    toolVersion = "1.10.0"
+    toolVersion = "$detekt_version"
     reports {
         xml {
             enabled = false
