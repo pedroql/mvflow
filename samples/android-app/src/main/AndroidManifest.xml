@@ -3,13 +3,13 @@
           package="net.pedroloureiro.mvflow.samples.android">
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".screens.counter.CounterActivity">
+        <activity android:name=".screens.counter.SimpleCounterActivity">
         </activity>
         <activity android:name=".screens.home.HomeActivity">
             <intent-filter>

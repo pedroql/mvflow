@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">MVFlow Sample Android App</string>
+    <string name="home_simple_counter_label">Simple counter example</string>
+    <string name="simple_counter_reset">Reset</string>
+    <string name="simple_counter_add_one">+1</string>
+    <string name="simple_counter_plus_many">Plus many</string>
+    <string name="simple_counter_explanation">Plus many button initiates a fake background work that lasts a few seconds
+        and increments the counter by 1, then by 2, and then by 1.\n\nThe time it takes varies and you can run multiple of
+        them at the same time.
+    </string>
 </resources>

@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.flowOn
 import net.pedroloureiro.mvflow.MVFlow
 import net.pedroloureiro.mvflow.MviView
 import net.pedroloureiro.mvflow.samples.android.databinding.HomeActivityBinding
-import net.pedroloureiro.mvflow.samples.android.screens.counter.CounterActivity
+import net.pedroloureiro.mvflow.samples.android.screens.counter.SimpleCounterActivity
 
 
 private typealias State = Unit
@@ -35,16 +35,15 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val binding = HomeActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val mvflow = MVFlow<State, Action, Mutation>(
+        val mvFlow = MVFlow<State, Action, Mutation>(
             initialState = Unit,
             handler = { _, action ->
                 flow<Nothing> {
                     when (action) {
-                        Action.OpenCountersExample -> CounterActivity.launch(this@HomeActivity)
+                        Action.OpenCountersExample -> SimpleCounterActivity.launch(this@HomeActivity)
                     }
                 }.flowOn(Dispatchers.Main)
             },
@@ -68,6 +67,6 @@ class HomeActivity : AppCompatActivity() {
                 get() = this@HomeActivity.lifecycleScope
         }
 
-        mvflow.takeView(view)
+        mvFlow.takeView(view)
     }
 }

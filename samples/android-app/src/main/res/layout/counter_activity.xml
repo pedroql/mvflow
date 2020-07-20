@@ -1,9 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screens.counter.CounterActivity">
+    android:fillViewport="true"
+>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".screens.counter.SimpleCounterActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/resetButton"
+            android:text="@string/simple_counter_reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toStartOf="@+id/incrementButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/counterField"/>
+        <Button
+            android:id="@+id/incrementButton"
+            android:text="@string/simple_counter_add_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/incrementMany"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/resetButton" app:layout_constraintTop_toTopOf="@+id/resetButton"
+        />
+        <Button
+            android:id="@+id/incrementMany"
+            android:text="@string/simple_counter_plus_many"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/incrementButton"
+            app:layout_constraintTop_toTopOf="@+id/incrementButton"
+        />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" android:layout_marginTop="16dp"
+            android:indeterminate="true" app:layout_constraintEnd_toEndOf="@+id/incrementMany"
+            app:layout_constraintStart_toStartOf="@+id/resetButton"
+            app:layout_constraintTop_toBottomOf="@+id/resetButton"/>
+        <TextView
+            android:id="@+id/counterField"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+            android:minWidth="50dp"
+            android:gravity="center"
+            android:layout_marginTop="32dp" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" tools:text="1"/>
+        <TextView
+            android:id="@+id/textView"
+            android:text="@string/simple_counter_explanation"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginTop="16dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintEnd_toEndOf="@+id/progressBar" app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/progressBar"
+            app:layout_constraintTop_toBottomOf="@+id/progressBar"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

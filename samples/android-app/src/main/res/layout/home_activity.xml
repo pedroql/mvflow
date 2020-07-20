@@ -11,7 +11,7 @@
         android:id="@+id/counters_example_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Show counters example"
+        android:text="@string/home_simple_counter_label"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
