@@ -3,6 +3,7 @@ package net.pedroloureiro.mvflow.samples.android.screens.counter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import net.pedroloureiro.mvflow.Handler
 import net.pedroloureiro.mvflow.MVFlow
 import net.pedroloureiro.mvflow.MviView
@@ -34,21 +35,19 @@ object CounterMVFlow {
     interface View : MviView<State, Action>
 
     val handler: Handler<State, Action, Mutation> = { _, action ->
-        flow {
-            when (action) {
-                Action.AddOne -> emit(Mutation.Increment(1))
-                Action.Reset -> emit(Mutation.Reset)
-                Action.AddMany -> {
-                    emit(Mutation.BackgroundJobStarted)
-                    // pretend that we will start some work
-                    delay(Random.nextLong(50, 500))
-                    emit(Mutation.Increment(1))
-                    delay(Random.nextLong(500, 1000))
-                    emit(Mutation.Increment(2))
-                    delay(Random.nextLong(500, 2000))
-                    emit(Mutation.Increment(1))
-                    emit(Mutation.BackgroundJobFinished)
-                }
+        when (action) {
+            Action.AddOne -> flowOf(Mutation.Increment(1))
+            Action.Reset -> flowOf(Mutation.Reset)
+            Action.AddMany -> flow {
+                emit(Mutation.BackgroundJobStarted)
+                // pretend that we will start some work
+                delay(Random.nextLong(50, 500))
+                emit(Mutation.Increment(1))
+                delay(Random.nextLong(500, 1000))
+                emit(Mutation.Increment(2))
+                delay(Random.nextLong(500, 2000))
+                emit(Mutation.Increment(1))
+                emit(Mutation.BackgroundJobFinished)
             }
         }
     }

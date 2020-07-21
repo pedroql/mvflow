@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineScope
@@ -16,16 +17,13 @@ import net.pedroloureiro.mvflow.samples.android.screens.counter.CounterMVFlow.St
 
 class SimpleCounterActivity : AppCompatActivity() {
 
+    val viewModel: SimpleCounterViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = CounterActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         title = "Simple counter"
-
-        /*
-         * Note: to keep this example short and simple, we don't deal with orientation changes or process death
-         * (In those cases this would start the counter from 0)
-         */
 
         val view = object : CounterMVFlow.View {
             override fun render(state: State) {
@@ -49,10 +47,7 @@ class SimpleCounterActivity : AppCompatActivity() {
             override val coroutineScope: CoroutineScope
                 get() = this@SimpleCounterActivity.lifecycleScope
         }
-        val mvFlow = CounterMVFlow.create(
-            coroutineScope = lifecycleScope
-        )
-        mvFlow.takeView(view)
+        viewModel.mvFlow.takeView(view)
     }
 
     companion object {

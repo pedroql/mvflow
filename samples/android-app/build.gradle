@@ -29,6 +29,7 @@ android {
     kotlinOptions {
         freeCompilerArgs += ["-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi", "-Xopt-in=kotlin.RequiresOptIn"]
         allWarningsAsErrors = System.getProperty("all.warnings.as.errors", "true").toBoolean()
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     compileOptions {
