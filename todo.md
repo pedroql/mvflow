@@ -12,9 +12,9 @@ In no particular order
 
 * Simplify readme in main project
 
-## Sample code to write
+* Write a page with "recipes" pointing certain problems to the sample projects I am writing
 
-* Base example (done in readme)
+## Sample code to write
 
 * Android example, using a view model to retain the MVFlow object
 
@@ -43,14 +43,17 @@ Not sure we will do those things, but keeping track of some possibilities. Feedb
   
   * This would help with the ability to map View state and actions, in order to enable reuse
   
-* The `MviView` interface maybe should be defined inside
+* The `MviView` interface maybe should be defined inside MVFLow
 
 * Consider changing from creating a class (MVFLow) to calling a factory or builder
 
 * Reconsider if it is correct to allow to observe actions, mutations, and states
 
-   * Maybe it would be a better alternative to allow the handler to emit new actions at any point 
- 
+   * Maybe it would be a better alternative to allow the handler to emit new actions at any point
+   
+   * For some things such as navigation, showing toasts, etc, maybe the MVFlow object should expose some sort of 
+   external effects
+   
 ## Core
 
 * Decide between View implementations 1 or 2 (or 3)
@@ -124,12 +127,20 @@ This can greatly help reusing views. Each view could declare its own generics an
 * Probably should call `buffer` in the actions so that slow handlers don't block whatever is 
 emitting actions
 
+* The way the MVFlow object accepts a view should change. As highlighted in the lifecycle sample, it doesn't let the
+consumer specify how the coroutine scope should be created (or forces you to implement `MviView.receiveStates` which is 
+overkill). For example, I want to be able to ensure the state updates are sent on a coroutine created with 
+`lifecycleScope.launchWhenStarted { ... }`.
+
 * Tests to write:
    * When the MVFlow object scope is destroyed, everything stops
    * When the View scope is destroyed, the view actions and view updates stop
    * Ensure that (unlike what happened while writing tests) between setting up the view actions and
     subscribing the state to the view, there can't be missed events
    * Test what happens when actions, handler, and reducer throw exceptions
+   * When the view stops, the handling of ongoing actions and mutations keeps happening (as long as the MVFlow object 
+   scope is still alive)
+     * The state should be updated and when the new view joins, it should get the new state
      
 ## Android
 

@@ -9,6 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".screens.dummydialog.DummyDialogActivity"
+            android:theme="@style/Theme.MaterialComponents.Dialog">
+        </activity>
+        <activity android:name=".screens.lifecycle.LifecycleActivity">
+        </activity>
         <activity android:name=".screens.counter.SimpleCounterActivity">
         </activity>
         <activity android:name=".screens.home.HomeActivity">

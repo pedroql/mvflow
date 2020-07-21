@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+apply from: "$rootDir/kotlinter.build.gradle"
+
 android {
     compileSdkVersion 30
     buildToolsVersion "29.0.2"
@@ -25,7 +27,8 @@ android {
     }
 
     kotlinOptions {
-        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+        freeCompilerArgs += ["-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi", "-Xopt-in=kotlin.RequiresOptIn"]
+        allWarningsAsErrors = System.getProperty("all.warnings.as.errors", "true").toBoolean()
     }
 
     compileOptions {
@@ -46,6 +49,10 @@ android {
     }
     viewBinding {
         enabled = true
+    }
+
+    lintOptions {
+        ignoreWarnings = false
     }
 }
 

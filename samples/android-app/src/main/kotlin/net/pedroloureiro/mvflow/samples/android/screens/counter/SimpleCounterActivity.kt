@@ -29,8 +29,8 @@ class SimpleCounterActivity : AppCompatActivity() {
 
         val view = object : CounterMVFlow.View {
             override fun render(state: State) {
-                    binding.counterField.text = state.value.toString()
-                    binding.progressBar.visibility = if (state.showProgress) View.VISIBLE else View.INVISIBLE
+                binding.counterField.text = state.value.toString()
+                binding.progressBar.visibility = if (state.showProgress) View.VISIBLE else View.INVISIBLE
             }
 
             override fun actions(): Flow<Action> = callbackFlow {

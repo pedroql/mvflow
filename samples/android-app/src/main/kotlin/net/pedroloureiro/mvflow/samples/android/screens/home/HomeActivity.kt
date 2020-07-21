@@ -13,13 +13,14 @@ import net.pedroloureiro.mvflow.MVFlow
 import net.pedroloureiro.mvflow.MviView
 import net.pedroloureiro.mvflow.samples.android.databinding.HomeActivityBinding
 import net.pedroloureiro.mvflow.samples.android.screens.counter.SimpleCounterActivity
-
+import net.pedroloureiro.mvflow.samples.android.screens.lifecycle.LifecycleActivity
 
 private typealias State = Unit
 private typealias Mutation = Nothing
 
 private sealed class Action {
     object OpenCountersExample : Action()
+    object OpenLifecycleExample : Action()
 }
 
 /**
@@ -44,6 +45,7 @@ class HomeActivity : AppCompatActivity() {
                 flow<Nothing> {
                     when (action) {
                         Action.OpenCountersExample -> SimpleCounterActivity.launch(this@HomeActivity)
+                        Action.OpenLifecycleExample -> LifecycleActivity.launch(this@HomeActivity)
                     }
                 }.flowOn(Dispatchers.Main)
             },
@@ -56,9 +58,12 @@ class HomeActivity : AppCompatActivity() {
                 // nothing to do
             }
 
-            override fun actions() = callbackFlow<Action> {
+            override fun actions() = callbackFlow {
                 binding.countersExampleButton.setOnClickListener {
                     offer(Action.OpenCountersExample)
+                }
+                binding.lifecycleExampleButton.setOnClickListener {
+                    offer(Action.OpenLifecycleExample)
                 }
                 awaitClose()
             }

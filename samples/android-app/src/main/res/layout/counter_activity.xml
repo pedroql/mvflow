@@ -5,11 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
->
+    tools:context=".screens.counter.SimpleCounterActivity">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".screens.counter.SimpleCounterActivity">
+        android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/resetButton"

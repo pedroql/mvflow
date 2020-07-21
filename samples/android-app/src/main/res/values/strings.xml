@@ -1,11 +1,41 @@
 <resources>
     <string name="app_name">MVFlow Sample Android App</string>
-    <string name="home_simple_counter_label">Simple counter example</string>
+
+    <!-- Home activity -->
+    <string name="home_simple_counter">Simple counter example</string>
+    <string name="home_lifecycle">Lifecycle example</string>
+
+
+    <!-- Simple counter activity -->
     <string name="simple_counter_reset">Reset</string>
     <string name="simple_counter_add_one">+1</string>
     <string name="simple_counter_plus_many">Plus many</string>
     <string name="simple_counter_explanation">Plus many button initiates a fake background work that lasts a few seconds
-        and increments the counter by 1, then by 2, and then by 1.\n\nThe time it takes varies and you can run multiple of
+        and increments the counter by 1, then by 2, and then by 1.\n\nThe time it takes varies and you can run multiple
+        of
         them at the same time.
     </string>
+
+    <!-- Dummy activity -->
+    <string name="dummy_dialog_message">Hello there! Press the button to dismiss this dialog!</string>
+    <string name="dummy_dialog_dismiss">Dismiss</string>
+
+    <!-- Lifecycle activity -->
+    <string name="lifecycle_open_dialog">Open dialog</string>
+    <string name="lifecyle_toggle_timers_delayed">Toggle timers delayed</string>
+    <string name="lifecycle_timers_running">Timers running</string>
+    <string name="lifecycle_resumed">Resumed</string>
+    <string name="lifecycle_normal">Normal</string>
+    <string name="lifecycle_started">Started</string>
+    <string name="lifecycle_timers_switch_explanation">These are 3 independent timers and MVFlows. The switch above
+        pauses/resumes all of them together
+    </string>
+    <string name="lifecycle_open_dialog_explanation">Opening a dialog can be useful to understand the difference between
+        started and resumed behaviour.
+    </string>
+    <string name="lifecycle_delayed_toggle_explanation">Toggles the timers 5 seconds after you press the button. Useful
+        to see what happens when the timers change while in background.
+    </string>
+    <string name="lifecycle_reset_timers">Reset timers</string>
+
 </resources>
