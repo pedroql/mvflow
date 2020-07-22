@@ -1,16 +1,27 @@
 buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+    ext {
+        kotlin_version = "1.3.72"
+        detekt_version = "1.10.0"
+    }
     dependencies {
-        classpath "org.jetbrains.kotlinx:binary-compatibility-validator:0.2.3"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        // AGP 4.x requires IntelliJ 2020.2
+        classpath 'com.android.tools.build:gradle:3.6.4'
     }
 }
 
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.3.72"
+    id "org.jetbrains.kotlin.jvm" version "$kotlin_version"
     id "com.jfrog.bintray" version "1.8.5" apply false
     id "org.jetbrains.dokka" version "0.10.1"
     id "org.jmailen.kotlinter" version "2.4.1" apply false
     // when updating detekt, also update toolversion from detekt.build.gradle
-    id "io.gitlab.arturbosch.detekt" version "1.10.0" apply false
+    id "io.gitlab.arturbosch.detekt" version "$detekt_version" apply false
+    id "org.jetbrains.kotlinx.binary-compatibility-validator" version "0.2.3"
 }
 
 allprojects {
@@ -22,16 +33,8 @@ allprojects {
     repositories {
         mavenCentral()
         jcenter()
+        google()
     }
-}
-
-subprojects {
-    apply plugin: "org.jetbrains.kotlin.jvm"
-    apply from: "$rootDir/publishing.build.gradle"
-    apply from: "$rootDir/bintray.build.gradle"
-    apply from: "$rootDir/detekt.build.gradle"
-    apply from: "$rootDir/kotlin.build.gradle"
-    apply from: "$rootDir/kotlinter.build.gradle"
 }
 
 apply from: "$rootDir/dokka.build.gradle"
