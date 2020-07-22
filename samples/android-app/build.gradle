@@ -6,7 +6,7 @@ apply from: "$rootDir/kotlinter.build.gradle"
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "29.0.3"
 
 
     defaultConfig {
@@ -15,7 +15,6 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
@@ -53,7 +52,8 @@ android {
     }
 
     lintOptions {
-        ignoreWarnings = false
+        checkGeneratedSources = true
+        warningsAsErrors = true
     }
 }
 
