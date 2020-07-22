@@ -14,6 +14,12 @@ In no particular order
 
 * Write a page with "recipes" pointing certain problems to the sample projects I am writing
 
+* Could write a few examples of good patterns I found
+
+  * For example, having one class with a kotlin object to define the State, Action, Mutation, and Handler classes
+  
+  * Using static imports so you don't write `SomethingMVFlow.Action` (or State or Mutation) everywhere
+
 ## Sample code to write
 
 * Android example, using a view model to retain the MVFlow object

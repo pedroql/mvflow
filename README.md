@@ -352,16 +352,17 @@ And everyone who contributed towards those libraries (and their respective inspi
 Version 0.0.2
 ```
 
-Right now the library has been published for early feedback. We are still considering the best way to expose some 
-functionality so APIs may break in future releases.
-
-You can get it from maven central:
+Right now the library has been published for early feedback. You can get it from maven central:
 
 ```
 dependencies {
     implementation 'net.pedroloureiro.mvflow:mvflow-core:0.0.2'
 }
 ```
+
+We are still considering the best way to expose some 
+functionality so APIs may break in future releases. You can have a look at [API changes](apichanges.md) document
+to see what is more likely to change in the near future.
 
 **Please let us know what you think.** 
 
