@@ -2,6 +2,7 @@ package net.pedroloureiro.mvflow
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -9,6 +10,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -17,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.test.runBlockingTest
+import net.pedroloureiro.mvflow.MVFlowCounterHelper.Action
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -225,6 +229,46 @@ internal class MVFlowTest {
             ),
             values
         )
+    }
+
+    @Test
+    fun `when the view scope finishes, the handling of previously emitted actions continues`() = runBlockingTest {
+        val flow = MVFlowCounterHelper.createMVFlow(
+            this,
+            printLogs = true
+        )
+
+        val viewScope1 = CoroutineScope(this@runBlockingTest.coroutineContext)
+        val viewFake1 = MVFlowCounterHelper.createViewFake(
+            flow {
+                emit(Action.Action1)
+                delay(5)
+                emit(Action.Action1)
+                delay(20)
+                emit(Action.Action2)
+            },
+            viewScope1
+        )
+
+        val viewFake2 = MVFlowCounterHelper.createViewFake(emptyFlow(), this)
+
+        flow.takeView(viewFake1.view)
+
+        launch {
+            delay(30)
+            viewScope1.cancel()
+        }
+
+        advanceTimeBy(30)
+        println("First advanced time until $currentTime")
+        assertEquals(listOf(MVFlowCounterHelper.State(0)), viewFake1.states)
+
+        advanceUntilIdle()
+        println("Second advanced time until $currentTime")
+        flow.takeView(viewFake2.view)
+        assertEquals(listOf(MVFlowCounterHelper.State(3)), viewFake2.states)
+
+        viewFake2.cancelCollection()
     }
 }
 

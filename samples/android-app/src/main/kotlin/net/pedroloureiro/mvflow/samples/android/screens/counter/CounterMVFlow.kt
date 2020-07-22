@@ -45,7 +45,7 @@ object CounterMVFlow {
                 emit(Mutation.Increment(1))
                 delay(Random.nextLong(500, 1000))
                 emit(Mutation.Increment(2))
-                delay(Random.nextLong(500, 2000))
+                delay(Random.nextLong(1500, 4000))
                 emit(Mutation.Increment(1))
                 emit(Mutation.BackgroundJobFinished)
             }

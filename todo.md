@@ -147,6 +147,8 @@ overkill). For example, I want to be able to ensure the state updates are sent o
    * When the view stops, the handling of ongoing actions and mutations keeps happening (as long as the MVFlow object 
    scope is still alive)
      * The state should be updated and when the new view joins, it should get the new state
+   * should review unit tests that verify the view scope going away. They were written just by cancelling the job that
+   receives the updates, but maybe we need to create a coroutine context for the view and actually cancel that.
      
 ## Android
 

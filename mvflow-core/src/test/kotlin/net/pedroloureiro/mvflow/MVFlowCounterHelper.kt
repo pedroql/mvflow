@@ -13,11 +13,13 @@ internal object MVFlowCounterHelper {
     fun createFlowAndView(
         actionsFlow: Flow<Action>,
         coroutineScope: CoroutineScope,
-        delayMutations: Boolean = true
+        delayMutations: Boolean = true,
+        printLogs: Boolean = false
     ) =
         createMVFlow(
             coroutineScope,
-            delayMutations
+            delayMutations,
+            printLogs
         ) to createViewFake(actionsFlow, coroutineScope)
 
     fun createViewFake(
@@ -32,7 +34,8 @@ internal object MVFlowCounterHelper {
 
     fun createMVFlow(
         mvflowCoroutineScope: CoroutineScope,
-        delayMutations: Boolean = true
+        delayMutations: Boolean = true,
+        printLogs: Boolean = false
     ) =
         MVFlow<State, Action, Mutation>(
             State(0),
@@ -66,7 +69,8 @@ internal object MVFlowCounterHelper {
                 }
             },
             mvflowCoroutineScope,
-            actionCoroutineContext = mvflowCoroutineScope.coroutineContext
+            actionCoroutineContext = mvflowCoroutineScope.coroutineContext,
+            defaultLogger = if (printLogs) { msg -> println(msg); Unit } else { { _ ->} }
         )
 
     sealed class Action {
