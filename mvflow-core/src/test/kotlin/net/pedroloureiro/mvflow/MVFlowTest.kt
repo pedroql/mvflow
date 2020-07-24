@@ -46,16 +46,14 @@ internal class MVFlowTest {
                         .onEach { delay(20) }
                 },
                 reducer = slowReducer(),
-                mvflowCoroutineScope = CoroutineScope(coroutineContext+Job()),
-                defaultLogger = ::debug,
-                actionCoroutineContext = viewScope.coroutineContext
+                mvflowCoroutineScope = CoroutineScope(coroutineContext + Job()),
+                defaultLogger = ::debug
             )
 
             val viewFake = ViewFake<IntState, Unit>(
                 List(3) { Unit }.asFlow()
                     .onEach { delay(20) }
-                    .buffer(),
-                viewScope
+                    .buffer()
             )
 
             viewScope.launch {
@@ -176,8 +174,7 @@ internal class MVFlowTest {
                     }
                 },
                 mvflowCoroutineScope = this,
-                defaultLogger = { debug(it) },
-                actionCoroutineContext = this.coroutineContext
+                defaultLogger = { debug(it) }
             )
 
             val view = object : MviView<Pair<Int, Int>, Action> {
@@ -189,10 +186,6 @@ internal class MVFlowTest {
                 override fun actions() = flowOf(Action(0), Action(1))
                     .onEach { delay(20) }
                     .buffer()
-
-                override val coroutineScope: CoroutineScope
-                    get() = this@runBlockingTest
-
             }
 
             val viewScope = CoroutineScope(coroutineContext + Job())
@@ -227,11 +220,10 @@ internal class MVFlowTest {
                 emit(Action.Action1)
                 delay(20)
                 emit(Action.Action2)
-            },
-            viewScope1
+            }
         )
 
-        val viewFake2 = MVFlowCounterHelper.createViewFake(emptyFlow(), this)
+        val viewFake2 = MVFlowCounterHelper.createViewFake(emptyFlow())
 
         viewScope1.launch {
             flow.takeView(this, viewFake1.view, logger = { println("View1: $it") })
@@ -274,8 +266,7 @@ internal class MVFlowTest {
                 emit(Action.Action1)
                 delay(20)
                 emit(Action.Action2)
-            },
-            viewScope1
+            }
         )
         val viewJob = viewScope1.launch {
             flow.takeView(this, viewFake1.view)

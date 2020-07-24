@@ -1,11 +1,9 @@
 package net.pedroloureiro.mvflow
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
 class ViewFake<State, Action>(
-    actionsFlow: Flow<Action>,
-    coroutineScope: CoroutineScope
+    actionsFlow: Flow<Action>
 ) {
     val states = mutableListOf<State>()
     val view: MviView<State, Action>
@@ -18,8 +16,6 @@ class ViewFake<State, Action>(
             }
 
             override fun actions() = actionsFlow
-
-            override val coroutineScope = coroutineScope // TODO do I need this?
         }
     }
 }

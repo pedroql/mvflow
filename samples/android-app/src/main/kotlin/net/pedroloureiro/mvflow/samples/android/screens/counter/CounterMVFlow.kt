@@ -73,6 +73,6 @@ object CounterMVFlow {
         handler,
         reducer,
         coroutineScope,
-        { Log.d("MYAPP", it)}
+        { Log.d("MYAPP", it) }
     )
 }

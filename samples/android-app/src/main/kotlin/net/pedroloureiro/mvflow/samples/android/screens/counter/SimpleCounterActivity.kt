@@ -7,7 +7,6 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -43,9 +42,6 @@ class SimpleCounterActivity : AppCompatActivity() {
                 }
                 awaitClose()
             }
-
-            override val coroutineScope: CoroutineScope
-                get() = this@SimpleCounterActivity.lifecycleScope
         }
         lifecycleScope.launchWhenStarted {
             viewModel.mvFlow.takeView(this, view)
