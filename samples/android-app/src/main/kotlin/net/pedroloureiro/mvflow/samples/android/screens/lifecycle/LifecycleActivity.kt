@@ -88,7 +88,9 @@ class LifecycleActivity : AppCompatActivity() {
         }
 
         val mvFlow = LifecycleMVFlow.create(lifecycleScope)
-        mvFlow.takeView(view)
+        lifecycleScope.launch {
+            mvFlow.takeView(this, view)
+        }
 
         lifecycleScope.launch {
             mvFlow.observeActions().filterIsInstance<Action.OpenDialog>()

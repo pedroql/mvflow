@@ -1,17 +1,13 @@
 package net.pedroloureiro.mvflow
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
 
 class ViewFake<State, Action>(
     actionsFlow: Flow<Action>,
     coroutineScope: CoroutineScope
 ) {
     val states = mutableListOf<State>()
-    private lateinit var collectionJob: Job
     val view: MviView<State, Action>
 
     init {
@@ -23,15 +19,7 @@ class ViewFake<State, Action>(
 
             override fun actions() = actionsFlow
 
-            override val coroutineScope = coroutineScope
-
-            override fun receiveStates(stateProducerBlock: () -> Flow<State>) {
-                collectionJob = coroutineScope.launch {
-                    stateProducerBlock().toList(states)
-                }
-            }
+            override val coroutineScope = coroutineScope // TODO do I need this?
         }
     }
-
-    fun cancelCollection() = collectionJob.cancel()
 }

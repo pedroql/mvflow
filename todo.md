@@ -60,6 +60,9 @@ Not sure we will do those things, but keeping track of some possibilities. Feedb
    * For some things such as navigation, showing toasts, etc, maybe the MVFlow object should expose some sort of 
    external effects
    
+   * If observers remain, maybe the state observer should be called based on changes to the state flow object, regardless
+    of views being subscribed to it
+   
 ## Core
 
 * Decide between View implementations 1 or 2 (or 3)
@@ -144,11 +147,13 @@ overkill). For example, I want to be able to ensure the state updates are sent o
    * Ensure that (unlike what happened while writing tests) between setting up the view actions and
     subscribing the state to the view, there can't be missed events
    * Test what happens when actions, handler, and reducer throw exceptions
-   * When the view stops, the handling of ongoing actions and mutations keeps happening (as long as the MVFlow object 
-   scope is still alive)
-     * The state should be updated and when the new view joins, it should get the new state
    * should review unit tests that verify the view scope going away. They were written just by cancelling the job that
-   receives the updates, but maybe we need to create a coroutine context for the view and actually cancel that.
+   receives the updates, but maybe we need to create a coroutine context for the view and actually cancel that
+   * Write tests for the behaviour when the mvflow scope is cancelled
+   * Write unit test to ensure that external actions and actions from view are serialised when
+   updating the state.
+   * Spend more time trying to make sure the test ```fun `reducer calls are serialized`()``` actually fails when you 
+   remove the Mutex 
      
 ## Android
 

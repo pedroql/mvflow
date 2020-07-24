@@ -47,7 +47,9 @@ class SimpleCounterActivity : AppCompatActivity() {
             override val coroutineScope: CoroutineScope
                 get() = this@SimpleCounterActivity.lifecycleScope
         }
-        viewModel.mvFlow.takeView(view)
+        lifecycleScope.launchWhenStarted {
+            viewModel.mvFlow.takeView(this, view)
+        }
     }
 
     companion object {

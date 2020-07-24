@@ -5,7 +5,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
@@ -37,9 +36,9 @@ internal class MVFlowTest {
         //
         // in order to verify this test works, remove the use of the mutex in the implementation
         // and the test should fail
-        var lastCounterValue = -1
         runBlockingTest {
-            lateinit var collectionJob: Job
+            val viewScope = CoroutineScope(coroutineContext + Job())
+
             val flow = MVFlow<IntState, Unit, Mutation>(
                 initialState = 0,
                 handler = { _, _ ->
@@ -47,42 +46,25 @@ internal class MVFlowTest {
                         .onEach { delay(20) }
                 },
                 reducer = slowReducer(),
-                mvflowCoroutineScope = this,
-                defaultLogger = { debug(it) },
-                actionCoroutineContext = this.coroutineContext
+                mvflowCoroutineScope = CoroutineScope(coroutineContext+Job()),
+                defaultLogger = ::debug,
+                actionCoroutineContext = viewScope.coroutineContext
             )
 
-            val view = object : MviView<IntState, Unit> {
-                override fun render(state: IntState) {
-                    lastCounterValue = state
-                    debug("state at $currentTime")
-                }
-
-                override fun actions() = List(3) { Unit }.asFlow()
+            val viewFake = ViewFake<IntState, Unit>(
+                List(3) { Unit }.asFlow()
                     .onEach { delay(20) }
-                    .buffer()
+                    .buffer(),
+                viewScope
+            )
 
-                override val coroutineScope: CoroutineScope
-                    get() = this@runBlockingTest
-
-                // we need to override this because we need to terminate the job that does the
-                // collection
-                override fun receiveStates(stateProducerBlock: () -> Flow<IntState>) {
-                    // make sure this implementation stays up to date with the default definition
-                    collectionJob = coroutineScope.launch {
-                        stateProducerBlock().collect { state ->
-                            render(state)
-                        }
-                    }
-                }
+            viewScope.launch {
+                flow.takeView(this, viewFake.view)
             }
-
-            flow.takeView(view)
             advanceUntilIdle()
-            collectionJob.cancelAndJoin()
-            debug("Time at end: $currentTime")
+            viewScope.cancel()
+            assertEquals(18, viewFake.states.last())
         }
-        assertEquals(18, lastCounterValue)
     }
 
     private fun slowReducer(): (IntState, Mutation) -> Int {
@@ -198,7 +180,6 @@ internal class MVFlowTest {
                 actionCoroutineContext = this.coroutineContext
             )
 
-            lateinit var collectionJob: Job
             val view = object : MviView<Pair<Int, Int>, Action> {
                 override fun render(state: Pair<Int, Int>) {
                     values.add(state)
@@ -212,18 +193,14 @@ internal class MVFlowTest {
                 override val coroutineScope: CoroutineScope
                     get() = this@runBlockingTest
 
-                override fun receiveStates(stateProducerBlock: () -> Flow<PairState>) {
-                    collectionJob = coroutineScope.launch {
-                        stateProducerBlock().collect { state ->
-                            render(state)
-                        }
-                    }
-                }
             }
 
-            flow.takeView(view)
+            val viewScope = CoroutineScope(coroutineContext + Job())
+            viewScope.launch {
+                flow.takeView(this, view)
+            }
             advanceUntilIdle()
-            collectionJob.cancelAndJoin()
+            viewScope.cancel()
         }
         assertEquals(
             listOf(
@@ -242,7 +219,7 @@ internal class MVFlowTest {
             printLogs = true
         )
 
-        val viewScope1 = CoroutineScope(coroutineContext+Job())
+        val viewScope1 = CoroutineScope(coroutineContext + Job())
         val viewFake1 = MVFlowCounterHelper.createViewFake(
             flow {
                 emit(Action.Action1)
@@ -257,19 +234,19 @@ internal class MVFlowTest {
         val viewFake2 = MVFlowCounterHelper.createViewFake(emptyFlow(), this)
 
         viewScope1.launch {
-            flow.takeView2(this, viewFake1.view, logger = { println("View1: $it")})
+            flow.takeView(this, viewFake1.view, logger = { println("View1: $it") })
         }
 
         advanceTimeBy(30)
         viewScope1.cancel()
         assertEquals(listOf(MVFlowCounterHelper.State(0)), viewFake1.states)
 
-        val viewScope2 = CoroutineScope(coroutineContext+Job())
+        val viewScope2 = CoroutineScope(coroutineContext + Job())
 
         // with this advance, the view will miss some updates
         advanceTimeBy(40)
         viewScope2.launch {
-            flow.takeView2(this, viewFake2.view,logger = { println("View2: $it")})
+            flow.takeView(this, viewFake2.view, logger = { println("View2: $it") })
         }
         advanceUntilIdle()
         assertEquals(
@@ -289,7 +266,7 @@ internal class MVFlowTest {
             printLogs = true
         )
 
-        val viewScope1 = this // this works
+        val viewScope1 = this
         val viewFake1 = MVFlowCounterHelper.createViewFake(
             flow {
                 emit(Action.Action1)
@@ -301,7 +278,7 @@ internal class MVFlowTest {
             viewScope1
         )
         val viewJob = viewScope1.launch {
-            flow.takeView2(this, viewFake1.view)
+            flow.takeView(this, viewFake1.view)
         }
         advanceUntilIdle()
         assertEquals(
@@ -314,7 +291,7 @@ internal class MVFlowTest {
             ),
             viewFake1.states
         )
-       viewJob.cancel()
+        viewJob.cancel()
     }
 }
 

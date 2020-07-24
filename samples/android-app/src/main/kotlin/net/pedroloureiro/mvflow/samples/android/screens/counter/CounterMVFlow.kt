@@ -1,5 +1,6 @@
 package net.pedroloureiro.mvflow.samples.android.screens.counter
 
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
@@ -71,6 +72,7 @@ object CounterMVFlow {
         initialState,
         handler,
         reducer,
-        coroutineScope
+        coroutineScope,
+        { Log.d("MYAPP", it)}
     )
 }

@@ -72,6 +72,8 @@ class HomeActivity : AppCompatActivity() {
                 get() = this@HomeActivity.lifecycleScope
         }
 
-        mvFlow.takeView(view)
+        lifecycleScope.launchWhenStarted {
+            mvFlow.takeView(this, view)
+        }
     }
 }

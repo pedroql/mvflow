@@ -64,6 +64,9 @@ typealias Logger = (String) -> Unit
  * happen inside this view.
  */
 interface MviView<State, Action> {
+
+    // TODO cleanup this interface before final commit STOPSHIP
+
     /**
      * Function that renders the UI based on [state]
      */
@@ -183,29 +186,7 @@ class MVFlow<State, Action, Mutation>(
     /**
      * Call this method when a new [MviView] is ready to render the state of this MVFlow object.
      *
-     * @param view the view that will render the state.
-     * @param initialActions an optional list of Actions that can be passed to introduce an initial action into the
-     * screen (for example, to trigger a refresh of data).
-     * @param logger Optional [Logger] to log events inside this MVFlow object associated with this view (but not
-     * others).
-     */
-    @Deprecated(
-        "This method has been deprecated. Please use takeView2 which respects the view's coroutine scope and keeps the handler's scope separate from the view's scope",
-        replaceWith = ReplaceWith("takeView2")
-    )
-    fun takeView(
-        view: MviView<State, Action>,
-        initialActions: List<Action> = emptyList(),
-        logger: Logger = defaultLogger
-    ) {
-        sendStateUpdatesIntoView(view, logger)
-        handleViewActions(view, initialActions, logger)
-    }
-
-    /**
-     * Call this method when a new [MviView] is ready to render the state of this MVFlow object.
-     *
-     * @param coroutineScope the scope of the view. This will be used to launch a coroutine which will run listening to
+     * @param viewCoroutineScope the scope of the view. This will be used to launch a coroutine which will run listening to
      * actions until this scope is cancelled.
      * @param view the view that will render the state.
      * @param initialActions an optional list of Actions that can be passed to introduce an initial action into the
@@ -213,15 +194,15 @@ class MVFlow<State, Action, Mutation>(
      * @param logger Optional [Logger] to log events inside this MVFlow object associated with this view (but not
      * others).
      */
-    fun takeView2(
-        coroutineScope: CoroutineScope,
+    fun takeView(
+        viewCoroutineScope: CoroutineScope,
         view: MviView<State, Action>,
         initialActions: List<Action> = emptyList(),
         logger: Logger = defaultLogger
     ) {
-        coroutineScope.launch {
-            sendStateUpdatesIntoView2(view, logger)
-            handleViewActions2(view, initialActions, logger)
+        viewCoroutineScope.launch {
+            sendStateUpdatesIntoView(this, view, logger)
+            handleViewActions(this, view, initialActions, logger)
         }
     }
 
@@ -245,7 +226,11 @@ class MVFlow<State, Action, Mutation>(
         }
     }
 
-    private fun CoroutineScope.sendStateUpdatesIntoView2(view: MviView<State, Action>, logger: Logger) {
+    private fun sendStateUpdatesIntoView(
+        callerCoroutineScope: CoroutineScope,
+        view: MviView<State, Action>,
+        logger: Logger
+    ) {
         state
             .onStart {
                 logger.invoke("State flow started")
@@ -259,61 +244,16 @@ class MVFlow<State, Action, Mutation>(
                 // only notify the listeners after the view renders the state
                 stateBroadcastChannel.offer(it)
             }
-            .launchIn(this)
-    }
-
-    private fun sendStateUpdatesIntoView(
-        view: MviView<State, Action>,
-        logger: Logger
-    ) {
-        view.receiveStates {
-            state
-                .onStart {
-                    logger.invoke("State flow started")
-                }
-                .onCompletion {
-                    logger.invoke("State flow completed")
-                }
-                .onEach {
-                    logger.invoke("New state: $it")
-                }
-                .onEach {
-                    stateBroadcastChannel.offer(it)
-                }
-        }
+            .launchIn(callerCoroutineScope)
     }
 
     private fun handleViewActions(
+        coroutineScope: CoroutineScope,
         view: MviView<State, Action>,
         initialActions: List<Action>,
         logger: Logger
     ) {
-        view.coroutineScope.launch(actionCoroutineContext) {
-            view
-                .actions()
-                .onStart {
-                    logger.invoke("View actions flow started")
-                    emitAll(initialActions.asFlow())
-                }
-                .onCompletion {
-                    logger.invoke("View actions flow completed")
-                }
-                .collectIntoHandler(this, logger)
-        }
-    }
-
-    private fun CoroutineScope.handleViewActions2(
-        view: MviView<State, Action>,
-        initialActions: List<Action>,
-        logger: Logger
-    ) {
-        // we use the mvflow's coroutine scope and NOT the view scope to observe this because when the view's scope is
-        // cancelled (when the view is destroyed), the MVFlow object might stay alive for the next view instance
-        // to pick up and continue showing the UI
-        logger.invoke("handleViewActions2")
-//        mvflowCoroutineScope.launch {
-        launch {
-            logger.invoke("running the coroutine inside handle View action")
+        coroutineScope.launch {
             view
                 .actions()
                 .onStart {
@@ -328,23 +268,25 @@ class MVFlow<State, Action, Mutation>(
     }
 
     private suspend fun Flow<Action>.collectIntoHandler(
-        scope: CoroutineScope,
+        callerCoroutineScope: CoroutineScope,
         logger: Logger
     ) {
         onEach { action ->
-            logger.invoke("Received action $action")
-            val currentValue = state.value
-            actionBroadcastChannel.offer(action to currentValue)
-            handler.invoke(currentValue, action)
-                .onEach { mutation ->
+            callerCoroutineScope.launch {
+                logger.invoke("Received action $action")
+                val currentValue = state.value
+                actionBroadcastChannel.offer(action to currentValue)
+                handler.invoke(currentValue, action)
+                    .onEach { mutation ->
                     mutex.withLock {
                         logger.invoke("Applying mutation $mutation from action $action")
                         state.value = reducer.invoke(state.value, mutation)
                     }
-                    mutationBroadcastChannel.offer(mutation)
-                }
-                .launchIn(mvflowCoroutineScope)
+                        mutationBroadcastChannel.offer(mutation)
+                    }
+                    .launchIn(mvflowCoroutineScope)
+            }
         }
-            .launchIn(scope)
+            .launchIn(callerCoroutineScope)
     }
 }
