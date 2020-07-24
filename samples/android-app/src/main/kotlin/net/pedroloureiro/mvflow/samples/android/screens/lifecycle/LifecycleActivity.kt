@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -82,13 +81,12 @@ class LifecycleActivity : AppCompatActivity() {
                 }
                 awaitClose()
             }
-
-            override val coroutineScope: LifecycleCoroutineScope
-                get() = lifecycleScope
         }
 
         val mvFlow = LifecycleMVFlow.create(lifecycleScope)
-        mvFlow.takeView(view)
+        lifecycleScope.launch {
+            mvFlow.takeView(this, view)
+        }
 
         lifecycleScope.launch {
             mvFlow.observeActions().filterIsInstance<Action.OpenDialog>()

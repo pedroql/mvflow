@@ -34,6 +34,7 @@ jobs:
     - name: Build (Compile, lint, checkApi, test, etc)
       run: ./gradlew --no-daemon build
     - name: Archive build reports artifacts
+      if: always()
       uses: actions/upload-artifact@v2
       with:
         name: build-reports

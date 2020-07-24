@@ -39,6 +39,7 @@ jobs:
     - name: Build (Compile, lint, checkApi, test, etc)
       run: ./gradlew --no-daemon -DVERSION_OVERRIDE=${{ steps.parse_tag.outputs.VERSION }} build
     - name: Archive build reports artifacts
+      if: always()
       uses: actions/upload-artifact@v2
       with:
         name: build-reports

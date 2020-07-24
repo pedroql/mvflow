@@ -3,7 +3,6 @@ package net.pedroloureiro.mvflow.samples.android.screens.home
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -67,11 +66,10 @@ class HomeActivity : AppCompatActivity() {
                 }
                 awaitClose()
             }
-
-            override val coroutineScope: CoroutineScope
-                get() = this@HomeActivity.lifecycleScope
         }
 
-        mvFlow.takeView(view)
+        lifecycleScope.launchWhenStarted {
+            mvFlow.takeView(this, view)
+        }
     }
 }

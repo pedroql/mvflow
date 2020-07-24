@@ -1,6 +1,10 @@
 package net.pedroloureiro.mvflow
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineScope
 
 /**
@@ -14,6 +18,7 @@ internal open class MVFlowCounterTestTemplate(
 ) {
     val mvflow: MVFlow<MVFlowCounterHelper.State, MVFlowCounterHelper.Action, MVFlowCounterHelper.Mutation>
     val viewFake: ViewFake<MVFlowCounterHelper.State, MVFlowCounterHelper.Action>
+    internal val viewScope = CoroutineScope(testCoroutineScope.coroutineContext + Job())
 
     init {
         val pair = MVFlowCounterHelper.createFlowAndView(
@@ -28,10 +33,12 @@ internal suspend fun TestCoroutineScope.runTestTemplate(
     mvFlowCounterTestTemplate: MVFlowCounterTestTemplate,
     testBlock: suspend MVFlowCounterTestTemplate.() -> Unit
 ) {
-    mvFlowCounterTestTemplate.mvflow.takeView(mvFlowCounterTestTemplate.viewFake.view)
+    val viewScope = CoroutineScope(coroutineContext + Job())
+    viewScope.launch {
+        mvFlowCounterTestTemplate.mvflow.takeView(this, mvFlowCounterTestTemplate.viewFake.view)
+    }
     mvFlowCounterTestTemplate.externalActions?.let { mvFlowCounterTestTemplate.mvflow.addExternalActions(it) }
     testBlock.invoke(mvFlowCounterTestTemplate)
-
     advanceUntilIdle()
-    mvFlowCounterTestTemplate.viewFake.cancelCollection()
+    viewScope.cancel()
 }
