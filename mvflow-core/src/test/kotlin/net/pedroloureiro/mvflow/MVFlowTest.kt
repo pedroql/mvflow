@@ -242,7 +242,6 @@ internal class MVFlowTest {
             printLogs = true
         )
 
-//        val viewScope1 = CoroutineScope(this@runBlockingTest.coroutineContext)
         val viewScope1 = CoroutineScope(coroutineContext+Job())
         val viewFake1 = MVFlowCounterHelper.createViewFake(
             flow {
@@ -258,14 +257,11 @@ internal class MVFlowTest {
         val viewFake2 = MVFlowCounterHelper.createViewFake(emptyFlow(), this)
 
         viewScope1.launch {
-            println("Running first view")
-            flow.takeView2B(this, viewFake1.view, logger = { println("View1: $it")})
-            println("Running first view done")
+            flow.takeView2(this, viewFake1.view, logger = { println("View1: $it")})
         }
 
         advanceTimeBy(30)
         viewScope1.cancel()
-        println("First advanced time until $currentTime")
         assertEquals(listOf(MVFlowCounterHelper.State(0)), viewFake1.states)
 
         val viewScope2 = CoroutineScope(coroutineContext+Job())
@@ -273,12 +269,9 @@ internal class MVFlowTest {
         // with this advance, the view will miss some updates
         advanceTimeBy(40)
         viewScope2.launch {
-            println("Running second view")
-            flow.takeView2B(this, viewFake2.view,logger = { println("View2: $it")})
-            println("Running second view done")
+            flow.takeView2(this, viewFake2.view,logger = { println("View2: $it")})
         }
         advanceUntilIdle()
-        println("Second advanced time until $currentTime")
         assertEquals(
             listOf(
                 MVFlowCounterHelper.State(4),
@@ -308,10 +301,9 @@ internal class MVFlowTest {
             viewScope1
         )
         val viewJob = viewScope1.launch {
-            flow.takeView2B(this, viewFake1.view)
+            flow.takeView2(this, viewFake1.view)
         }
         advanceUntilIdle()
-        println("Current time: $currentTime")
         assertEquals(
             listOf(
                 MVFlowCounterHelper.State(0),

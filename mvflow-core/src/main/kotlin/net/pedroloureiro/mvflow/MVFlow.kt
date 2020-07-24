@@ -189,6 +189,10 @@ class MVFlow<State, Action, Mutation>(
      * @param logger Optional [Logger] to log events inside this MVFlow object associated with this view (but not
      * others).
      */
+    @Deprecated(
+        "This method has been deprecated. Please use takeView2 which respects the view's coroutine scope and keeps the handler's scope separate from the view's scope",
+        replaceWith = ReplaceWith("takeView2")
+    )
     fun takeView(
         view: MviView<State, Action>,
         initialActions: List<Action> = emptyList(),
@@ -198,48 +202,28 @@ class MVFlow<State, Action, Mutation>(
         handleViewActions(view, initialActions, logger)
     }
 
-//    suspend fun takeView2(
-//        view: MviView<State, Action>,
-//        initialActions: List<Action> = emptyList(),
-//        logger: Logger = defaultLogger
-//    ) {
-//        coroutineScope {
-//            logger.invoke("Going to do step one")
-//            sendStateUpdatesIntoView2(view, logger)
-//            logger.invoke("Going to do step two")
-//            handleViewActions2(view, initialActions, logger)
-//            logger.invoke("Both steps called")
-//        }
-//    }
-
-    fun takeView2B(
+    /**
+     * Call this method when a new [MviView] is ready to render the state of this MVFlow object.
+     *
+     * @param coroutineScope the scope of the view. This will be used to launch a coroutine which will run listening to
+     * actions until this scope is cancelled.
+     * @param view the view that will render the state.
+     * @param initialActions an optional list of Actions that can be passed to introduce an initial action into the
+     * screen (for example, to trigger a refresh of data).
+     * @param logger Optional [Logger] to log events inside this MVFlow object associated with this view (but not
+     * others).
+     */
+    fun takeView2(
         coroutineScope: CoroutineScope,
         view: MviView<State, Action>,
         initialActions: List<Action> = emptyList(),
         logger: Logger = defaultLogger
     ) {
         coroutineScope.launch {
-            logger.invoke("Going to do step one")
             sendStateUpdatesIntoView2(view, logger)
-            logger.invoke("Going to do step two")
             handleViewActions2(view, initialActions, logger)
-            logger.invoke("Both steps called")
         }
     }
-
-//    fun CoroutineScope.takeView2C(
-//        view: MviView<State, Action>,
-//        initialActions: List<Action> = emptyList(),
-//        logger: Logger = defaultLogger
-//    ) {
-//        launch {
-//            logger.invoke("Going to do step one")
-//            sendStateUpdatesIntoView2(view, logger)
-//            logger.invoke("Going to do step two")
-//            handleViewActions2(view, initialActions, logger)
-//            logger.invoke("Both steps called")
-//        }
-//    }
 
     /**
      * This method adds an external source of actions into the MVFlow object.
