@@ -17,8 +17,8 @@ class ViewFake<State, Action>(
     init {
         view = object : MviView<State, Action> {
             override fun render(state: State) {
-                // no real rendering happening
-                throw IllegalStateException("Should never be called")
+                // accumulate all the received states in this property
+                states.add(state)
             }
 
             override fun actions() = actionsFlow

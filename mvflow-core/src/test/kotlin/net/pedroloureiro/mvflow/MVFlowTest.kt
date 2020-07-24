@@ -46,14 +46,7 @@ internal class MVFlowTest {
                     flowOf(1, 2, 3)
                         .onEach { delay(20) }
                 },
-                reducer = { state, mutation ->
-                    runBlockingTest {
-                        debug("reducer delaying")
-                        delay(500)
-                        debug("reducer done")
-                    }
-                    state + mutation
-                },
+                reducer = slowReducer(),
                 mvflowCoroutineScope = this,
                 defaultLogger = { debug(it) },
                 actionCoroutineContext = this.coroutineContext
@@ -90,6 +83,17 @@ internal class MVFlowTest {
             debug("Time at end: $currentTime")
         }
         assertEquals(18, lastCounterValue)
+    }
+
+    private fun slowReducer(): (IntState, Mutation) -> Int {
+        return { state, mutation ->
+            runBlockingTest {
+                debug("reducer delaying")
+                delay(500)
+                debug("reducer done")
+            }
+            state + mutation
+        }
     }
 
     // This test is not testing the library itself, it's a somewhat simpler POC to verify the tests
@@ -238,7 +242,8 @@ internal class MVFlowTest {
             printLogs = true
         )
 
-        val viewScope1 = CoroutineScope(this@runBlockingTest.coroutineContext)
+//        val viewScope1 = CoroutineScope(this@runBlockingTest.coroutineContext)
+        val viewScope1 = CoroutineScope(coroutineContext+Job())
         val viewFake1 = MVFlowCounterHelper.createViewFake(
             flow {
                 emit(Action.Action1)
@@ -252,23 +257,72 @@ internal class MVFlowTest {
 
         val viewFake2 = MVFlowCounterHelper.createViewFake(emptyFlow(), this)
 
-        flow.takeView(viewFake1.view)
-
-        launch {
-            delay(30)
-            viewScope1.cancel()
+        viewScope1.launch {
+            println("Running first view")
+            flow.takeView2B(this, viewFake1.view, logger = { println("View1: $it")})
+            println("Running first view done")
         }
 
         advanceTimeBy(30)
+        viewScope1.cancel()
         println("First advanced time until $currentTime")
         assertEquals(listOf(MVFlowCounterHelper.State(0)), viewFake1.states)
 
+        val viewScope2 = CoroutineScope(coroutineContext+Job())
+
+        // with this advance, the view will miss some updates
+        advanceTimeBy(40)
+        viewScope2.launch {
+            println("Running second view")
+            flow.takeView2B(this, viewFake2.view,logger = { println("View2: $it")})
+            println("Running second view done")
+        }
         advanceUntilIdle()
         println("Second advanced time until $currentTime")
-        flow.takeView(viewFake2.view)
-        assertEquals(listOf(MVFlowCounterHelper.State(3)), viewFake2.states)
+        assertEquals(
+            listOf(
+                MVFlowCounterHelper.State(4),
+                MVFlowCounterHelper.State(3)
+            ),
+            viewFake2.states
+        )
+        viewScope2.cancel()
+    }
 
-        viewFake2.cancelCollection()
+    @Test
+    fun `simple takeView2 test`() = runBlockingTest {
+        val flow = MVFlowCounterHelper.createMVFlow(
+            this,
+            printLogs = true
+        )
+
+        val viewScope1 = this // this works
+        val viewFake1 = MVFlowCounterHelper.createViewFake(
+            flow {
+                emit(Action.Action1)
+                delay(5)
+                emit(Action.Action1)
+                delay(20)
+                emit(Action.Action2)
+            },
+            viewScope1
+        )
+        val viewJob = viewScope1.launch {
+            flow.takeView2B(this, viewFake1.view)
+        }
+        advanceUntilIdle()
+        println("Current time: $currentTime")
+        assertEquals(
+            listOf(
+                MVFlowCounterHelper.State(0),
+                MVFlowCounterHelper.State(1),
+                MVFlowCounterHelper.State(2),
+                MVFlowCounterHelper.State(4),
+                MVFlowCounterHelper.State(3)
+            ),
+            viewFake1.states
+        )
+       viewJob.cancel()
     }
 }
 
