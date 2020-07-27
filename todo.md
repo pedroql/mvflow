@@ -49,17 +49,8 @@ Not sure we will do those things, but keeping track of some possibilities. Feedb
   
 * The `MviView` interface maybe should be defined inside MVFLow
 
-* Consider changing from creating a class (MVFLow) to calling a factory or builder
-
-* Reconsider if it is correct to allow to observe actions, mutations, and states
-
-   * Maybe it would be a better alternative to allow the handler to emit new actions at any point
-   
-   * For some things such as navigation, showing toasts, etc, maybe the MVFlow object should expose some sort of 
-   external effects
-   
-   * If observers remain, maybe the state observer should be called based on changes to the state flow object, regardless
-    of views being subscribed to it
+* Should the external effect channel be conflated? Should it be a broadcast channel (which doesn't start storing values 
+until the first observer subscribes)? Should it be a plain Channel which is not shareable?
    
 ## Core
 

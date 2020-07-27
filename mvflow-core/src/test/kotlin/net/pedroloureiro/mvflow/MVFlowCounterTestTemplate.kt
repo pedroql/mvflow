@@ -14,14 +14,18 @@ internal open class MVFlowCounterTestTemplate(
     testCoroutineScope: TestCoroutineScope,
     viewActions: Flow<MVFlowCounterHelper.Action>,
     internal val externalActions: Flow<MVFlowCounterHelper.Action>? = null,
-    delayMutations: Boolean = true
+    delayMutations: Boolean = true,
+    printLogs: Boolean = false
 ) {
-    val mvflow: MVFlow<MVFlowCounterHelper.State, MVFlowCounterHelper.Action>
+    val mvflow: MVFlowWithEffects<MVFlowCounterHelper.State, MVFlowCounterHelper.Action, MVFlowCounterHelper.Effect>
     val viewFake: ViewFake<MVFlowCounterHelper.State, MVFlowCounterHelper.Action>
 
     init {
         val pair = MVFlowCounterHelper.createFlowAndView(
-            viewActions, testCoroutineScope, delayMutations
+            viewActions,
+            testCoroutineScope,
+            delayMutations,
+            printLogs
         )
         mvflow = pair.first
         viewFake = pair.second

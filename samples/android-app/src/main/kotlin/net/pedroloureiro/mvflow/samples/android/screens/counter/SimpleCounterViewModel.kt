@@ -2,11 +2,11 @@ package net.pedroloureiro.mvflow.samples.android.screens.counter
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import net.pedroloureiro.mvflow.MVFlow
+import net.pedroloureiro.mvflow.MVFlowWithEffects
 
 class SimpleCounterViewModel : ViewModel() {
 
-    val mvFlow: MVFlow<CounterMVFlow.State, CounterMVFlow.Action>
+    val mvFlow: MVFlowWithEffects<CounterMVFlow.State, CounterMVFlow.Action, CounterMVFlow.Effect>
 
     init {
         mvFlow = CounterMVFlow.create(coroutineScope = viewModelScope)

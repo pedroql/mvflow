@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -40,11 +39,30 @@ typealias Handler<State, Action, Mutation> = (State, Action) -> Flow<Mutation>
  */
 interface EffectProducer<T> {
     /**
-     * Send this effect to be handled somewhere externally.
+     * Send this effect to be handled somewhere externally. It suspends until the effect is received.
      *
-     * @param effect the value you want to send.
+     * Implementation detail: this event is sent to a buffered channel. It suspends until the channel is able to receive
+     * this value (in normal situations should be very brief) or throws an exception if the channel reached its buffer
+     * capacity. This channel acts as a buffer between the handler that sends effects and potential observers that
+     * listen to them.
+     *
+     * If a handler is sending effects and there are no observers receiving them, this will buffer can eventually fill up
+     * and subsequent calls of this method will suspend until one observer starts collecting the effects.
+     *
+     * @param effect the value to send.
      */
     suspend fun send(effect: T)
+
+    /**
+     * Submits this effect to be handled somewhere externally, returning immediately whether it was successful.
+     *
+     * Implementation detail: this event is sent to a buffered channel.
+     *
+     * It returns true if the effect was successfully submitted.
+     *
+     * @param effect the value to send.
+     */
+    fun offer(effect: T): Boolean
 }
 
 typealias HandlerWithEffects<State, Action, Mutation, Effect> =
@@ -103,49 +121,6 @@ interface MviView<State, Action> {
 // TODO the docs above mention Mutation but do not use it
 interface MVFlow<State, Action> {
     /**
-     * Observe actions taking place in this MVFlow object.
-     *
-     * This is just a utility method that *you probably don't need*. Be mindful what you do with it. While this might
-     * make some functionality easier to implement, you are risking breaking the MVI concept and its advantages!
-     */
-    fun observeActions(): Flow<Action>
-
-    /**
-     * Observe actions taking place in this MVFlow object together with the current state (as of when the action was
-     * handled).
-     *
-     * This is just a utility method that *you probably don't need*. Be mindful what you do with it. While this might
-     * make some functionality easier to implement, you are risking breaking the MVI concept and its advantages!
-     *
-     */
-    fun observeActionsWithState(): Flow<Pair<Action, State>>
-
-    /**
-     * Observe mutations taking place in this MVFlow object.
-     *
-     * This is just a utility method that *you probably don't need*. Be mindful what you do with it. While this might
-     * make some functionality easier to implement, you are risking breaking the MVI concept and its advantages!
-     *
-     * Note: the observer is informed just after the mutation is applied in the current state.
-     */
-    fun observeMutations(): Flow<Any?> // TODO this part of the API is broken
-
-    /**
-     * Observe the current state of this MVFlow object. When you subscribe, you also get the current value as the first
-     * emission.
-     *
-     * This is just a utility method that *you probably don't need*. Be mindful what you do with it. While this might
-     * make some functionality easier to implement, you are risking breaking the MVI concept and its advantages!
-     *
-     * Note: this uses a [kotlinx.coroutines.channels.Channel.Factory.CONFLATED] channel so the states you see might
-     * differ from the events the MVFlow object sees. If your observer or the view take too long collecting one value
-     * and two or more values are emitted during that time, only the latest one would be emitted to the slow collector
-     * (while the fast collecter could receive all of the values). In normal situations the collection should be very
-     * quick and skipping states should not matter due to immutability.
-     */
-    fun observeState(): Flow<State>
-
-    /**
      * Call this method when a new [MviView] is ready to render the state of this MVFlow object.
      *
      * @param viewCoroutineScope the scope of the view. This will be used to launch a coroutine which will run listening
@@ -178,42 +153,29 @@ interface MVFlow<State, Action> {
         actions: Flow<Action>,
         logger: Logger? = null
     )
-
-    companion object {
-        operator fun <State, Action, Mutation> invoke(
-            initialState: State,
-            handler: Handler<State, Action, Mutation>,
-            reducer: Reducer<State, Mutation>,
-            mvflowCoroutineScope: CoroutineScope,
-            defaultLogger: Logger = {}
-        ): MVFlow<State, Action> =
-            MVFlowImpl(
-                initialState,
-                handler.asHandlerWithEffects(),
-                reducer,
-                mvflowCoroutineScope,
-                defaultLogger
-            )
-
-        operator fun <State, Action, Mutation, Effect> invoke(
-            initialState: State,
-            handler: HandlerWithEffects<State, Action, Mutation, Effect>,
-            reducer: Reducer<State, Mutation>,
-            mvflowCoroutineScope: CoroutineScope,
-            defaultLogger: Logger = {}
-        ): MVFlowWithEffect<State, Action, Effect> =
-            MVFlowImpl(
-                initialState,
-                handler,
-                reducer,
-                mvflowCoroutineScope,
-                defaultLogger
-            )
-    }
 }
 
-interface MVFlowWithEffect<State, Action, Effect> : MVFlow<State, Action> {
+/**
+ * Extension of [MVFlow] to be used together with a [HandlerWithEffects].
+ *
+ * This interface allows you to observe the external effects.
+ *
+ * @param State a class that holds all information about the current state represented in this MVFlow object.
+ * @param Action a class that represents all the interactions that can happen inside this view and associated
+ * information.
+ * @param Effect a class that represents things that you might need to handle outside the handler that deals with
+ * UI actions. Typically used for navigation and one-off events that do not mutate the state.
+ *
+ */
+interface MVFlowWithEffects<State, Action, Effect> : MVFlow<State, Action> {
 
+    /**
+     * Observe external effects emitted by the handler.
+     *
+     * Note: each time you call this, it will return a different flow. Each flow can only be subscribed once.
+     *
+     * If you add a second observer
+     */
     fun observeEffects(): Flow<Effect>
 }
 
@@ -223,16 +185,8 @@ private class MVFlowImpl<State, Action, Mutation, Effect>(
     private val reducer: Reducer<State, Mutation>,
     private val mvflowCoroutineScope: CoroutineScope,
     private val defaultLogger: Logger = {}
-) : MVFlowWithEffect<State, Action, Effect> {
+) : MVFlowWithEffects<State, Action, Effect> {
     private val state = MutableStateFlow(initialState)
-
-    /**
-     * stateBroadcastChannel is [kotlinx.coroutines.channels.Channel.Factory.CONFLATED] so it exhibits the same
-     * behaviour (receives the same events) that the view would receive.
-     */
-    private val stateBroadcastChannel = BroadcastChannel<State>(Channel.CONFLATED)
-    private val actionBroadcastChannel = BroadcastChannel<Pair<Action, State>>(Channel.BUFFERED)
-    private val mutationBroadcastChannel = BroadcastChannel<Mutation>(Channel.BUFFERED)
     private val externalEffectChannel = BroadcastChannel<Effect>(Channel.BUFFERED)
     private val mutex = Mutex()
 
@@ -241,17 +195,16 @@ private class MVFlowImpl<State, Action, Mutation, Effect>(
             logger.invoke("Sending external effect $effect")
             externalEffectChannel.send(effect)
         }
+
+        override fun offer(effect: Effect): Boolean {
+            logger.invoke("Offering external effect $effect")
+            return externalEffectChannel.offer(effect).also { accepted ->
+                if (!accepted) {
+                    logger.invoke("Channel rejected previous effect!")
+                }
+            }
+        }
     }
-
-    private fun consumeActionFlow() = actionBroadcastChannel.openSubscription().consumeAsFlow()
-
-    override fun observeActions() = consumeActionFlow().map { it.first }
-
-    override fun observeActionsWithState() = consumeActionFlow()
-
-    override fun observeMutations() = mutationBroadcastChannel.openSubscription().consumeAsFlow()
-
-    override fun observeState() = stateBroadcastChannel.openSubscription().consumeAsFlow()
 
     override fun observeEffects() = externalEffectChannel.openSubscription().consumeAsFlow()
 
@@ -291,8 +244,6 @@ private class MVFlowImpl<State, Action, Mutation, Effect>(
             .onEach {
                 logger.invoke("New state: $it")
                 view.render(it)
-                // only notify the listeners after the view renders the state
-                stateBroadcastChannel.offer(it)
             }
             .launchIn(callerCoroutineScope)
     }
@@ -324,15 +275,12 @@ private class MVFlowImpl<State, Action, Mutation, Effect>(
         onEach { action ->
             callerCoroutineScope.launch {
                 logger.invoke("Received action $action")
-                val currentValue = state.value
-                actionBroadcastChannel.offer(action to currentValue)
-                handler.invoke(currentValue, action, LoggingEffectProducer(logger))
+                handler.invoke(state.value, action, LoggingEffectProducer(logger))
                     .onEach { mutation ->
                         mutex.withLock {
                             logger.invoke("Applying mutation $mutation from action $action")
                             state.value = reducer.invoke(state.value, mutation)
                         }
-                        mutationBroadcastChannel.offer(mutation)
                     }
                     .launchIn(mvflowCoroutineScope)
             }
@@ -345,3 +293,34 @@ private fun <State, Action, Mutation> Handler<State, Action, Mutation>.asHandler
         HandlerWithEffects<State, Action, Mutation, Nothing> = { state, action, _ ->
     this(state, action)
 }
+
+
+fun <State, Action, Mutation> MVFlow(
+    initialState: State,
+    handler: Handler<State, Action, Mutation>,
+    reducer: Reducer<State, Mutation>,
+    mvflowCoroutineScope: CoroutineScope,
+    defaultLogger: Logger = {}
+): MVFlow<State, Action> =
+    MVFlowImpl(
+        initialState,
+        handler.asHandlerWithEffects(),
+        reducer,
+        mvflowCoroutineScope,
+        defaultLogger
+    )
+
+fun <State, Action, Mutation, Effect> MVFlow(
+    initialState: State,
+    handler: HandlerWithEffects<State, Action, Mutation, Effect>,
+    reducer: Reducer<State, Mutation>,
+    mvflowCoroutineScope: CoroutineScope,
+    defaultLogger: Logger = {}
+): MVFlowWithEffects<State, Action, Effect> =
+    MVFlowImpl(
+        initialState,
+        handler,
+        reducer,
+        mvflowCoroutineScope,
+        defaultLogger
+    )
