@@ -26,13 +26,29 @@ import kotlinx.coroutines.sync.withLock
  * Note: implementations should return straight away and do any operations inside the flow.
  *
  * Keep also in mind that Mutations should indicate how to change the state, but should not rely on/assume what the
- * current state is (as of when the action was emitted)
+ * current state is (as of when the action was emitted).
  *
  * @sample MVFlowSamples.handler
  *
  * @sample MVFlowSamples.mutations
  */
 typealias Handler<State, Action, Mutation> = (State, Action) -> Flow<Mutation>
+
+/**
+ * Effect producer is an interface that allows you to send effects to be handled outside the handler when you use
+ * [HandlerWithEffects].
+ */
+interface EffectProducer<T> {
+    /**
+     * Send this effect to be handled somewhere externally.
+     *
+     * @param effect the value you want to send.
+     */
+    suspend fun send(effect: T)
+}
+
+typealias HandlerWithEffects<State, Action, Mutation, Effect> =
+            (State, Action, EffectProducer<Effect>) -> Flow<Mutation>
 
 /**
  * Reducer applies a Mutation to a State, returning the resulting State.
@@ -53,20 +69,20 @@ typealias Reducer<State, Mutation> = (State, Mutation) -> State
 typealias Logger = (String) -> Unit
 
 /**
- * An interface for a View used in MVFlow
+ * An interface for a View used in MVFlow.
  *
- * @param State a class that defines what this class shows
+ * @param State a class that defines what this class shows.
  * @param Action a class, usually a sealed class, that contains the information about all the interactions that can
  * happen inside this view.
  */
 interface MviView<State, Action> {
     /**
-     * Function that renders the UI based on [state]
+     * Function that renders the UI based on [state].
      */
     fun render(state: State)
 
     /**
-     * Function to return a [kotlinx.coroutines.flow.Flow] of the actions that the user makes inside this view
+     * Function to return a [kotlinx.coroutines.flow.Flow] of the actions that the user makes inside this view.
      *
      * You can create this in many ways, one suggestion is using
      * [FlowBinding](https://github.com/ReactiveCircus/FlowBinding) or doing it yourself like in this sample:
@@ -128,7 +144,7 @@ class MVFlow<State, Action, Mutation>(
      * This is just a utility method that *you probably don't need*. Be mindful what you do with it. While this might
      * make some functionality easier to implement, you are risking breaking the MVI concept and its advantages!
      *
-     * Note: the observer is informed just after the mutation is applied in the current state
+     * Note: the observer is informed just after the mutation is applied in the current state.
      */
     fun observeMutations() = mutationBroadcastChannel.openSubscription().consumeAsFlow()
 
@@ -253,4 +269,9 @@ class MVFlow<State, Action, Mutation>(
         }
             .launchIn(callerCoroutineScope)
     }
+}
+
+private fun <State, Action, Mutation> Handler<State, Action, Mutation>.asHandlerWithEffects():
+        HandlerWithEffects<State, Action, Mutation, Nothing> = { state, action, _ ->
+    this(state, action)
 }

@@ -18,7 +18,6 @@ internal open class MVFlowCounterTestTemplate(
 ) {
     val mvflow: MVFlow<MVFlowCounterHelper.State, MVFlowCounterHelper.Action, MVFlowCounterHelper.Mutation>
     val viewFake: ViewFake<MVFlowCounterHelper.State, MVFlowCounterHelper.Action>
-    internal val viewScope = CoroutineScope(testCoroutineScope.coroutineContext + Job())
 
     init {
         val pair = MVFlowCounterHelper.createFlowAndView(

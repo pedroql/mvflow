@@ -22,11 +22,7 @@ In no particular order
 
 ## Sample code to write
 
-* Android example, using a view model to retain the MVFlow object
-
 * Android example using a recycler view (could be the same as above)
-
-* Android example using live data
 
 * How to use observers
 
@@ -38,6 +34,8 @@ In no particular order
 * Example of using a view with its own concept of state and action and then mapping this to two screens which use the 
 same view for slightly different things. (This shows a good practice as well as how to map views/actions - 
 functionality to be developed)
+
+* Update the example using `launchWhenResumed` to use the new better approach
 
 ## To consider
 
