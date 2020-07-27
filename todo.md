@@ -24,7 +24,7 @@ In no particular order
 
 * Android example using a recycler view (could be the same as above)
 
-* How to use observers
+* Using external effects
 
 * How to do analytics events
 
@@ -124,11 +124,6 @@ This can greatly help reusing views. Each view could declare its own generics an
  
 * Probably should call `buffer` in the actions so that slow handlers don't block whatever is 
 emitting actions
-
-* The way the MVFlow object accepts a view should change. As highlighted in the lifecycle sample, it doesn't let the
-consumer specify how the coroutine scope should be created (or forces you to implement `MviView.receiveStates` which is 
-overkill). For example, I want to be able to ensure the state updates are sent on a coroutine created with 
-`lifecycleScope.launchWhenStarted { ... }`.
 
 * Tests to write:
    * When the MVFlow object scope is destroyed, everything stops

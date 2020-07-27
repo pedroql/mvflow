@@ -34,6 +34,17 @@ import kotlinx.coroutines.sync.withLock
 typealias Handler<State, Action, Mutation> = (State, Action) -> Flow<Mutation>
 
 /**
+ * A function that on top of what [Handler] does, it also might emit side effects that are subscribed by an external
+ * component.
+ *
+ * @sample MVFlowSamples.handlerWithEffects
+ *
+ * @see [Handler]
+ */
+typealias HandlerWithEffects<State, Action, Mutation, Effect> =
+            (State, Action, EffectProducer<Effect>) -> Flow<Mutation>
+
+/**
  * Effect producer is an interface that allows you to send effects to be handled outside the handler when you use
  * [HandlerWithEffects].
  */
@@ -64,9 +75,6 @@ interface EffectProducer<T> {
      */
     fun offer(effect: T): Boolean
 }
-
-typealias HandlerWithEffects<State, Action, Mutation, Effect> =
-            (State, Action, EffectProducer<Effect>) -> Flow<Mutation>
 
 /**
  * Reducer applies a Mutation to a State, returning the resulting State.
@@ -116,9 +124,7 @@ interface MviView<State, Action> {
  * @param State a class that holds all information about the current state represented in this MVFlow object.
  * @param Action a class that represents all the interactions that can happen inside this view and associated
  * information.
- * @param Mutation a class that contains the instructions required to mutate the current state to a new state.
  */
-// TODO the docs above mention Mutation but do not use it
 interface MVFlow<State, Action> {
     /**
      * Call this method when a new [MviView] is ready to render the state of this MVFlow object.
