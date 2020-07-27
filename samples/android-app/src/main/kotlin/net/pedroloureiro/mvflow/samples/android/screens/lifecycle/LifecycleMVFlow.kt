@@ -3,10 +3,9 @@ package net.pedroloureiro.mvflow.samples.android.screens.lifecycle
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import net.pedroloureiro.mvflow.Handler
+import net.pedroloureiro.mvflow.HandlerWithEffects
 import net.pedroloureiro.mvflow.MVFlow
 import net.pedroloureiro.mvflow.Reducer
 
@@ -44,11 +43,15 @@ object LifecycleMVFlow {
         object ToggleTimers : Mutation()
     }
 
-    val handler: Handler<State, Action, Mutation> = { _, action ->
+    sealed class Effect {
+        object OpenDialog : Effect()
+    }
+
+    val handler: HandlerWithEffects<State, Action, Mutation, Effect> = { _, action, effects ->
         when (action) {
-            Action.OpenDialog -> {
-                // no op - we will listen externally to this and act there
-                emptyFlow()
+            Action.OpenDialog -> flow {
+                effects.send(Effect.OpenDialog)
+                // empty flow - we will listen externally to this and act there
             }
 
             is Action.SetTimers -> flowOf(Mutation.SetTimersRunning(action.running))
