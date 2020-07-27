@@ -6,7 +6,7 @@ import net.pedroloureiro.mvflow.MVFlow
 
 class SimpleCounterViewModel : ViewModel() {
 
-    val mvFlow: MVFlow<CounterMVFlow.State, CounterMVFlow.Action, CounterMVFlow.Mutation>
+    val mvFlow: MVFlow<CounterMVFlow.State, CounterMVFlow.Action>
 
     init {
         mvFlow = CounterMVFlow.create(coroutineScope = viewModelScope)

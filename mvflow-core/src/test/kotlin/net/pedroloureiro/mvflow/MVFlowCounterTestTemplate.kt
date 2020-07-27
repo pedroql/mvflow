@@ -16,7 +16,7 @@ internal open class MVFlowCounterTestTemplate(
     internal val externalActions: Flow<MVFlowCounterHelper.Action>? = null,
     delayMutations: Boolean = true
 ) {
-    val mvflow: MVFlow<MVFlowCounterHelper.State, MVFlowCounterHelper.Action, MVFlowCounterHelper.Mutation>
+    val mvflow: MVFlow<MVFlowCounterHelper.State, MVFlowCounterHelper.Action>
     val viewFake: ViewFake<MVFlowCounterHelper.State, MVFlowCounterHelper.Action>
 
     init {

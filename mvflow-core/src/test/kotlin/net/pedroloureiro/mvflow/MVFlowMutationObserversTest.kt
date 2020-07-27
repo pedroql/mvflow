@@ -2,6 +2,7 @@ package net.pedroloureiro.mvflow
 
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
@@ -36,7 +37,8 @@ internal class MVFlowMutationObserversTest {
         val observed = mutableListOf<Mutation>()
         runTestTemplate(template) {
             observerJob = launch {
-                mvflow.observeMutations().toList(observed)
+                mvflow.observeMutations().filterIsInstance<Mutation>().toList(observed)
+                // TODO this line above is just a compiler fix - actually fix it
             }
         }
 
@@ -66,7 +68,8 @@ internal class MVFlowMutationObserversTest {
             observerJob = launch {
                 // should miss one action from the view and another from the external actions
                 delay(90)
-                mvflow.observeMutations().toList(observed)
+                mvflow.observeMutations().filterIsInstance<Mutation>().toList(observed)
+                // TODO this line above is just a compiler fix - actually fix it
             }
         }
         observerJob.cancel()
@@ -92,12 +95,14 @@ internal class MVFlowMutationObserversTest {
 
         runTestTemplate(template) {
             observerJob1 = launch {
-                mvflow.observeMutations().toList(observed1)
+                mvflow.observeMutations().filterIsInstance<Mutation>().toList(observed1)
+                // TODO this line above is just a compiler fix - actually fix it
             }
             observerJob2 = launch {
                 // should miss one action from the view and another from the external actions
                 delay(90)
-                mvflow.observeMutations().toList(observed2)
+                mvflow.observeMutations().filterIsInstance<Mutation>().toList(observed2)
+                // TODO this line above is just a compiler fix - actually fix it
             }
         }
         observerJob1.cancel()
@@ -136,10 +141,12 @@ internal class MVFlowMutationObserversTest {
 
         runTestTemplate(template) {
             observerJob1 = launch {
-                mvflow.observeMutations().onEach { delay(500) }.toList(observed1)
+                mvflow.observeMutations().onEach { delay(500) }.filterIsInstance<Mutation>().toList(observed1)
+                // TODO this line above is just a compiler fix - actually fix it
             }
             observerJob2 = launch {
-                mvflow.observeMutations().toList(observed2)
+                mvflow.observeMutations().filterIsInstance<Mutation>().toList(observed2)
+                // TODO this line above is just a compiler fix - actually fix it
             }
 
             advanceTimeBy(400)
@@ -165,10 +172,12 @@ internal class MVFlowMutationObserversTest {
 
         runTestTemplate(template) {
             observerJob1 = launch {
-                mvflow.observeMutations().toList(observed1)
+                mvflow.observeMutations().filterIsInstance<Mutation>().toList(observed1)
+                // TODO this line above is just a compiler fix - actually fix it
             }
             observerJob2 = launch {
-                mvflow.observeMutations().toList(observed2)
+                mvflow.observeMutations().filterIsInstance<Mutation>().toList(observed2)
+                // TODO this line above is just a compiler fix - actually fix it
             }
             launch {
                 delay(90)
@@ -189,7 +198,8 @@ internal class MVFlowMutationObserversTest {
         val observed = mutableListOf<Mutation>()
         runTestTemplate(template) {
             observerJob = launch {
-                mvflow.observeMutations().onEach { delay(500) }.toList(observed)
+                mvflow.observeMutations().onEach { delay(500) }.filterIsInstance<Mutation>().toList(observed)
+                // TODO this line above is just a compiler fix - actually fix it
             }
             // should be enough time to process everything
             advanceTimeBy(200)

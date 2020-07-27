@@ -93,40 +93,22 @@ interface MviView<State, Action> {
 }
 
 /**
- * Class that runs all the MVI logic of this library.
+ * Interface that defines all the MVI logic of this library.
  *
  * @param State a class that holds all information about the current state represented in this MVFlow object.
  * @param Action a class that represents all the interactions that can happen inside this view and associated
  * information.
  * @param Mutation a class that contains the instructions required to mutate the current state to a new state.
  */
-class MVFlow<State, Action, Mutation>(
-    initialState: State,
-    private val handler: Handler<State, Action, Mutation>,
-    private val reducer: Reducer<State, Mutation>,
-    private val mvflowCoroutineScope: CoroutineScope,
-    private val defaultLogger: Logger = {}
-) {
-    private val state = MutableStateFlow(initialState)
-
-    /**
-     * stateBroadcastChannel is [kotlinx.coroutines.channels.Channel.Factory.CONFLATED] so it exhibits the same
-     * behaviour (receives the same events) that the view would receive.
-     */
-    private val stateBroadcastChannel = BroadcastChannel<State>(Channel.CONFLATED)
-    private val actionBroadcastChannel = BroadcastChannel<Pair<Action, State>>(Channel.BUFFERED)
-    private val mutationBroadcastChannel = BroadcastChannel<Mutation>(Channel.BUFFERED)
-    private val mutex = Mutex()
-
-    private fun consumeActionFlow() = actionBroadcastChannel.openSubscription().consumeAsFlow()
-
+// TODO the docs above mention Mutation but do not use it
+interface MVFlow<State, Action> {
     /**
      * Observe actions taking place in this MVFlow object.
      *
      * This is just a utility method that *you probably don't need*. Be mindful what you do with it. While this might
      * make some functionality easier to implement, you are risking breaking the MVI concept and its advantages!
      */
-    fun observeActions() = consumeActionFlow().map { it.first }
+    fun observeActions(): Flow<Action>
 
     /**
      * Observe actions taking place in this MVFlow object together with the current state (as of when the action was
@@ -136,7 +118,7 @@ class MVFlow<State, Action, Mutation>(
      * make some functionality easier to implement, you are risking breaking the MVI concept and its advantages!
      *
      */
-    fun observeActionsWithState() = consumeActionFlow()
+    fun observeActionsWithState(): Flow<Pair<Action, State>>
 
     /**
      * Observe mutations taking place in this MVFlow object.
@@ -146,7 +128,7 @@ class MVFlow<State, Action, Mutation>(
      *
      * Note: the observer is informed just after the mutation is applied in the current state.
      */
-    fun observeMutations() = mutationBroadcastChannel.openSubscription().consumeAsFlow()
+    fun observeMutations(): Flow<Any?> // TODO this part of the API is broken
 
     /**
      * Observe the current state of this MVFlow object. When you subscribe, you also get the current value as the first
@@ -161,7 +143,7 @@ class MVFlow<State, Action, Mutation>(
      * (while the fast collecter could receive all of the values). In normal situations the collection should be very
      * quick and skipping states should not matter due to immutability.
      */
-    fun observeState() = stateBroadcastChannel.openSubscription().consumeAsFlow()
+    fun observeState(): Flow<State>
 
     /**
      * Call this method when a new [MviView] is ready to render the state of this MVFlow object.
@@ -172,19 +154,14 @@ class MVFlow<State, Action, Mutation>(
      * @param initialActions an optional list of Actions that can be passed to introduce an initial action into the
      * screen (for example, to trigger a refresh of data).
      * @param logger Optional [Logger] to log events inside this MVFlow object associated with this view (but not
-     * others).
+     * others). If null, a default logger might be used.
      */
     fun takeView(
         viewCoroutineScope: CoroutineScope,
         view: MviView<State, Action>,
         initialActions: List<Action> = emptyList(),
-        logger: Logger = defaultLogger
-    ) {
-        viewCoroutineScope.launch {
-            sendStateUpdatesIntoView(this, view, logger)
-            handleViewActions(this, view, initialActions, logger)
-        }
-    }
+        logger: Logger? = null
+    )
 
     /**
      * This method adds an external source of actions into the MVFlow object.
@@ -195,14 +172,107 @@ class MVFlow<State, Action, Mutation>(
      * @param actions the flow of events. You might want to have a look at
      * [kotlinx.coroutines.flow.callbackFlow].
      * @param logger Optional [Logger] to log events inside this MVFlow object associated with this external Flow (but
-     * not others).
+     * not others). If null, a default logger might be used.
      */
     fun addExternalActions(
         actions: Flow<Action>,
-        logger: Logger = defaultLogger
+        logger: Logger? = null
+    )
+
+    companion object {
+        operator fun <State, Action, Mutation> invoke(
+            initialState: State,
+            handler: Handler<State, Action, Mutation>,
+            reducer: Reducer<State, Mutation>,
+            mvflowCoroutineScope: CoroutineScope,
+            defaultLogger: Logger = {}
+        ): MVFlow<State, Action> =
+            MVFlowImpl(
+                initialState,
+                handler.asHandlerWithEffects(),
+                reducer,
+                mvflowCoroutineScope,
+                defaultLogger
+            )
+
+        operator fun <State, Action, Mutation, Effect> invoke(
+            initialState: State,
+            handler: HandlerWithEffects<State, Action, Mutation, Effect>,
+            reducer: Reducer<State, Mutation>,
+            mvflowCoroutineScope: CoroutineScope,
+            defaultLogger: Logger = {}
+        ): MVFlowWithEffect<State, Action, Effect> =
+            MVFlowImpl(
+                initialState,
+                handler,
+                reducer,
+                mvflowCoroutineScope,
+                defaultLogger
+            )
+    }
+}
+
+interface MVFlowWithEffect<State, Action, Effect> : MVFlow<State, Action> {
+
+    fun observeEffects(): Flow<Effect>
+}
+
+private class MVFlowImpl<State, Action, Mutation, Effect>(
+    initialState: State,
+    private val handler: HandlerWithEffects<State, Action, Mutation, Effect>,
+    private val reducer: Reducer<State, Mutation>,
+    private val mvflowCoroutineScope: CoroutineScope,
+    private val defaultLogger: Logger = {}
+) : MVFlowWithEffect<State, Action, Effect> {
+    private val state = MutableStateFlow(initialState)
+
+    /**
+     * stateBroadcastChannel is [kotlinx.coroutines.channels.Channel.Factory.CONFLATED] so it exhibits the same
+     * behaviour (receives the same events) that the view would receive.
+     */
+    private val stateBroadcastChannel = BroadcastChannel<State>(Channel.CONFLATED)
+    private val actionBroadcastChannel = BroadcastChannel<Pair<Action, State>>(Channel.BUFFERED)
+    private val mutationBroadcastChannel = BroadcastChannel<Mutation>(Channel.BUFFERED)
+    private val externalEffectChannel = BroadcastChannel<Effect>(Channel.BUFFERED)
+    private val mutex = Mutex()
+
+    private inner class LoggingEffectProducer(private val logger: Logger) : EffectProducer<Effect> {
+        override suspend fun send(effect: Effect) {
+            logger.invoke("Sending external effect $effect")
+            externalEffectChannel.send(effect)
+        }
+    }
+
+    private fun consumeActionFlow() = actionBroadcastChannel.openSubscription().consumeAsFlow()
+
+    override fun observeActions() = consumeActionFlow().map { it.first }
+
+    override fun observeActionsWithState() = consumeActionFlow()
+
+    override fun observeMutations() = mutationBroadcastChannel.openSubscription().consumeAsFlow()
+
+    override fun observeState() = stateBroadcastChannel.openSubscription().consumeAsFlow()
+
+    override fun observeEffects() = externalEffectChannel.openSubscription().consumeAsFlow()
+
+    override fun takeView(
+        viewCoroutineScope: CoroutineScope,
+        view: MviView<State, Action>,
+        initialActions: List<Action>,
+        logger: Logger?
+    ) {
+        viewCoroutineScope.launch {
+            sendStateUpdatesIntoView(this, view, logger ?: defaultLogger)
+            handleViewActions(this, view, initialActions, logger ?: defaultLogger)
+        }
+    }
+
+    override fun addExternalActions(
+        actions: Flow<Action>,
+        logger: Logger?
     ) {
         mvflowCoroutineScope.launch {
-            actions.collectIntoHandler(this, logger)
+            actions.collectIntoHandler(this, logger ?: defaultLogger)
         }
     }
 
@@ -256,7 +326,7 @@ class MVFlow<State, Action, Mutation>(
                 logger.invoke("Received action $action")
                 val currentValue = state.value
                 actionBroadcastChannel.offer(action to currentValue)
-                handler.invoke(currentValue, action)
+                handler.invoke(currentValue, action, LoggingEffectProducer(logger))
                     .onEach { mutation ->
                         mutex.withLock {
                             logger.invoke("Applying mutation $mutation from action $action")
