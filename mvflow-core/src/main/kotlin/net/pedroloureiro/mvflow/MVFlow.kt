@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package net.pedroloureiro.mvflow
 
 import kotlinx.coroutines.CoroutineScope
@@ -41,14 +43,16 @@ typealias Handler<State, Action, Mutation> = (State, Action) -> Flow<Mutation>
  *
  * @see [Handler]
  */
+// @formatter:off
 typealias HandlerWithEffects<State, Action, Mutation, Effect> =
-            (State, Action, EffectProducer<Effect>) -> Flow<Mutation>
+    (State, Action, EffectSender<Effect>) -> Flow<Mutation>
+// @formatter:on
 
 /**
- * Effect producer is an interface that allows you to send effects to be handled outside the handler when you use
+ * Effect sender is an interface that allows you to send effects to be handled outside the handler when you use
  * [HandlerWithEffects].
  */
-interface EffectProducer<T> {
+interface EffectSender<T> {
     /**
      * Send this effect to be handled somewhere externally. It suspends until the effect is received.
      *
@@ -57,8 +61,8 @@ interface EffectProducer<T> {
      * capacity. This channel acts as a buffer between the handler that sends effects and potential observers that
      * listen to them.
      *
-     * If a handler is sending effects and there are no observers receiving them, this will buffer can eventually fill up
-     * and subsequent calls of this method will suspend until one observer starts collecting the effects.
+     * If a handler is sending effects and there are no observers receiving them, this will buffer can eventually fill
+     * up and subsequent calls of this method will suspend until one observer starts collecting the effects.
      *
      * @param effect the value to send.
      */
@@ -196,7 +200,7 @@ private class MVFlowImpl<State, Action, Mutation, Effect>(
     private val externalEffectChannel = BroadcastChannel<Effect>(Channel.BUFFERED)
     private val mutex = Mutex()
 
-    private inner class LoggingEffectProducer(private val logger: Logger) : EffectProducer<Effect> {
+    private inner class LoggingEffectSender(private val logger: Logger) : EffectSender<Effect> {
         override suspend fun send(effect: Effect) {
             logger.invoke("Sending external effect $effect")
             externalEffectChannel.send(effect)
@@ -281,7 +285,7 @@ private class MVFlowImpl<State, Action, Mutation, Effect>(
         onEach { action ->
             callerCoroutineScope.launch {
                 logger.invoke("Received action $action")
-                handler.invoke(state.value, action, LoggingEffectProducer(logger))
+                handler.invoke(state.value, action, LoggingEffectSender(logger))
                     .onEach { mutation ->
                         mutex.withLock {
                             logger.invoke("Applying mutation $mutation from action $action")
@@ -295,11 +299,12 @@ private class MVFlowImpl<State, Action, Mutation, Effect>(
     }
 }
 
+// @formatter:off
 private fun <State, Action, Mutation> Handler<State, Action, Mutation>.asHandlerWithEffects():
-        HandlerWithEffects<State, Action, Mutation, Nothing> = { state, action, _ ->
-    this(state, action)
-}
-
+    HandlerWithEffects<State, Action, Mutation, Nothing> = { state, action, _ ->
+        this(state, action)
+    }
+// @formatter=on
 
 fun <State, Action, Mutation> MVFlow(
     initialState: State,

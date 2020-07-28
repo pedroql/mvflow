@@ -90,7 +90,7 @@ internal class MVFlowWithEffectsTest {
     }
 
     @Test
-    fun `one observer can unsubscribe without affecting the others`()  = runBlockingTest {
+    fun `one observer can unsubscribe without affecting the others`() = runBlockingTest {
         val template = defaultTemplate()
 
         lateinit var actionJob1: Job
