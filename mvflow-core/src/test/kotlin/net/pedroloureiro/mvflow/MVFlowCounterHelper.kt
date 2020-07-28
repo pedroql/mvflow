@@ -37,7 +37,7 @@ internal object MVFlowCounterHelper {
     ) =
         MVFlow<State, Action, Mutation, Effect>(
             State(0),
-            { state, action, effects ->
+            { _, action, effects ->
                 when (action) {
                     Action.Action1 ->
                         flowOf(
