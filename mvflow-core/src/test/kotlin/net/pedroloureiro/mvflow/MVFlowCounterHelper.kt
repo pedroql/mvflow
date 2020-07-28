@@ -37,7 +37,7 @@ internal object MVFlowCounterHelper {
     ) =
         MVFlow<State, Action, Mutation, Effect>(
             State(0),
-            { state, action, effectProducer ->
+            { state, action, effects ->
                 when (action) {
                     Action.Action1 ->
                         flowOf(
@@ -47,7 +47,7 @@ internal object MVFlowCounterHelper {
                                 if (delayMutations) {
                                     delay(50)
                                 }
-                                effectProducer.offer(Effect.Effect1)
+                                effects.offer(Effect.Effect1)
                             }
                     Action.Action2 ->
                         flowOf(
@@ -58,7 +58,7 @@ internal object MVFlowCounterHelper {
                                 if (delayMutations) {
                                     delay(40)
                                 }
-                                effectProducer.send(Effect.Effect2(it.javaClass.simpleName))
+                                effects.send(Effect.Effect2(it.javaClass.simpleName))
                             }
                 }
             },
