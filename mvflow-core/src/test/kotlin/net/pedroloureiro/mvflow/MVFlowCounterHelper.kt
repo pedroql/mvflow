@@ -35,9 +35,9 @@ internal object MVFlowCounterHelper {
         delayMutations: Boolean = true,
         printLogs: Boolean = false
     ) =
-        MVFlow<State, Action, Mutation>(
+        MVFlow<State, Action, Mutation, Effect>(
             State(0),
-            { _, action ->
+            { _, action, effects ->
                 when (action) {
                     Action.Action1 ->
                         flowOf(
@@ -47,6 +47,7 @@ internal object MVFlowCounterHelper {
                                 if (delayMutations) {
                                     delay(50)
                                 }
+                                effects.offer(Effect.Effect1)
                             }
                     Action.Action2 ->
                         flowOf(
@@ -57,6 +58,7 @@ internal object MVFlowCounterHelper {
                                 if (delayMutations) {
                                     delay(40)
                                 }
+                                effects.send(Effect.Effect2(it.javaClass.simpleName))
                             }
                 }
             },
@@ -82,5 +84,10 @@ internal object MVFlowCounterHelper {
     sealed class Mutation {
         data class Increment(val amount: Int) : Mutation()
         data class Multiply(val amount: Int) : Mutation()
+    }
+
+    sealed class Effect {
+        object Effect1 : Effect()
+        data class Effect2(val value: String) : Effect()
     }
 }

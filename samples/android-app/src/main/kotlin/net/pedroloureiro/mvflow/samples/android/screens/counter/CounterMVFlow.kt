@@ -5,13 +5,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import net.pedroloureiro.mvflow.Handler
+import net.pedroloureiro.mvflow.HandlerWithEffects
 import net.pedroloureiro.mvflow.MVFlow
 import net.pedroloureiro.mvflow.MviView
 import net.pedroloureiro.mvflow.Reducer
 import kotlin.random.Random
 
 object CounterMVFlow {
+
+    sealed class Effect {
+        data class ShowToast(val message: String) : Effect()
+    }
+
     data class State(
         val value: Int = 0,
         val backgroundOperations: Int = 0
@@ -35,11 +40,12 @@ object CounterMVFlow {
     // this interface just exists for a nicer syntax, it's not required
     interface View : MviView<State, Action>
 
-    val handler: Handler<State, Action, Mutation> = { _, action ->
+    val handler: HandlerWithEffects<State, Action, Mutation, Effect> = { _, action, effects ->
         when (action) {
             Action.AddOne -> flowOf(Mutation.Increment(1))
             Action.Reset -> flowOf(Mutation.Reset)
             Action.AddMany -> flow {
+                effects.send(Effect.ShowToast("This might take a while..."))
                 emit(Mutation.BackgroundJobStarted)
                 // pretend that we will start some work
                 delay(Random.nextLong(50, 500))
@@ -49,6 +55,7 @@ object CounterMVFlow {
                 delay(Random.nextLong(1500, 4000))
                 emit(Mutation.Increment(1))
                 emit(Mutation.BackgroundJobFinished)
+                effects.send(Effect.ShowToast("Background job finished"))
             }
         }
     }

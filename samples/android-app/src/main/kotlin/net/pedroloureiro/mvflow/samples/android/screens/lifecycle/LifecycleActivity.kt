@@ -22,6 +22,7 @@ import net.pedroloureiro.mvflow.MviView
 import net.pedroloureiro.mvflow.samples.android.databinding.LifecycleActivityBinding
 import net.pedroloureiro.mvflow.samples.android.screens.dummydialog.DummyDialogActivity
 import net.pedroloureiro.mvflow.samples.android.screens.lifecycle.LifecycleMVFlow.Action
+import net.pedroloureiro.mvflow.samples.android.screens.lifecycle.LifecycleMVFlow.Effect
 import net.pedroloureiro.mvflow.samples.android.screens.lifecycle.LifecycleMVFlow.State
 
 class LifecycleActivity : AppCompatActivity() {
@@ -89,7 +90,7 @@ class LifecycleActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            mvFlow.observeActions().filterIsInstance<Action.OpenDialog>()
+            mvFlow.observeEffects().filterIsInstance<Effect.OpenDialog>()
                 .collect {
                     DummyDialogActivity.launch(this@LifecycleActivity)
                 }

@@ -4,12 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collect
 import net.pedroloureiro.mvflow.samples.android.databinding.CounterActivityBinding
 import net.pedroloureiro.mvflow.samples.android.screens.counter.CounterMVFlow.Action
 import net.pedroloureiro.mvflow.samples.android.screens.counter.CounterMVFlow.State
@@ -45,6 +47,13 @@ class SimpleCounterActivity : AppCompatActivity() {
         }
         lifecycleScope.launchWhenStarted {
             viewModel.mvFlow.takeView(this, view)
+        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.mvFlow.observeEffects().collect {
+                if (it is CounterMVFlow.Effect.ShowToast) {
+                    Toast.makeText(this@SimpleCounterActivity, it.message, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 

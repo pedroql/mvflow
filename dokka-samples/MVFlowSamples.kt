@@ -23,6 +23,18 @@ object MVFlowSamples {
         }
     }
 
+    fun handlerWithEffects() {
+        val example: Handler<State, Action, Mutation, Effect> = { _, _, effects: EffectProducer<Effect> ->
+            flow {
+                slowOperation1()
+                emit(Mutation.A)
+                slowOperation2()
+                emit(Mutation.B)
+                effects.send(Effects.OperationCompleted)
+            }
+        }
+    }
+
     fun mutations() {
 
         // How to create good mutations:

@@ -22,13 +22,9 @@ In no particular order
 
 ## Sample code to write
 
-* Android example, using a view model to retain the MVFlow object
-
 * Android example using a recycler view (could be the same as above)
 
-* Android example using live data
-
-* How to use observers
+* Using external effects
 
 * How to do analytics events
 
@@ -38,6 +34,8 @@ In no particular order
 * Example of using a view with its own concept of state and action and then mapping this to two screens which use the 
 same view for slightly different things. (This shows a good practice as well as how to map views/actions - 
 functionality to be developed)
+
+* Update the example using `launchWhenResumed` to use the new better approach
 
 ## To consider
 
@@ -51,17 +49,8 @@ Not sure we will do those things, but keeping track of some possibilities. Feedb
   
 * The `MviView` interface maybe should be defined inside MVFLow
 
-* Consider changing from creating a class (MVFLow) to calling a factory or builder
-
-* Reconsider if it is correct to allow to observe actions, mutations, and states
-
-   * Maybe it would be a better alternative to allow the handler to emit new actions at any point
-   
-   * For some things such as navigation, showing toasts, etc, maybe the MVFlow object should expose some sort of 
-   external effects
-   
-   * If observers remain, maybe the state observer should be called based on changes to the state flow object, regardless
-    of views being subscribed to it
+* Should the external effect channel be conflated? Should it be a broadcast channel (which doesn't start storing values 
+until the first observer subscribes)? Should it be a plain Channel which is not shareable?
    
 ## Core
 
@@ -135,11 +124,6 @@ This can greatly help reusing views. Each view could declare its own generics an
  
 * Probably should call `buffer` in the actions so that slow handlers don't block whatever is 
 emitting actions
-
-* The way the MVFlow object accepts a view should change. As highlighted in the lifecycle sample, it doesn't let the
-consumer specify how the coroutine scope should be created (or forces you to implement `MviView.receiveStates` which is 
-overkill). For example, I want to be able to ensure the state updates are sent on a coroutine created with 
-`lifecycleScope.launchWhenStarted { ... }`.
 
 * Tests to write:
    * When the MVFlow object scope is destroyed, everything stops
