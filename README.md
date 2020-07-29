@@ -349,27 +349,21 @@ And everyone who contributed towards those libraries (and their respective inspi
 ## Current state, feedback, and contributions
 
 ```
-Version 0.0.2
+Version 0.0.3
 ```
 
-Right now the library has been published for early feedback. You can get it from maven central:
+We believe the current API is getting more stable and closer to what 1.0 will look like. 
+You can get it from maven central:
 
 ```
 dependencies {
-    implementation 'net.pedroloureiro.mvflow:mvflow-core:0.0.2'
+    implementation 'net.pedroloureiro.mvflow:mvflow-core:0.0.3'
 }
 ```
-
-We are still considering the best way to expose some 
-functionality so APIs may break in future releases. You can have a look at [API changes](apichanges.md) document
-to see what is more likely to change in the near future.
 
 **Please let us know what you think.** 
 
 If you would like to contribute back, just create a PR, new issue, or comment on open PRs.
-
-This is the first PR that brought most of the current functionality. 
-[Feel free to code review it](https://github.com/pedroql/mvflow/pull/1).
 
 If you create a PR, please make sure you unit test and document the code you write.
 
