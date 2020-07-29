@@ -8,7 +8,7 @@ import kotlinx.coroutines.channels.broadcast
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.transform
-import net.pedroloureiro.mvflow.HandlerWithEffects
+import net.pedroloureiro.mvflow.Handler
 import net.pedroloureiro.mvflow.MVFlow
 import net.pedroloureiro.mvflow.Reducer
 
@@ -25,20 +25,21 @@ object LifecycleMVFlow {
         object Tick : Mutation()
     }
 
-    class Effect
-
     /*
         Note: this is not the normal way to use this library. This is just a contrived example to show the difference
         between launch and launchWhenResumed (and other similar methods)
     */
 
-    fun createHandler(): HandlerWithEffects<State, Action, Mutation, Effect> =
-        { _, action, effects ->
+    fun createHandler(): Handler<State, Action, Mutation> =
+        { _, action ->
             when (action) {
-                Action.StartCounter -> tickerBroadcastChannel.openSubscription().consumeAsFlow()
-                    .transform {
-                        emit(Mutation.Tick)
-                    }
+                Action.StartCounter ->
+                    tickerBroadcastChannel
+                        .openSubscription()
+                        .consumeAsFlow()
+                        .transform {
+                            emit(Mutation.Tick)
+                        }
             }
         }
 
