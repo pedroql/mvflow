@@ -36,5 +36,11 @@
         to see what happens when the timers change while in background.
     </string>
     <string name="lifecycle_reset_timers">Reset timers</string>
+    <string name="lifecycle_explanation">The best way to understand what is happening here is opening logcat and
+        filtering for "lifecyle counter".\n\nEach field is updated in a slightly different way. The first is always
+        updated (could create problems while the app is in the background). The second is only updated while the
+        activity is started and the third while the activity is resumed.\n\nIn order to see the differences between
+    them, you can open logcat with the filter and then try opening a dialog (activity pauses) or leave the app
+    (activity stops).\n\nAdditionally, if you press back, you destroy the acticity and all updates stop.</string>
 
 </resources>

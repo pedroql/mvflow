@@ -2,92 +2,65 @@ package net.pedroloureiro.mvflow.samples.android.screens.lifecycle
 
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.broadcast
+import kotlinx.coroutines.channels.ticker
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.transform
 import net.pedroloureiro.mvflow.HandlerWithEffects
 import net.pedroloureiro.mvflow.MVFlow
 import net.pedroloureiro.mvflow.Reducer
 
 object LifecycleMVFlow {
     data class State(
-        val normalCounter: Int = 0,
-        val startedCounter: Int = 0,
-        val resumedCounter: Int = 0,
-        val timersRunning: Boolean = false,
-        val delayedToggleWaiting: Boolean = false
+        val counter: Int = 0
     )
 
     sealed class Action {
-        data class SetTimers(val running: Boolean) : Action()
-        object ToggleTimersDelayed : Action()
-        object OpenDialog : Action()
-        object ResetTimers : Action()
-        object TickNormal : Action()
-        object TickStarted : Action()
-        object TickResumed : Action()
+        object StartCounter : Action()
     }
 
     sealed class Mutation {
-        data class SetTimersRunning(val running: Boolean) : Mutation()
-        data class DelayedToggleWaiting(val waiting: Boolean) : Mutation()
-
-        /**
-         * A tick, meant to increment the timers
-         */
-        object TickNormal : Mutation()
-        object TickStarted : Mutation()
-        object TickResumed : Mutation()
-
-        object ResetTimers : Mutation()
-        object ToggleTimers : Mutation()
+        object Tick : Mutation()
     }
 
-    sealed class Effect {
-        object OpenDialog : Effect()
-    }
+    class Effect
 
-    val handler: HandlerWithEffects<State, Action, Mutation, Effect> = { _, action, effects ->
-        when (action) {
-            Action.OpenDialog -> flow {
-                effects.send(Effect.OpenDialog)
-                // empty flow - we will listen externally to this and act there
+    /*
+        Note: this is not the normal way to use this library. This is just a contrived example to show the difference
+        between launch and launchWhenResumed (and other similar methods)
+    */
+
+    fun createHandler(): HandlerWithEffects<State, Action, Mutation, Effect> =
+        { _, action, effects ->
+            when (action) {
+                Action.StartCounter -> tickerBroadcastChannel.openSubscription().consumeAsFlow()
+                    .transform {
+                        emit(Mutation.Tick)
+                    }
             }
-
-            is Action.SetTimers -> flowOf(Mutation.SetTimersRunning(action.running))
-            Action.ToggleTimersDelayed -> flow {
-                emit(Mutation.DelayedToggleWaiting(true))
-                delay(5000)
-                emit(Mutation.ToggleTimers)
-                emit(Mutation.DelayedToggleWaiting(false))
-            }
-
-            Action.ResetTimers -> flowOf(Mutation.ResetTimers)
-
-            Action.TickNormal -> flowOf(Mutation.TickNormal)
-            Action.TickStarted -> flowOf(Mutation.TickStarted)
-            Action.TickResumed -> flowOf(Mutation.TickResumed)
         }
-    }
+
+    @OptIn(ObsoleteCoroutinesApi::class)
+    private val tickerBroadcastChannel =
+        ticker(
+            delayMillis = 1000,
+            initialDelayMillis = 0
+        ).broadcast(Channel.CONFLATED)
 
     val reducer: Reducer<State, Mutation> = { state, mutation ->
         when (mutation) {
-            is Mutation.SetTimersRunning -> state.copy(timersRunning = mutation.running)
-            is Mutation.DelayedToggleWaiting -> state.copy(delayedToggleWaiting = mutation.waiting)
-            Mutation.TickNormal -> state.copy(normalCounter = state.normalCounter + 1)
-            Mutation.TickStarted -> state.copy(startedCounter = state.startedCounter + 1)
-            Mutation.TickResumed -> state.copy(resumedCounter = state.resumedCounter + 1)
-            Mutation.ResetTimers -> state.copy(normalCounter = 0, startedCounter = 0, resumedCounter = 0)
-            Mutation.ToggleTimers -> state.copy(timersRunning = state.timersRunning.not())
+            Mutation.Tick -> state.copy(counter = state.counter + 1)
         }
     }
 
     fun create(coroutineScope: CoroutineScope) =
         MVFlow(
             State(),
-            handler,
+            createHandler(),
             reducer,
             coroutineScope,
-            defaultLogger = { Log.d("MVFLOW", it) }
+            defaultLogger = { Log.d("MYAPP", it) }
         )
 }

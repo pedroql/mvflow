@@ -3,106 +3,91 @@ package net.pedroloureiro.mvflow.samples.android.screens.lifecycle
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import android.util.Log
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.broadcast
-import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import net.pedroloureiro.mvflow.MVFlow
 import net.pedroloureiro.mvflow.samples.android.databinding.LifecycleActivityBinding
 import net.pedroloureiro.mvflow.samples.android.screens.dummydialog.DummyDialogActivity
 import net.pedroloureiro.mvflow.samples.android.screens.lifecycle.LifecycleMVFlow.Action
-import net.pedroloureiro.mvflow.samples.android.screens.lifecycle.LifecycleMVFlow.Effect
 import net.pedroloureiro.mvflow.samples.android.screens.lifecycle.LifecycleMVFlow.State
 
 class LifecycleActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        logLifeCycle(if (savedInstanceState == null) "onCreate" else "onCreate with saved instance state")
         title = "Advanced lifecycle"
         val binding = LifecycleActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val view = object : MVFlow.View<State, Action> {
-            override fun render(state: State) {
-                binding.normalCounter.text = state.normalCounter.toString()
-                binding.startedCounter.text = state.startedCounter.toString()
-                binding.resumedCounter.text = state.resumedCounter.toString()
+        /*
+        Note: this is not the normal way to use this library. This is just a contrived example to show the difference
+        between launch and launchWhenResumed (and other similar methods)
+         */
+        val viewNormal = StateActionView(binding.normalCounter, "normal")
+        val mvFlowNormal = LifecycleMVFlow.create(lifecycleScope)
+        val viewStarted = StateActionView(binding.startedCounter, "started")
+        val mvFlowStarted = LifecycleMVFlow.create(lifecycleScope)
+        val viewResumed = StateActionView(binding.resumedCounter, "resumed")
+        val mvFlowResumed = LifecycleMVFlow.create(lifecycleScope)
 
-                binding.timersRunning.isChecked = state.timersRunning
-
-                binding.delayedToggleTimers.isEnabled = state.delayedToggleWaiting.not()
-                binding.toggleProgressBar.visibility = if (state.delayedToggleWaiting) View.VISIBLE else View.INVISIBLE
-            }
-
-            override fun actions(): Flow<Action> = callbackFlow {
-                binding.delayedToggleTimers.setOnClickListener {
-                    offer(Action.ToggleTimersDelayed)
-                }
-                binding.openDialog.setOnClickListener {
-                    offer(Action.OpenDialog)
-                }
-                binding.resetTimers.setOnClickListener {
-                    offer(Action.ResetTimers)
-                }
-                binding.timersRunning.setOnCheckedChangeListener { _, checked ->
-                    offer(Action.SetTimers(checked))
-                }
-
-                // these are not really actions coming from the view, but a proof of concept to allow to see the
-                // different ways you can use lifecycles to observe state updates how you want them.
-                //
-                // This sample highlighted some issues with the current API and we will address that soon.
-                val ticker = tickerBroadcastChannel()
-                lifecycleScope.launchWhenResumed {
-                    ticker.openSubscription().consumeEach {
-                        offer(Action.TickResumed)
-                    }
-                }
-
-                lifecycleScope.launch {
-                    ticker.openSubscription().consumeEach {
-                        offer(Action.TickNormal)
-                    }
-                }
-                lifecycleScope.launchWhenStarted {
-                    ticker.openSubscription().consumeEach {
-                        offer(Action.TickStarted)
-                    }
-                }
-                awaitClose()
-            }
+        val initialActions = listOf(Action.StartCounter)
+        lifecycleScope.launch {
+            mvFlowNormal.takeView(this, viewNormal, initialActions)
+        }
+        lifecycleScope.launchWhenStarted {
+            mvFlowStarted.takeView(this, viewStarted, initialActions)
+        }
+        lifecycleScope.launchWhenResumed {
+            mvFlowResumed.takeView(this, viewResumed, initialActions)
         }
 
-        val mvFlow = LifecycleMVFlow.create(lifecycleScope)
-        lifecycleScope.launch {
-            mvFlow.takeView(this, view)
-        }
-
-        lifecycleScope.launch {
-            mvFlow.observeEffects().filterIsInstance<Effect.OpenDialog>()
-                .collect {
-                    DummyDialogActivity.launch(this@LifecycleActivity)
-                }
+        binding.openDialog.setOnClickListener {
+            DummyDialogActivity.launch(this)
         }
     }
 
-    @OptIn(ObsoleteCoroutinesApi::class)
-    private fun tickerBroadcastChannel(): BroadcastChannel<Unit> {
-        return ticker(
-            delayMillis = 1000,
-            initialDelayMillis = 0
-        ).broadcast(capacity = Channel.CONFLATED)
+    class StateActionView(private val textView: TextView, private val name: String) : MVFlow.View<State, Action> {
+        override fun render(state: State) {
+            Log.d("MYAPP", "lifecycle counter updated for $name with value ${state.counter}")
+            textView.text = state.counter.toString()
+        }
+
+        override fun actions(): Flow<Action> = emptyFlow()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        logLifeCycle("onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logLifeCycle("onResume")
+    }
+
+    override fun onPause() {
+        logLifeCycle("onPause")
+        super.onPause()
+    }
+
+    override fun onStop() {
+        logLifeCycle("onStop")
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        logLifeCycle("onDestroy")
+        super.onDestroy()
+    }
+
+    private fun logLifeCycle(step: String) {
+        Log.d("MYAPP", "lifecycle step $step ${javaClass.simpleName}@${hashCode().toString(16)}")
     }
 
     companion object {

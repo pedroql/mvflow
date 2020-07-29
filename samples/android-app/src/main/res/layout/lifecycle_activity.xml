@@ -16,24 +16,8 @@
             android:text="@string/lifecycle_open_dialog"
             android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:layout_marginLeft="16dp" android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView11"/>
-        <Button
-            android:id="@+id/delayedToggleTimers"
-            android:text="@string/lifecyle_toggle_timers_delayed"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:enabled="false" app:layout_constraintStart_toStartOf="@+id/textView9"
-            app:layout_constraintTop_toBottomOf="@+id/textView9"/>
-        <Switch
-            android:id="@+id/timersRunning"
-            android:text="@string/lifecycle_timers_running"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:switchPadding="16dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:layout_marginTop="16dp"
-            android:enabled="false" app:layout_constraintStart_toStartOf="@+id/textView4"
-            app:layout_constraintTop_toBottomOf="@+id/textView7"/>
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/textView7"/>
         <TextView
             android:id="@+id/startedCounter"
             tools:text="0"
@@ -80,15 +64,6 @@
             android:layout_marginStart="16dp" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
         <TextView
-            android:id="@+id/textView9"
-            android:text="@string/lifecycle_timers_switch_explanation"
-            android:layout_width="0dp" android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="16dp" android:layout_marginStart="16dp"
-            android:layout_marginRight="16dp" android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/timersRunning"/>
-        <TextView
             android:id="@+id/textView10"
             android:text="@string/lifecycle_open_dialog_explanation"
             android:layout_width="0dp" android:layout_height="wrap_content"
@@ -97,32 +72,22 @@
             android:layout_marginTop="8dp" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/openDialog"/>
-        <TextView
-            android:id="@+id/textView11"
-            android:text="@string/lifecycle_delayed_toggle_explanation"
-            android:layout_width="0dp" android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/textView10" app:layout_constraintStart_toStartOf="@+id/delayedToggleTimers"
-            app:layout_constraintTop_toBottomOf="@+id/delayedToggleTimers"/>
         <androidx.constraintlayout.widget.Barrier android:id="@+id/barrier4"
                                                   android:layout_width="wrap_content"
                                                   android:layout_height="wrap_content"
                                                   app:barrierDirection="end"
                                                   app:constraint_referenced_ids="textView2,textView4,textView7"
-        />
-        <ProgressBar
-            android:id="@+id/toggleProgressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:layout_marginLeft="32dp"
-            android:layout_marginStart="32dp" app:layout_constraintBottom_toBottomOf="@+id/delayedToggleTimers"
-            app:layout_constraintStart_toEndOf="@+id/delayedToggleTimers" app:layout_constraintTop_toTopOf="@+id/delayedToggleTimers"/>
-        <Button
-            android:id="@+id/resetTimers"
-            android:text="@string/lifecycle_reset_timers"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                                  tools:layout_editor_absoluteX="157dp"/>
+        <TextView
+            android:id="@+id/textView5"
+            android:text="@string/lifecycle_explanation"
+            android:layout_width="0dp" android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="@+id/textView10" app:layout_constraintTop_toBottomOf="@+id/textView10"/>
+            android:layout_marginLeft="16dp" android:layout_marginStart="16dp"
+            android:layout_marginRight="16dp" android:layout_marginEnd="16dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView10"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
