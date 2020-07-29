@@ -51,7 +51,7 @@ object MVFlowSamples {
         val good: Handler<State, Action, Mutation> = { _, _ ->
             // simulate long work
             delay(1_000)
-            emit(Mutation.Add(1)
+            emit(Mutation.Add(1))
         }
         // [good] always works. Even if 3 actions are emitted quickly, each one will emit an adition of 1 and the
         // reducer will work properly
@@ -61,7 +61,7 @@ object MVFlowSamples {
         val bad: Handler<State, Action, Mutation> = { state, _ ->
             // simulate long work
             delay(1_000)
-            emit(Mutation.SetValue(state.counter+1)
+            emit(Mutation.SetValue(state.counter+1))
         }
 
         // [bad] has a bug. If several actions are emitted in less than a second (the time it takes to do the long
@@ -86,7 +86,7 @@ object MVFlowSamples {
     }
 
     fun flow() {
-        class MyActivity : AppCompatActivity(), MviView<State> {
+        class MyActivity : AppCompatActivity(), MVFlow.View<State> {
             // could also be a Fragment, or a plain class you created.
             private val actionChannel = Channel<Action>()
 

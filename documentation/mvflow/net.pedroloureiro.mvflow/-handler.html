@@ -49,7 +49,7 @@ sealed class Mutation {
 val good: Handler&lt;State, Action, Mutation&gt; = { _, _ -&gt;
     // simulate long work
     delay(1_000)
-    emit(Mutation.Add(1)
+    emit(Mutation.Add(1))
 }
 // [good] always works. Even if 3 actions are emitted quickly, each one will emit an adition of 1 and the
 // reducer will work properly
@@ -59,7 +59,7 @@ val good: Handler&lt;State, Action, Mutation&gt; = { _, _ -&gt;
 val bad: Handler&lt;State, Action, Mutation&gt; = { state, _ -&gt;
     // simulate long work
     delay(1_000)
-    emit(Mutation.SetValue(state.counter+1)
+    emit(Mutation.SetValue(state.counter+1))
 }
 
 // [bad] has a bug. If several actions are emitted in less than a second (the time it takes to do the long
