@@ -306,6 +306,15 @@ private fun <State, Action, Mutation> Handler<State, Action, Mutation>.asHandler
     }
 // @formatter=on
 
+/**
+ * Constructs a MVFlow object.
+ *
+ * @param mvflowCoroutineScope the [CoroutineScope] of this object. This means that this scope will be cancelled when
+ * this object should go away (it needs to be cancelled outside this object). This way any on-going work will be
+ * cancelled which prevents leaks and avoidable work from being executed.
+ *
+ * @param defaultLogger a logger that can be used to show what is happening inside the object.
+ */
 fun <State, Action, Mutation> MVFlow(
     initialState: State,
     handler: Handler<State, Action, Mutation>,
@@ -321,6 +330,15 @@ fun <State, Action, Mutation> MVFlow(
         defaultLogger
     )
 
+/**
+ * Constructs a MVFlow object with side effects.
+ *
+ * @param mvflowCoroutineScope the [CoroutineScope] of this object. This means that this scope will be cancelled when
+ * this object should go away (it needs to be cancelled outside this object). This way any on-going work will be
+ * cancelled which prevents leaks and avoidable work from being executed.
+ *
+ * @param defaultLogger a logger that can be used to show what is happening inside the object.
+ */
 fun <State, Action, Mutation, Effect> MVFlow(
     initialState: State,
     handler: HandlerWithEffects<State, Action, Mutation, Effect>,

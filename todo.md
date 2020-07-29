@@ -4,7 +4,8 @@ In no particular order
 
 ## Documentation
 
-* Ensure documenting public methods is required by CI (needs to wait for next version of dokka plugin)
+* Ensure documenting public methods is required by CI (needs to wait for version 0.11 of plugin 
+[dokka/pull/955](https://github.com/Kotlin/dokka/pull/955) )
 
 * Write docs in a github.io page
 
