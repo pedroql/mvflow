@@ -32,7 +32,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build (Compile, lint, checkApi, test, etc)
-      run: ./gradlew build
+      run: ./gradlew --no-daemon build
     - name: Archive build reports artifacts
       if: always()
       uses: actions/upload-artifact@v2
@@ -42,7 +42,7 @@ jobs:
     - name: Ensure documentation is up to date
       id: doc-check
       run: |
-        ./gradlew dokka
+        ./gradlew --no-daemon dokka
         # the next command will list documentation files out of date. Please run ./gradlew dokka
         git diff --exit-code --name-only || echo ::set-output name=status::failure
     - name: Check which documentation files have changed
