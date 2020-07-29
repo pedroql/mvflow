@@ -32,7 +32,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build (Compile, lint, checkApi, test, etc)
-      run: ./gradlew --no-daemon build
+      run: ./gradlew build
     - name: Archive build reports artifacts
       if: always()
       uses: actions/upload-artifact@v2
@@ -42,15 +42,21 @@ jobs:
     - name: Ensure documentation is up to date
       id: doc-check
       run: |
-        ./gradlew --no-daemon dokka
+        ./gradlew dokka
         # the next command will list documentation files out of date. Please run ./gradlew dokka
-        git diff --exit-code --name-only
+        git diff --exit-code --name-only || echo ::set-output name=status::failure
     - name: Check which documentation files have changed
-      if: steps.doc-check.outcome == 'failure'
+      if: steps.doc-check.outputs.status == 'failure'
       run: git diff > git-diff.txt
     - name: Upload diff artifact of the documentation files
       uses: actions/upload-artifact@v2
-      if: steps.doc-check.outcome == 'failure'
+      if: steps.doc-check.outputs.status == 'failure'
       with:
         name: git-diff
         path: git-diff.txt
+    - name: Fail build due to documentation being out of date
+      if: steps.doc-check.outputs.status == 'failure'
+      run: |
+        rm git-diff.txt
+        echo Documentation is out of date, you need to run ./gradlew dokka and try again. The following files have changed:
+        git diff --exit-code --name-only
