@@ -6,10 +6,10 @@ class ViewFake<State, Action>(
     actionsFlow: Flow<Action>
 ) {
     val states = mutableListOf<State>()
-    val view: MviView<State, Action>
+    val view: MVFlow.View<State, Action>
 
     init {
-        view = object : MviView<State, Action> {
+        view = object : MVFlow.View<State, Action> {
             override fun render(state: State) {
                 // accumulate all the received states in this property
                 states.add(state)

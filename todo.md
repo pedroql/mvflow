@@ -47,80 +47,18 @@ Not sure we will do those things, but keeping track of some possibilities. Feedb
   
   * This would help with the ability to map View state and actions, in order to enable reuse
   
-* The `MviView` interface maybe should be defined inside MVFLow
-
 * Should the external effect channel be conflated? Should it be a broadcast channel (which doesn't start storing values 
 until the first observer subscribes)? Should it be a plain Channel which is not shareable?
    
 ## Core
 
-* Decide between View implementations 1 or 2 (or 3)
-
-```kotlin
-interface MviView1<State, Action> {
-
-    fun render(state: State)
-
-    fun actions(): Flow<Action>
-   
-    // Probably useful
-    fun getCoroutineScope(): CoroutineScope
-}
-
-interface MviView2<State, Action> {
-    // the following method could have a better name
-    fun receive(stateFlow: Flow<State>)
-
-    fun actions(): Flow<Action>
-}
-```
-
-`View1` is probably more natural to think about when you are implementing a view. On the other hand
- `View2` has the advantage automatically unsubscribing from state updates when the view is gone 
- (through coroutine cancellation mechanism). So `View2` is a bit more correct from a Coroutine
-  standpoint, and is less likely to allow errors made by consumers of the library.   
-  
-On the other hand, we can try to implement a default method in the second interface to get the best
- of both worlds. Something like:
- 
-```kotlin
-interface MviView3<State, Action> {
-    fun render(state: State)
-
-    fun actions(): Flow<Action>
-
-    fun getCoroutineScope(): CoroutineScope
-
-    // the following method could have a better name
-    fun receive(stateFlow: Flow<State>) {
-        getCoroutineScope().launch(Dispatchers.Main) {
-            stateFlow.collect {state ->
-                render(state)
-            }
-        }
-    }
-}
-``` 
-
-But this last example also raises the question: do we really need to have `receive` part of the API
- or can we just write that implementation in the library as an implementation detail?
-
-Having it in the API allows the view to customize how it receives updates. For example, it can put a
- debounce call and can choose the dispatcher. On the other hand it's a bit of a complication that 
- most people should not need.
-
-* Maybe `MviView` should be defined inside `MVFlow` class and renamed to simply `View`
-
-* Think about a way to allow a `MviView<A,B>.` to be converted to a `MviView<C, D>`
+* Think about a way to allow a `View<A,B>.` to be converted to a `View<C, D>`
  
 This can greatly help reusing views. Each view could declare its own generics and in each place you
  want to use them you map your current state into the state of this view and also map the view 
  actions into the actions in your particular loop. 
   
 ---
-
-* Maybe MVFlow should use a hypervisor scheduler. If one child fails, do we want the others to be
- cancelled? (Maybe this could be a parameter) 
  
 * Probably should call `buffer` in the actions so that slow handlers don't block whatever is 
 emitting actions
@@ -138,9 +76,3 @@ emitting actions
    updating the state.
    * Spend more time trying to make sure the test ```fun `reducer calls are serialized`()``` actually fails when you 
    remove the Mutex 
-     
-## Android
-
-* Ability to suspend state updates when the app is not resumed (or started)
-
-* Integration with `LiveData`

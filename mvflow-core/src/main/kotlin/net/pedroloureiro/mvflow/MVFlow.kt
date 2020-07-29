@@ -99,30 +99,6 @@ typealias Reducer<State, Mutation> = (State, Mutation) -> State
 typealias Logger = (String) -> Unit
 
 /**
- * An interface for a View used in MVFlow.
- *
- * @param State a class that defines what this class shows.
- * @param Action a class, usually a sealed class, that contains the information about all the interactions that can
- * happen inside this view.
- */
-interface MviView<State, Action> {
-    /**
-     * Function that renders the UI based on [state].
-     */
-    fun render(state: State)
-
-    /**
-     * Function to return a [kotlinx.coroutines.flow.Flow] of the actions that the user makes inside this view.
-     *
-     * You can create this in many ways, one suggestion is using
-     * [FlowBinding](https://github.com/ReactiveCircus/FlowBinding) or doing it yourself like in this sample:
-     *
-     * @sample MVFlowSamples.flow
-     */
-    fun actions(): Flow<Action>
-}
-
-/**
  * Interface that defines all the MVI logic of this library.
  *
  * @param State a class that holds all information about the current state represented in this MVFlow object.
@@ -131,7 +107,7 @@ interface MviView<State, Action> {
  */
 interface MVFlow<State, Action> {
     /**
-     * Call this method when a new [MviView] is ready to render the state of this MVFlow object.
+     * Call this method when a new [View] is ready to render the state of this MVFlow object.
      *
      * @param viewCoroutineScope the scope of the view. This will be used to launch a coroutine which will run listening
      * to actions until this scope is cancelled.
@@ -143,7 +119,7 @@ interface MVFlow<State, Action> {
      */
     fun takeView(
         viewCoroutineScope: CoroutineScope,
-        view: MviView<State, Action>,
+        view: View<State, Action>,
         initialActions: List<Action> = emptyList(),
         logger: Logger? = null
     )
@@ -151,7 +127,7 @@ interface MVFlow<State, Action> {
     /**
      * This method adds an external source of actions into the MVFlow object.
      *
-     * This might be useful if you need to update your state based on things happening outside the [MviView], such as
+     * This might be useful if you need to update your state based on things happening outside the [View], such as
      * timers, external database updates, push notifications, etc.
      *
      * @param actions the flow of events. You might want to have a look at
@@ -163,6 +139,30 @@ interface MVFlow<State, Action> {
         actions: Flow<Action>,
         logger: Logger? = null
     )
+
+    /**
+     * An interface for a View used in MVFlow.
+     *
+     * @param State a class that defines what this class shows.
+     * @param Action a class, usually a sealed class, that contains the information about all the interactions that can
+     * happen inside this view.
+     */
+    interface View<State, Action> {
+        /**
+         * Function that renders the UI based on [state].
+         */
+        fun render(state: State)
+
+        /**
+         * Function to return a [kotlinx.coroutines.flow.Flow] of the actions that the user makes inside this view.
+         *
+         * You can create this in many ways, one suggestion is using
+         * [FlowBinding](https://github.com/ReactiveCircus/FlowBinding) or doing it yourself like in this sample:
+         *
+         * @sample MVFlowSamples.flow
+         */
+        fun actions(): Flow<Action>
+    }
 }
 
 /**
@@ -220,7 +220,7 @@ private class MVFlowImpl<State, Action, Mutation, Effect>(
 
     override fun takeView(
         viewCoroutineScope: CoroutineScope,
-        view: MviView<State, Action>,
+        view: MVFlow.View<State, Action>,
         initialActions: List<Action>,
         logger: Logger?
     ) {
@@ -241,7 +241,7 @@ private class MVFlowImpl<State, Action, Mutation, Effect>(
 
     private fun sendStateUpdatesIntoView(
         callerCoroutineScope: CoroutineScope,
-        view: MviView<State, Action>,
+        view: MVFlow.View<State, Action>,
         logger: Logger
     ) {
         state
@@ -260,7 +260,7 @@ private class MVFlowImpl<State, Action, Mutation, Effect>(
 
     private fun handleViewActions(
         coroutineScope: CoroutineScope,
-        view: MviView<State, Action>,
+        view: MVFlow.View<State, Action>,
         initialActions: List<Action>,
         logger: Logger
     ) {

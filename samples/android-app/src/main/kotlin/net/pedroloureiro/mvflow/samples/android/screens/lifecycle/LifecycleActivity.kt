@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
-import net.pedroloureiro.mvflow.MviView
+import net.pedroloureiro.mvflow.MVFlow
 import net.pedroloureiro.mvflow.samples.android.databinding.LifecycleActivityBinding
 import net.pedroloureiro.mvflow.samples.android.screens.dummydialog.DummyDialogActivity
 import net.pedroloureiro.mvflow.samples.android.screens.lifecycle.LifecycleMVFlow.Action
@@ -33,7 +33,7 @@ class LifecycleActivity : AppCompatActivity() {
         val binding = LifecycleActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val view = object : MviView<State, Action> {
+        val view = object : MVFlow.View<State, Action> {
             override fun render(state: State) {
                 binding.normalCounter.text = state.normalCounter.toString()
                 binding.startedCounter.text = state.startedCounter.toString()

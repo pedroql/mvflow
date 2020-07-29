@@ -177,7 +177,7 @@ internal class MVFlowTest {
                 defaultLogger = { debug(it) }
             )
 
-            val view = object : MviView<Pair<Int, Int>, Action> {
+            val view = object : MVFlow.View<Pair<Int, Int>, Action> {
                 override fun render(state: Pair<Int, Int>) {
                     values.add(state)
                     debug("state at $currentTime")

@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import net.pedroloureiro.mvflow.MVFlow
-import net.pedroloureiro.mvflow.MviView
 import net.pedroloureiro.mvflow.samples.android.databinding.HomeActivityBinding
 import net.pedroloureiro.mvflow.samples.android.screens.counter.SimpleCounterActivity
 import net.pedroloureiro.mvflow.samples.android.screens.lifecycle.LifecycleActivity
@@ -52,7 +51,7 @@ class HomeActivity : AppCompatActivity() {
             mvflowCoroutineScope = lifecycleScope
         )
 
-        val view = object : MviView<State, Action> {
+        val view = object : MVFlow.View<State, Action> {
             override fun render(state: State) {
                 // nothing to do
             }

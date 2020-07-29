@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import net.pedroloureiro.mvflow.HandlerWithEffects
 import net.pedroloureiro.mvflow.MVFlow
-import net.pedroloureiro.mvflow.MviView
 import net.pedroloureiro.mvflow.Reducer
 import kotlin.random.Random
 
@@ -38,7 +37,7 @@ object CounterMVFlow {
     }
 
     // this interface just exists for a nicer syntax, it's not required
-    interface View : MviView<State, Action>
+    interface View : MVFlow.View<State, Action>
 
     val handler: HandlerWithEffects<State, Action, Mutation, Effect> = { _, action, effects ->
         when (action) {
