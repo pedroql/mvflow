@@ -1,0 +1,12 @@
+<script>
+// Script to look for code fences and add the class "expand" to them when they need to scroll horizontally
+var elements = document.getElementsByTagName("pre");
+function isHorizontallyScrollable(element) {
+    return element.scrollWidth > element.clientWidth;
+};
+Array.prototype.forEach.call(elements, function(el, i){
+  if(isHorizontallyScrollable(el)) {
+     el.classList.add("expand");
+  }
+});
+</script>

@@ -1,3 +1,11 @@
+/*
+
+list of changes:
+
+1. replace #write with #content
+2. comment out blocks regarding code fences
+
+*/
 :root {
     --side-bar-bg-color: #fafafa;
     --control-text-color: #777;
@@ -31,6 +39,14 @@
     font-style: italic;
     font-weight: bold;
     src: local('Open Sans Bold Italic'),url('./github/700i.woff') format('woff')
+}
+
+/* Added this font for better code snippets */
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-style: monospace;
+    font-weight: normal;
+    src: local('JetBrainsMono-Regular'),url('./jetbrains/JetBrainsMono-Regular.woff') format('woff')
 }
 
 html {
@@ -257,15 +273,42 @@ table tr td:last-child {
 }
 
 .md-fences,
-code,
+pre, /* replaced 'code' with 'pre' */
 tt {
     border: 1px solid #ddd;
     background-color: #f8f8f8;
     border-radius: 3px;
-    padding: 0;
-    font-family: Consolas, "Liberation Mono", Courier, monospace;
-    padding: 2px 4px 0px 4px;
-    font-size: 0.9em;
+    /*padding: 0;*/
+    /* added JetBrains Mono font-family */
+    font-family: "JetBrains Mono", Consolas, "Liberation Mono", Courier, monospace;
+    /*padding: 2px 4px 0px 4px;*/
+    font-size: 13px;
+
+    /* added remaining attributes from .md-fences */
+    margin-bottom: 15px;
+    margin-top: 15px;
+    /*
+    padding: 0.2em 1em;
+    padding-top: 8px;
+    padding-bottom: 6px;*/
+    padding: 0.62em 1em 0.62em 1em;
+
+    overflow-x: auto;
+
+}
+
+/* Added this block to allow expanding long (wide) blocks of code */
+pre.expand:hover {
+  transition-duration: 250ms;
+  margin-right:-30vw;
+  max-width:1600px;
+  padding-right: 30px;
+}
+
+/* added this code style, based what was applied to code from the previous block */
+code {
+    /* added JetBrains Mono font-family */
+    font-family: "JetBrains Mono", Consolas, "Liberation Mono", Courier, monospace;
 }
 
 .md-fences {
