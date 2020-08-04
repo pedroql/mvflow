@@ -1,0 +1,7 @@
+baseURL = "https://pedroql.github.io/mvflow/"
+languageCode = "en-GB"
+title = "MFLow a simple MVI library using Kotlin flows"
+theme = "mypurecss"
+
+[params]
+    custom_css = ["css/github.css"]
