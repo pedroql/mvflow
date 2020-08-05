@@ -44,7 +44,7 @@ list of changes:
 /* Added this font for better code snippets */
 @font-face {
     font-family: 'JetBrains Mono';
-    font-style: monospace;
+    font-style: normal;
     font-weight: normal;
     src: local('JetBrainsMono-Regular'),url('./jetbrains/JetBrainsMono-Regular.woff') format('woff')
 }
@@ -87,12 +87,22 @@ h4,
 h5,
 h6 {
     position: relative;
-    margin-top: 1rem;
+    margin-top: 2rem; /* This used to be margin-top: 1rem; */
     margin-bottom: 1rem;
     font-weight: bold;
     line-height: 1.4;
     cursor: text;
 }
+
+/* Added these two for better spacing on consecutive headers */
+h1 + h2 {
+    margin-top: 0px;
+}
+
+h2 + h3 {
+    margin-top: 0px;
+}
+
 h1:hover a.anchor,
 h2:hover a.anchor,
 h3:hover a.anchor,
