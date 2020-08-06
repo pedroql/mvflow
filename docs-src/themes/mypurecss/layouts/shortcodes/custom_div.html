@@ -1,0 +1,7 @@
+{{ if .IsNamedParams }}
+<div {{ with .Get "class"}} class="{{.}}"{{ end }} {{ with .Get "id" | }} id="{{.}}"{{ end }}>
+{{ else }}
+<div {{ with .Get 0 }} class="{{.}}"{{ end }} {{ with .Get 1 }} id="{{.}}"{{ end }}>
+{{ end }}
+{{ .Inner | markdownify }}
+</div>

@@ -103,6 +103,10 @@ h2 + h3 {
     margin-top: 0px;
 }
 
+h2 {
+    margin-top: 4rem;
+}
+
 h1:hover a.anchor,
 h2:hover a.anchor,
 h3:hover a.anchor,
@@ -288,21 +292,15 @@ tt {
     border: 1px solid #ddd;
     background-color: #f8f8f8;
     border-radius: 3px;
-    /*padding: 0;*/
     /* added JetBrains Mono font-family */
     font-family: "JetBrains Mono", Consolas, "Liberation Mono", Courier, monospace;
-    /*padding: 2px 4px 0px 4px;*/
     font-size: 13px;
 
     /* added remaining attributes from .md-fences */
     margin-bottom: 15px;
     margin-top: 15px;
-    /*
-    padding: 0.2em 1em;
-    padding-top: 8px;
-    padding-bottom: 6px;*/
-    padding: 0.62em 1em 0.62em 1em;
 
+    padding: 0.62em 1em 0.62em 1em;
     overflow-x: auto;
 
 }
@@ -453,4 +451,20 @@ header, .context-menu, .megamenu-content, footer{
 
 .md-lang {
     color: #b4654d;
+}
+
+/* Added these classes for extra customization */
+.callout {
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    padding: 0.62em 0.2em 0.62em 1em;
+    border-radius: 3px;
+}
+
+/* Tweak the looks of code fences inside callouts (the background colours don't match well) */
+.callout pre {
+    border-color: #ccc;
+    background-color: #ddd;
 }

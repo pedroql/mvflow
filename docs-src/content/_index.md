@@ -49,8 +49,6 @@ Any MVI library needs to accomplish the following tasks:
 * Detect user interactions (Intent in MVI)
 
  * Process user intents, potentially mutating the current state  
- 
-&nbsp;
 
 We believe that coroutines and flows are extremely powerful concepts that can be applied to this problem. 
 This gives a very powerful API with a small and simple surface.
@@ -79,10 +77,6 @@ manipulate your data.
 
 MVFlow plays well with Android's ViewModel, but you don't have to use it.  
 
-&nbsp;
-
-&nbsp;
-
 ## What if I am new to MVI, coroutines, or flows?
 
 TODO - find links 
@@ -90,9 +84,6 @@ TODO - find links
 * Coroutines official guide
 * [Flow official guide](https://kotlinlang.org/docs/reference/coroutines/flow.html)
 
-&nbsp;
-
-&nbsp;
 
 ## API
 
@@ -349,15 +340,14 @@ lifecycleScope.launchWhenResumed { // this: CoroutineScope
 }
  ``` 
 
-As a bonus, this is a way to ensure you only do navigation transations only during the resumed state, saving you from the dreaded
+{{< custom_div class="callout" >}}
 
+**Bonus:** Because your flow collector is only called while the activity is resumed, this is a great way to ensure you only do fragment transactions during the allowed lifecycle states, protecting you from the dreaded
 ```
 Exception java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
 ```
 
-&nbsp;
-
-&nbsp;
+{{< / custom_div >}}
 
 ## Additional Reading
 
@@ -370,10 +360,6 @@ There are some additional topics you might want to read about:
 * Implementing the view flow
 
 TODO: write posts and add links here (or other sections of the website)
-
-&nbsp;
-
-&nbsp;
 
 ## Inspiration
 
