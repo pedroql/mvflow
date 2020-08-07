@@ -468,13 +468,13 @@ header, .context-menu, .megamenu-content, footer{
 .sidebar {
     background: rgb(61, 79, 93);
     color: #fff;
+    transition: opacity 400ms;
 }
 
 @media (min-width: 48em) {
     .content {
         margin-left: 25% !important;
         z-index: 100;
-        background: #fff;
     }
 
     .sidebar {
@@ -483,17 +483,31 @@ header, .context-menu, .megamenu-content, footer{
         bottom: 0;
         overflow-y:auto;
     }
+
+    nav li a.active  {
+        background: #0004;
+        animation-duration: 200ms;
+    }
 }
 
 /* Customisation to the looks of the TOC */
+.toc-container h3 {
+    padding-left: 1em;
+    display: block;
+}
+
+@media (min-width: 48em) {
+    .toc-container h3 {
+        display: none;
+    }
+}
 
 .toc-container {
-
   display: table;
   height: 100%;
 }
 
-nav {
+.toc-container > * {
   display: table-cell;
   vertical-align: middle;
 }
@@ -518,11 +532,12 @@ nav a:focus {
     text-decoration: underline;
 }
 
-nav li a.active  {
-	background: #0004;
-    animation-duration: 200ms;
-}
-
 nav a.hide-from-toc {
     display: none;
+}
+
+@media (min-width: 48em) {
+    .hide-for-horizontal-scroll.sidebar {
+        opacity: 0;
+    }
 }

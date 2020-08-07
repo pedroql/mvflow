@@ -7,7 +7,10 @@
 
             <div class="sidebar pure-u-1 pure-u-md-1-4">
                 <div class="toc-container">
-                    {{ .TableOfContents }}
+                    <div> {{/* This last div is required otherwise content would be laid out horizontally */}}
+                        <h3>Jump to section:</h3>
+                        {{ .TableOfContents }}
+                    </div>
                 </div>
             </div>
 
