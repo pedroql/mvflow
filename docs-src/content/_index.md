@@ -37,8 +37,7 @@ The library introduces few - if any - new concepts outside MVI,
 If you familiar with those concepts, you can start using the library without a problem; if you are new to some of these
 concepts, you will be able to apply those concepts outside this library too.
 
-### Coroutines and flows are powerful abstractions
-
+### Coroutines and flows as powerful abstractions
 
 Any MVI library needs to accomplish the following tasks:
 
@@ -48,10 +47,14 @@ Any MVI library needs to accomplish the following tasks:
 
 * Detect user interactions (Intent in MVI)
 
- * Process user intents, potentially mutating the current state  
+* Process user intents, potentially mutating the current state  
+
+&nbsp;
+
+&nbsp;
 
 We believe that coroutines and flows are extremely powerful concepts that can be applied to this problem. 
-This gives a very powerful API with a small and simple surface.
+They enable us to build a very powerful API with a small and simple surface.
 
 Here are some advantages that they bring:
 

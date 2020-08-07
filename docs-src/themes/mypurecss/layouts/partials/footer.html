@@ -10,3 +10,37 @@ Array.prototype.forEach.call(elements, function(el, i){
   }
 });
 </script>
+
+<script src="https://unpkg.com/in-view@0.6.1/dist/in-view.min.js"></script>
+<script>
+var lastElement = null;
+const handleView = item => {
+  console.log("Handle");
+  console.log(item);
+  const linkEl = document.querySelector(`a[href='#${item.id}']`);
+  console.log(linkEl);
+
+  let offsetHeight = 0.6*(window.innerHeight);
+  inView.offset({
+    bottom:offsetHeight
+  });
+
+  inView(`#${item.id}`)
+    .on("enter", () => {
+        console.log("Entering");
+        if( lastElement != null) {
+            lastElement.classList.remove('active');
+        }
+        if( linkEl != null) {
+            linkEl.classList.add('active');
+        }
+        lastElement = linkEl;
+        console.log(linkEl);
+
+  })
+};
+
+// Apply method on each DOM element
+document.querySelectorAll("#content h1, #content h2, #content h3").forEach(handleView);
+
+</script>

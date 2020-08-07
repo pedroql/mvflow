@@ -468,3 +468,50 @@ header, .context-menu, .megamenu-content, footer{
     border-color: #ccc;
     background-color: #ddd;
 }
+
+/* Added to achieve the side bar on the left (where we have the TOC) */
+
+.sidebar {
+    background: rgb(61, 79, 93);
+    color: #fff;
+}
+
+@media (min-width: 48em) {
+    .content {
+        margin-left: 25% !important;
+
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        overflow-y:auto;
+    }
+}
+
+/* Customisation to the looks of the TOC */
+
+nav ul {
+    list-style: none;
+    padding-left: 1em;
+}
+
+nav a {
+    background: transparent;
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 0.5em;
+
+    transition: background-color 0.5s ease;
+}
+nav a:hover,
+nav a:focus {
+    text-decoration: underline;
+}
+
+nav li a.active  {
+	background: #0004;
+    animation-duration: 200ms;
+}
