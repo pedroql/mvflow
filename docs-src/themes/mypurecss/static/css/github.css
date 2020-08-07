@@ -492,6 +492,17 @@ header, .context-menu, .megamenu-content, footer{
 
 /* Customisation to the looks of the TOC */
 
+.toc-container {
+
+  display: table;
+  height: 100%;
+}
+
+nav {
+  display: table-cell;
+  vertical-align: middle;
+}
+
 nav ul {
     list-style: none;
     padding-left: 1em;
