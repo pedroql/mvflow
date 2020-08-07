@@ -339,12 +339,6 @@ code {
   left: 8px;
 }
 
-@media screen and (min-width: 914px) {
-    /*body {
-        width: 854px;
-        margin: 0 auto;
-    }*/
-}
 @media print {
     html {
         font-size: 13px;
@@ -479,7 +473,8 @@ header, .context-menu, .megamenu-content, footer{
 @media (min-width: 48em) {
     .content {
         margin-left: 25% !important;
-
+        z-index: 100;
+        background: #fff;
     }
 
     .sidebar {
