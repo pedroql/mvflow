@@ -503,7 +503,8 @@ nav a {
     text-decoration: none;
     display: block;
     padding: 0.5em;
-
+    border-radius: 3px 0px 0px 3px;
+    /* this transition doesn't seem to work how it should... */
     transition: background-color 0.5s ease;
 }
 nav a:hover,
@@ -514,4 +515,8 @@ nav a:focus {
 nav li a.active  {
 	background: #0004;
     animation-duration: 200ms;
+}
+
+nav a.hide-from-toc {
+    display: none;
 }

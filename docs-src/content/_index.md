@@ -22,13 +22,12 @@ Check our [releases on github](https://github.com/pedroql/mvflow/releases) to fi
 We set off with the objective of creating a minimalistic library, simple yet with all the 
 capabilities you need.
 
-
-### Minimalistic yet complete
+### Minimalistic yet complete {.hide-from-toc}
 
 MVFlow has a very small API surface. It strives to be the smallest conceivable MVI library that could exist. 
 In just a few minutes you will know everything there is to know about the API! 
 
-### Simple
+### Simple {.hide-from-toc}
 
 The library introduces few - if any - new concepts outside MVI, 
 [Kotlin coroutines](https://kotlinlang.org/docs/reference/coroutines/basics.html), and 
@@ -37,7 +36,7 @@ The library introduces few - if any - new concepts outside MVI,
 If you familiar with those concepts, you can start using the library without a problem; if you are new to some of these
 concepts, you will be able to apply those concepts outside this library too.
 
-### Coroutines and flows as powerful abstractions
+### Coroutines and flows as powerful abstractions {.hide-from-toc}
 
 Any MVI library needs to accomplish the following tasks:
 
@@ -69,7 +68,7 @@ Here are some advantages that they bring:
   Read more about 
   [structured concurrency](https://kotlinlang.org/docs/reference/coroutines/basics.html#structured-concurrency); 
 
-### With MVFlow you are in control
+### With MVFlow you are in control  {.hide-from-toc}
 
 The library only gives you an implementation of MVI, but doesn't force you into specific patterns other than using MVI
 and coroutines.

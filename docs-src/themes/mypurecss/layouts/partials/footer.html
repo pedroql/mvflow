@@ -15,10 +15,12 @@ Array.prototype.forEach.call(elements, function(el, i){
 <script>
 var lastElement = null;
 const handleView = item => {
-  console.log("Handle");
-  console.log(item);
   const linkEl = document.querySelector(`a[href='#${item.id}']`);
-  console.log(linkEl);
+
+  if(item.classList.contains("hide-from-toc")) {
+    linkEl.classList.add("hide-from-toc");
+    return;
+  }
 
   let offsetHeight = 0.6*(window.innerHeight);
   inView.offset({
@@ -27,16 +29,13 @@ const handleView = item => {
 
   inView(`#${item.id}`)
     .on("enter", () => {
-        console.log("Entering");
-        if( lastElement != null) {
-            lastElement.classList.remove('active');
-        }
-        if( linkEl != null) {
-            linkEl.classList.add('active');
-        }
-        lastElement = linkEl;
-        console.log(linkEl);
-
+      if( lastElement != null) {
+        lastElement.classList.remove('active');
+      }
+      if( linkEl != null) {
+        linkEl.classList.add('active');
+      }
+      lastElement = linkEl;
   })
 };
 
