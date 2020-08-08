@@ -510,12 +510,28 @@ header, .context-menu, .megamenu-content, footer{
 .toc-container > div {
   display: table-cell;
   vertical-align: middle;
-  transition: opacity 400ms;
+  animation: fadeInFromNone 1s ease-out;
 }
 
 .toc-container.transparent > div {
-    opacity:0;
-    scroll: none;
+    display:none;
+}
+
+@keyframes fadeInFromNone {
+    0% {
+        display: none;
+        opacity: 0;
+    }
+
+    1% {
+        display: block;
+        opacity: 0;
+    }
+
+    100% {
+        display: block;
+        opacity: 1;
+    }
 }
 
 nav ul {
@@ -562,7 +578,6 @@ p code {
 /* play with using a border (stands out a lot more) or text decoration */
     text-decoration: underline dashed 2px #555;
     font-size: 90%;
-
 }
 
 p code:hover {
