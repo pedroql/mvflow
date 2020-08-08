@@ -52,4 +52,8 @@ const handleView = item => {
 // Apply method on each DOM element
 document.querySelectorAll("#content h1, #content h2, #content h3").forEach(handleView);
 
+// Now that we have hidden the links, we can show the contents
+var sidebarContent = document.querySelector(".toc-container.transparent");
+sidebarContent.classList.remove("transparent");
+
 </script>

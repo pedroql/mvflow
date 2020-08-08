@@ -9,6 +9,18 @@ In no particular order
 
 * Write docs in a github.io page
 
+  * Write basics of MVI and links to other beginner topics
+  
+  * Add some analytics (?)
+  
+  * Announce it!
+
+  * Put TOC inline with the content when on landscape
+  
+  * Optimize for SEO, run checks
+  
+  * See if I could integrate SASS / minify CSS/js
+
 * Write blog posts
 
 * Simplify readme in main project
@@ -37,6 +49,8 @@ same view for slightly different things. (This shows a good practice as well as 
 functionality to be developed)
 
 * Update the example using `launchWhenResumed` to use the new better approach
+
+* run https://github.com/plnice/can-i-drop-jetifier to see if can drop jetifier
 
 ## To consider
 

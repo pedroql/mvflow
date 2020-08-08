@@ -6,8 +6,11 @@
             {{- partial "header.html" . -}}
 
             <div class="sidebar pure-u-1 pure-u-md-1-4">
-                <div class="toc-container">
-                    <div> {{/* This last div is required otherwise content would be laid out horizontally */}}
+                {{/* transparent because we use javascript to hide some elements and only want to show it when
+                everything is ready (otherwise you can see a quick change when the page loads) */}}
+                <div class="toc-container transparent">
+                    {{/* One more div is required otherwise content would be laid out horizontally */}}
+                    <div>
                         <h3>Jump to section:</h3>
                         {{ .TableOfContents }}
                     </div>

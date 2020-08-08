@@ -507,9 +507,15 @@ header, .context-menu, .megamenu-content, footer{
   height: 100%;
 }
 
-.toc-container > * {
+.toc-container > div {
   display: table-cell;
   vertical-align: middle;
+  transition: opacity 400ms;
+}
+
+.toc-container.transparent > div {
+    opacity:0;
+    scroll: none;
 }
 
 nav ul {
@@ -540,4 +546,28 @@ nav a.hide-from-toc {
     .hide-for-horizontal-scroll.sidebar {
         opacity: 0;
     }
+}
+
+/* Customise the look of inline code */
+p code {
+    color: #555;
+/*     font-weight: bold; */
+    border: 1px;
+    padding: 0px 3px 0px 3px;
+/*     border-style:  solid; */
+/*     border-style:  dashed; */
+    border-radius: 2px;
+    border-color: #555;
+
+/* play with using a border (stands out a lot more) or text decoration */
+    text-decoration: underline dashed 2px #555;
+    font-size: 90%;
+
+}
+
+p code:hover {
+    background: #eee;
+    transition: 400ms;
+    color: #000;
+    border-color: #000;
 }
