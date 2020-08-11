@@ -355,7 +355,7 @@ Exception java.lang.IllegalStateException: Can not perform this action after onS
 
 There are some additional topics you might want to read about:
 
-* Read the full KDocs
+* Read the full [KDocs](documentation/mvflow/net.pedroloureiro.mvflow/)
 
 * Browse the source code of the sample android app
 

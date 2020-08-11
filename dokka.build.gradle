@@ -1,7 +1,7 @@
 dokka {
     // https://github.com/Kotlin/dokka#using-dokka
     outputFormat = 'html'
-    outputDirectory = "${project.rootDir}/documentation"
+    outputDirectory = "${project.rootDir}/website-src/static/documentation"
 
     subProjects = ["mvflow-core"]
     configuration {
@@ -40,7 +40,7 @@ dokka {
 
 task removeAbsolutePathsFromDokkaFiles {
     doLast {
-        fileTree("${project.rootDir}/documentation/").matching {
+        fileTree("${project.rootDir}/website-src/static/documentation/").matching {
             include "**/index-outline.html"
         }
                 .forEach { File file ->
