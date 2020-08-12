@@ -5,7 +5,7 @@ theme = "mypurecss"
 
 [params]
     custom_css = ["css/github.css"]
-
+    notoc = true
 [markup]
   [markup.highlight]
     codeFences = true

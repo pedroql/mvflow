@@ -23,37 +23,39 @@ Array.prototype.forEach.call(elements, function(el, i){
 
 <script src="https://unpkg.com/in-view@0.6.1/dist/in-view.min.js"></script>
 <script>
-var lastElement = null;
-const handleView = item => {
-  const linkEl = document.querySelector(`a[href='#${item.id}']`);
 
-  if(item.classList.contains("hide-from-toc")) {
-    linkEl.classList.add("hide-from-toc");
-    return;
-  }
-
-  let offsetHeight = 0.6*(window.innerHeight);
-  inView.offset({
-    bottom:offsetHeight
-  });
-
-  inView(`#${item.id}`)
-    .on("enter", () => {
-      if( lastElement != null) {
-        lastElement.classList.remove('active');
-      }
-      if( linkEl != null) {
-        linkEl.classList.add('active');
-      }
-      lastElement = linkEl;
-  })
-};
-
-// Apply method on each DOM element
-document.querySelectorAll("#content h1, #content h2, #content h3").forEach(handleView);
-
-// Now that we have hidden the links, we can show the contents
 var sidebarContent = document.querySelector(".toc-container.transparent");
-sidebarContent.classList.remove("transparent");
+if(sidebarContent != null) {
+    var lastElement = null;
+    const handleView = item => {
+      const linkEl = document.querySelector(`a[href='#${item.id}']`);
 
+      if(item.classList.contains("hide-from-toc")) {
+        linkEl.classList.add("hide-from-toc");
+        return;
+      }
+
+      let offsetHeight = 0.6*(window.innerHeight);
+      inView.offset({
+        bottom:offsetHeight
+      });
+
+      inView(`#${item.id}`)
+        .on("enter", () => {
+          if( lastElement != null) {
+            lastElement.classList.remove('active');
+          }
+          if( linkEl != null) {
+            linkEl.classList.add('active');
+          }
+          lastElement = linkEl;
+      })
+    };
+
+    // Apply method on each DOM element
+    document.querySelectorAll("#content h1, #content h2, #content h3").forEach(handleView);
+
+    // Now that we have hidden the links, we can show the contents
+    sidebarContent.classList.remove("transparent");
+}
 </script>

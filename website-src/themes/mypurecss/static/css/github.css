@@ -472,7 +472,7 @@ header, .context-menu, .megamenu-content, footer{
 }
 
 @media (min-width: 48em) {
-    .content {
+    .content.next-to-toc {
         margin-left: 25% !important;
         z-index: 100;
     }
