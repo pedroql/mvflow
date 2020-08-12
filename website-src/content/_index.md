@@ -2,6 +2,7 @@
 title: "MVFLow: a simple MVI library using Kotlin coroutines and flows"
 date: 2020-08-04T13:27:21+01:00
 draft: true
+notoc: false
 ---
 
 # MVFlow
@@ -81,9 +82,24 @@ MVFlow plays well with Android's ViewModel, but you don't have to use it.
 
 ## What if I am new to MVI, coroutines, or flows?
 
-TODO - find links 
+There are plenty of guides introducing these concepts. We are still working on a brief introduction to MVI,
+meanwhile we suggest you read the following articles:
 
-* Coroutines official guide
+* [Model-view-intent on Android](http://hannesdorfmann.com/android/model-view-intent) by Hannes Dorfmann - one of the 
+first posts (if not the first) about MVI
+
+* [Getting started with MVI Architecture on Android](https://proandroiddev.com/getting-started-with-mvi-architecture-on-android-b2c280b7023)
+by Eric Ampire
+
+* [MVI Architecture for Android Tutorial](https://www.raywenderlich.com/817602-mvi-architecture-for-android-tutorial-getting-started)
+at raywenderlich.com
+
+&nbsp;
+
+For learning about coroutines and flows, the official guides are a good source of information: 
+
+* [Coroutines official guide](https://kotlinlang.org/docs/reference/coroutines/coroutines-guide.html)
+
 * [Flow official guide](https://kotlinlang.org/docs/reference/coroutines/flow.html)
 
 
@@ -106,7 +122,7 @@ As you can see, this is a very simple interface: any view needs to know how to r
 class defined by you) and creates a flow of actions which 
 report the user interactions with the UI.
 
-TODO - More details on how you can create such flow.
+Read [this article]({{< ref "articles/implementing-your-view-actions-flow.md" >}}) to see how you can implement the actions method. 
 
 Let's implement a simple screen with a list of users. The current state indicates whether it is loading information, the
 users that were loaded (if any) and a error message (if any):
@@ -357,11 +373,8 @@ There are some additional topics you might want to read about:
 
 * Read the full [KDocs](documentation/mvflow/net.pedroloureiro.mvflow/)
 
-* Browse the source code of the sample android app
+* Browse the source code of the [sample android app](https://github.com/pedroql/mvflow/tree/master/samples/android-app)
 
-* Implementing the view flow
-
-TODO: write posts and add links here (or other sections of the website)
 
 ## Inspiration
 
