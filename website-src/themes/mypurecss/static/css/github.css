@@ -450,7 +450,6 @@ header, .context-menu, .megamenu-content, footer{
 /* Added these classes for extra customization */
 .callout {
     border: 1px solid #ddd;
-    background-color: #f8f8f8;
     margin-bottom: 15px;
     margin-top: 15px;
     padding: 0.62em 0.2em 0.62em 1em;
@@ -460,7 +459,6 @@ header, .context-menu, .megamenu-content, footer{
 /* Tweak the looks of code fences inside callouts (the background colours don't match well) */
 .callout pre {
     border-color: #ccc;
-    background-color: #ddd;
 }
 
 /* Added to achieve the side bar on the left (where we have the TOC) */
@@ -566,23 +564,19 @@ nav a.hide-from-toc {
 
 /* Customise the look of inline code */
 p code {
-    color: #555;
-/*     font-weight: bold; */
-    border: 1px;
-    padding: 0px 3px 0px 3px;
-/*     border-style:  solid; */
-/*     border-style:  dashed; */
-    border-radius: 2px;
-    border-color: #555;
-
-/* play with using a border (stands out a lot more) or text decoration */
-    text-decoration: underline dashed 2px #555;
-    font-size: 90%;
+    border-radius: 6px;
+    padding: .2em .4em;
+    font-size: 85%;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd8;
+    box-sizing: border-box;
+    /* A bit of margin in case there is some punctuation just after the code */
+    margin-right: .1em;
 }
 
 p code:hover {
-    background: #eee;
+    border-color: #0000;
+    box-shadow: 1px 1px 3px #0009;
     transition: 400ms;
     color: #000;
-    border-color: #000;
 }
