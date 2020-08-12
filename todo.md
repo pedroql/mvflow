@@ -14,6 +14,8 @@ In no particular order
   * Add some analytics (?)
   
   * Announce it!
+  
+  * Cleanup the theme code (better structure for partials, list pages vs content pages, etc)
 
   * Put TOC inline with the content when on landscape
   
