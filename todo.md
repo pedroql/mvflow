@@ -8,8 +8,12 @@ In no particular order
 [dokka/pull/955](https://github.com/Kotlin/dokka/pull/955) )
 
 * Write docs in a github.io page
-
-  * Write basics of MVI and links to other beginner topics
+ 
+  * Add link to homepage from each article
+  
+  * Make the absolute url hide the "articles" part
+  
+  * Fix the list page (where it lists all articles)
   
   * Add some analytics (?)
   
@@ -22,6 +26,8 @@ In no particular order
   * Optimize for SEO, run checks
   
   * See if I could integrate SASS / minify CSS/js
+  
+  * Follow [Tufte](https://edwardtufte.github.io/tufte-css/) guidelines for better styling
 
 * Write blog posts
 

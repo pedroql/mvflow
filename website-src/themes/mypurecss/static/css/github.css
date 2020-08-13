@@ -59,6 +59,13 @@ body {
     line-height: 1.6;
 }
 
+/* Adding this rule as per purecss instructions to customise the font */
+html, button, input, select, textarea,
+.pure-g [class *= "pure-u"] {
+    /* Set your content font stack here: */
+    font-family: "Open Sans","Clear Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
 #content{
     max-width: 660px;
   	margin: 0 auto;
@@ -579,4 +586,51 @@ p code:hover {
     box-shadow: 1px 1px 3px #0009;
     transition: 400ms;
     color: #000;
+}
+
+/* Customise the header used in posts */
+.header {
+    max-width: 660px;
+    margin: 0 auto;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.header-parent {
+    background: rgb(61, 79, 93);
+    color: #fffb;
+    padding: 0 30px;
+}
+
+.header li a {
+    text-decoration: none;
+    color: #fffb;
+    padding: 0.5em 1em;
+    border-radius: 3px;
+    transition: background 300ms;
+}
+
+.header li a:hover {
+    background: #0004;
+    color: #fffd;
+}
+
+.header li a:focus {
+    background: #3334;
+    color: #fffd;
+}
+
+.header .custom-menu-list {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.header .custom-menu-list li:first-of-type {
+    align-self: flex-start;
+}
+
+.custom-menu-list p {
+    margin: 0;
+    padding: 0.5em 1em;
 }

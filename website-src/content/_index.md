@@ -122,7 +122,8 @@ As you can see, this is a very simple interface: any view needs to know how to r
 class defined by you) and creates a flow of actions which 
 report the user interactions with the UI.
 
-Read [this article]({{< ref "articles/implementing-your-view-actions-flow.md" >}}) to see how you can implement the actions method. 
+Read the article [implementing your view actions flow]({{< ref "articles/implementing-your-view-actions-flow.md" >}}) to see how you 
+can implement the actions method. 
 
 Let's implement a simple screen with a list of users. The current state indicates whether it is loading information, the
 users that were loaded (if any) and a error message (if any):
