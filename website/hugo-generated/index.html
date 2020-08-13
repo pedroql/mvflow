@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+	<meta name="generator" content="Hugo 0.73.0" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css"
+          integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/grids-responsive-min.css">
+
+    
+    <link rel="stylesheet" href="/mvflow/css/github.css">
+    
+
+    
+    
+    <link href="/mvflow/index.xml" rel="alternate" type="application/rss+xml" title="MVFLow: a simple MVI library using Kotlin coroutines and flows"/>
+    <link href="/mvflow/index.xml" rel="feed" type="application/rss+xml" title="MVFLow: a simple MVI library using Kotlin coroutines and flows"/>
+    
+    
+
+    
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+    <title>MVFLow: a simple MVI library using Kotlin coroutines and flows</title>
+</head>
+<body>
+        <div class="pure-g">
+
+
+
+            
+                <div class="sidebar pure-u-1 pure-u-md-1-4">
+                    
+                    <div class="toc-container transparent">
+                        
+                        <div>
+                            <h3>Jump to section:</h3>
+                            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#objectives">Objectives</a>
+      <ul>
+        <li><a href="#minimalistic-yet-complete-">Minimalistic yet complete</a></li>
+        <li><a href="#simple-">Simple</a></li>
+        <li><a href="#coroutines-and-flows-as-powerful-abstractions-">Coroutines and flows as powerful abstractions</a></li>
+        <li><a href="#with-mvflow-you-are-in-control--">With MVFlow you are in control </a></li>
+      </ul>
+    </li>
+    <li><a href="#what-if-i-am-new-to-mvi-coroutines-or-flows">What if I am new to MVI, coroutines, or flows?</a></li>
+    <li><a href="#api">API</a>
+      <ul>
+        <li><a href="#view">View</a></li>
+        <li><a href="#handler">Handler</a></li>
+        <li><a href="#reducer">Reducer</a></li>
+        <li><a href="#mvflow-object">MVFlow object</a></li>
+        <li><a href="#special-effects">Special effects</a></li>
+      </ul>
+    </li>
+    <li><a href="#additional-reading">Additional Reading</a></li>
+    <li><a href="#inspiration">Inspiration</a></li>
+  </ul>
+</nav>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="content next-to-toc pure-u-1 pure-u-md-3-4">
+            
+
+                    
+                    <div id="content" >
+<article><h1 id="mvflow">MVFlow</h1>
+<p><strong>Simple Android* MVI architecture using kotlin flows</strong></p>
+<p><em>* The architecture is platform-neutral but was designed with Android in mind</em></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-groovy" data-lang="groovy"><span style="color:#000">dependencies</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#000">implementation</span> <span style="color:#4e9a06">&#39;net.pedroloureiro.mvflow:mvflow-core:&lt;latest version&gt;&#39;</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><p>Check our <a href="https://github.com/pedroql/mvflow/releases">releases on github</a> to find the latest one.</p>
+<h2 id="objectives">Objectives</h2>
+<p>We set off with the objective of creating a minimalistic library, simple yet with all the
+capabilities you need.</p>
+<h3 class="hide-from-toc" id="minimalistic-yet-complete-">Minimalistic yet complete</h3>
+<p>MVFlow has a very small API surface. It strives to be the smallest conceivable MVI library that could exist.
+In just a few minutes you will know everything there is to know about the API!</p>
+<h3 class="hide-from-toc" id="simple-">Simple</h3>
+<p>The library introduces few - if any - new concepts outside MVI,
+<a href="https://kotlinlang.org/docs/reference/coroutines/basics.html">Kotlin coroutines</a>, and
+<a href="https://kotlinlang.org/docs/reference/coroutines/flow.html">Kotlin flows</a>.</p>
+<p>If you familiar with those concepts, you can start using the library without a problem; if you are new to some of these
+concepts, you will be able to apply those concepts outside this library too.</p>
+<h3 class="hide-from-toc" id="coroutines-and-flows-as-powerful-abstractions-">Coroutines and flows as powerful abstractions</h3>
+<p>Any MVI library needs to accomplish the following tasks:</p>
+<ul>
+<li>
+<p>Manage the current state (Model in MVI)</p>
+</li>
+<li>
+<p>Call a render function when the state changes (View in MVI)</p>
+</li>
+<li>
+<p>Detect user interactions (Intent in MVI)</p>
+</li>
+<li>
+<p>Process user intents, potentially mutating the current state</p>
+</li>
+</ul>
+<p> </p>
+<p> </p>
+<p>We believe that coroutines and flows are extremely powerful concepts that can be applied to this problem.
+They enable us to build a very powerful API with a small and simple surface.</p>
+<p>Here are some advantages that they bring:</p>
+<ul>
+<li>
+<p>Coroutines make asynchronous calls very simple to write and easy to reason about;</p>
+</li>
+<li>
+<p>Flows are a great abstraction to represent user events (clicks) and updates from background work;</p>
+</li>
+<li>
+<p>Coroutine scopes make handling the lifecycle of requests very simple</p>
+<ul>
+<li>For example: if you have pending work for a particular screen, and the user presses back, by
+cancelling that screen&rsquo;s coroutine, all related jobs and listeners are cancelled too.
+Read more about
+<a href="https://kotlinlang.org/docs/reference/coroutines/basics.html#structured-concurrency">structured concurrency</a>;</li>
+</ul>
+</li>
+</ul>
+<h3 class="hide-from-toc" id="with-mvflow-you-are-in-control--">With MVFlow you are in control </h3>
+<p>The library only gives you an implementation of MVI, but doesn&rsquo;t force you into specific patterns other than using MVI
+and coroutines.</p>
+<p>You are free to use dependency injection your way; you are free to do navigation your way; plug your
+logging framework (or not). You can use data stores, use cases, interactors, or any other abstraction to get and
+manipulate your data.</p>
+<p>MVFlow plays well with Android&rsquo;s ViewModel, but you don&rsquo;t have to use it.</p>
+<h2 id="what-if-i-am-new-to-mvi-coroutines-or-flows">What if I am new to MVI, coroutines, or flows?</h2>
+<p>There are plenty of guides introducing these concepts. We are still working on a brief introduction to MVI,
+meanwhile we suggest you read the following articles:</p>
+<ul>
+<li>
+<p><a href="http://hannesdorfmann.com/android/model-view-intent">Model-view-intent on Android</a> by Hannes Dorfmann - one of the
+first posts (if not the first) about MVI</p>
+</li>
+<li>
+<p><a href="https://proandroiddev.com/getting-started-with-mvi-architecture-on-android-b2c280b7023">Getting started with MVI Architecture on Android</a>
+by Eric Ampire</p>
+</li>
+<li>
+<p><a href="https://www.raywenderlich.com/817602-mvi-architecture-for-android-tutorial-getting-started">MVI Architecture for Android Tutorial</a>
+at raywenderlich.com</p>
+</li>
+</ul>
+<p> </p>
+<p>For learning about coroutines and flows, the official guides are a good source of information:</p>
+<ul>
+<li>
+<p><a href="https://kotlinlang.org/docs/reference/coroutines/coroutines-guide.html">Coroutines official guide</a></p>
+</li>
+<li>
+<p><a href="https://kotlinlang.org/docs/reference/coroutines/flow.html">Flow official guide</a></p>
+</li>
+</ul>
+<h2 id="api">API</h2>
+<h3 id="view">View</h3>
+<p>The library has two main interfaces: <code>MVFlow</code> and <code>MVFlow.View</code>. Let&rsquo;s take a look at the view first:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">View</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">render</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">state</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">State</span><span style="color:#000;font-weight:bold">)</span>
+
+    <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">actions</span><span style="color:#000;font-weight:bold">():</span> <span style="color:#000">Flow</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">Action</span><span style="color:#000;font-weight:bold">&gt;</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>As you can see, this is a very simple interface: any view needs to know how to render a given state (which is a generic
+class defined by you) and creates a flow of actions which
+report the user interactions with the UI.</p>
+<p>Read the article <a href="https://pedroql.github.io/mvflow/implementing-your-view-actions-flow/">implementing your view actions flow</a> to see how you
+can implement the actions method.</p>
+<p>Let&rsquo;s implement a simple screen with a list of users. The current state indicates whether it is loading information, the
+users that were loaded (if any) and a error message (if any):</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#204a87;font-weight:bold">data</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">User</span><span style="color:#000;font-weight:bold">(</span> 
+     <span style="color:#8f5902;font-style:italic">// ... 
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">data</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">State</span> <span style="color:#000;font-weight:bold">(</span>
+    <span style="color:#204a87;font-weight:bold">val</span> <span style="color:#000">users</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">List</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">User</span><span style="color:#000;font-weight:bold">&gt;?,</span>
+    <span style="color:#204a87;font-weight:bold">val</span> <span style="color:#000">isLoading</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Boolean</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#204a87;font-weight:bold">val</span> <span style="color:#000">errorMessage</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">String</span><span style="color:#000;font-weight:bold">?</span>
+<span style="color:#000;font-weight:bold">)</span>
+</code></pre></div><p>The possible actions are loading users (say, by pressing a button or doing a pull-to-refresh gesture) and selecting a
+user by tapping on its row:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#204a87;font-weight:bold">sealed</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">Action</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">object</span> <span style="color:#000">LoadUsers</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">()</span>
+    <span style="color:#204a87;font-weight:bold">data</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">UserSelection</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">val</span> <span style="color:#000">user</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">User</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">()</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><h3 id="handler">Handler</h3>
+<p>So now that we have a view, we can render the UI and send actions into a flow when the user interacts with the app.</p>
+<p>The next step is doing something with those actions. Typically, this involves doing some operation like a network or
+database call, and we might want to change the current state from said jobs.</p>
+<p>This is where <code>Handler</code> comes in. To keep things simple, this is just a lambda but it is type-aliased for more
+meaningful parameter names:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000">typealias</span> <span style="color:#000">Handler</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">Flow</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">&gt;</span>
+</code></pre></div><p>Reading that aloud, we see that a handler is a function that receives the current state and an action the user just
+performed. The handler performs what this action requires (e.g. making a network call) and returns a flow of mutations.
+A mutation is the information of what needs to change in the current state.
+When the handler completes the network request, it can emit a value into the mutation flow to update the state.</p>
+<p>Continuing our example, there are three reasons to change the state: we started loading data, we received an error from
+the request or we received data (new users) from the request:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#204a87;font-weight:bold">sealed</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">Mutation</span> <span style="color:#000;font-weight:bold">{</span>
+   <span style="color:#204a87;font-weight:bold">object</span> <span style="color:#000">StartedLoading</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">()</span>
+   <span style="color:#204a87;font-weight:bold">data</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">ErrorLoading</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">val</span> <span style="color:#000">message</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">String</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">()</span>
+   <span style="color:#204a87;font-weight:bold">data</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">UsersReceived</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">val</span> <span style="color:#000">users</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">List</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">User</span><span style="color:#000;font-weight:bold">&gt;)</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">()</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#000">typealias</span> <span style="color:#000">Handler</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">Flow</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">&gt;</span>
+
+<span style="color:#204a87;font-weight:bold">val</span> <span style="color:#000">handler</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Handler</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#000">state</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">action</span> <span style="color:#000;font-weight:bold">-&gt;</span>
+     <span style="color:#204a87;font-weight:bold">when</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">action</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+         <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">LoadUsers</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000;font-weight:bold">{</span>
+             <span style="color:#000">flow</span> <span style="color:#000;font-weight:bold">{</span>
+                 <span style="color:#000">emit</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">StartedLoading</span><span style="color:#000;font-weight:bold">)</span>
+                 <span style="color:#204a87;font-weight:bold">val</span> <span style="color:#000">users</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">userRepository</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">getUsers</span><span style="color:#000;font-weight:bold">()</span>
+                 <span style="color:#000">emit</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">UsersReceived</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">users</span><span style="color:#000;font-weight:bold">))</span>
+             <span style="color:#000;font-weight:bold">}.</span><span style="color:#204a87;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#000">throwable</span> <span style="color:#000;font-weight:bold">-&gt;</span>
+                 <span style="color:#8f5902;font-style:italic">// network problems (and anything else) will come here
+</span><span style="color:#8f5902;font-style:italic"></span>                 <span style="color:#204a87;font-weight:bold">val</span> <span style="color:#000">messageToDisplay</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">throwableToMessage</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">throwable</span><span style="color:#000;font-weight:bold">)</span>
+                 <span style="color:#000">emit</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ErrorLoading</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">messageToDisplay</span><span style="color:#000;font-weight:bold">))</span>
+             <span style="color:#000;font-weight:bold">}</span>
+         <span style="color:#000;font-weight:bold">}</span>
+         <span style="color:#204a87;font-weight:bold">is</span> <span style="color:#000">UserSelection</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000;font-weight:bold">{</span>
+             <span style="color:#000">openDetailScreen</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">action</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">user</span><span style="color:#000;font-weight:bold">)</span>
+             <span style="color:#000">emptyFlow</span><span style="color:#000;font-weight:bold">()</span>
+         <span style="color:#000;font-weight:bold">}</span>
+     <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">throwableToMessage</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Throwable</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;Something went wrong&#34;</span>
+</code></pre></div><h3 id="reducer">Reducer</h3>
+<p>Right now we have a view rendering the state and telling us of actions performed by the user. We also have a handler
+that is receiving those actions and acting on them. The handler emits mutations that we already know will be used to
+update the current state.</p>
+<p>Now the reducer enters the stage:</p>
+<p>A reducer is just another function that receives the current state and a mutation. It will combine both, producing
+the a new state the succeeds the current one.</p>
+<p><em>Note: although the handler receives the current state when an action is performed, if the handler performs a slow
+operation, the handler will no longer know the most recent state. This is why the handler can&rsquo;t mutate the state
+directly.</em></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000">typealias</span> <span style="color:#000">Reducer</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">State</span>
+
+<span style="color:#204a87;font-weight:bold">val</span> <span style="color:#000">reducer</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Reducer</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#000">state</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">mutation</span> <span style="color:#000;font-weight:bold">-&gt;</span>
+    <span style="color:#204a87;font-weight:bold">when</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">mutation</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">StartedLoading</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">state</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">copy</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">isLoading</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">true</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#204a87;font-weight:bold">is</span> <span style="color:#000">ErrorLoading</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">state</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">copy</span><span style="color:#000;font-weight:bold">(</span>
+            <span style="color:#000">errorMessage</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">mutation</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">message</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">isLoading</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">false</span>
+        <span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#204a87;font-weight:bold">is</span> <span style="color:#000">UsersReceived</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">state</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">copy</span><span style="color:#000;font-weight:bold">(</span>
+            <span style="color:#000">hasError</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">null</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">isLoading</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">false</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">users</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">mutation</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">users</span>
+        <span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span> 
+</code></pre></div><h3 id="mvflow-object">MVFlow object</h3>
+<p>At this point we have explained the main MVI components. The final step is assembling them together so that actions are
+sent to the handler, mutations are sent to the reducer, and new states are sent to the view.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000">typealias</span> <span style="color:#000">Logger</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">String</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">Unit</span>
+
+<span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">MVFlow</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
+  
+    <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">takeView</span><span style="color:#000;font-weight:bold">(</span>
+        <span style="color:#000">viewCoroutineScope</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">CoroutineScope</span><span style="color:#000;font-weight:bold">,</span>
+        <span style="color:#000">view</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">View</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">&gt;,</span>
+        <span style="color:#000">initialActions</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">List</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">Action</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">emptyList</span><span style="color:#000;font-weight:bold">(),</span>
+        <span style="color:#000">logger</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Logger</span><span style="color:#000;font-weight:bold">?</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">null</span>
+    <span style="color:#000;font-weight:bold">)</span>
+
+    <span style="color:#8f5902;font-style:italic">/**
+</span><span style="color:#8f5902;font-style:italic">     * This method adds an external source of actions into the MVFlow object.
+</span><span style="color:#8f5902;font-style:italic">     *
+</span><span style="color:#8f5902;font-style:italic">     * This might be useful if you need to update your state based on things
+</span><span style="color:#8f5902;font-style:italic">     * happening outside the [View], such as timers, external database updates,
+</span><span style="color:#8f5902;font-style:italic">     * push notifications, etc.
+</span><span style="color:#8f5902;font-style:italic">     */</span>
+    <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">addExternalActions</span><span style="color:#000;font-weight:bold">(</span>
+        <span style="color:#000">actions</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Flow</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">Action</span><span style="color:#000;font-weight:bold">&gt;,</span>
+        <span style="color:#000">logger</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Logger</span><span style="color:#000;font-weight:bold">?</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">null</span>
+    <span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span> 
+</code></pre></div><p>All you need to do is to create a <code>MVFlow</code> object and call <code>takeView</code> on it. And the loop will start!</p>
+<p>Creating on MVFlow object is as simple as calling a factory method:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#204a87;font-weight:bold">fun</span> &lt;State, Action, Mutation&gt; <span style="color:#000">MVFlow</span><span style="color:#000;font-weight:bold">(</span>
+    <span style="color:#000">initialState</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#000">handler</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Handler</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">&gt;,</span>
+    <span style="color:#000">reducer</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Reducer</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">&gt;,</span>
+    <span style="color:#8f5902;font-style:italic">// the scope of this object can outlive the scope of the view
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">mvflowCoroutineScope</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">CoroutineScope</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#000">defaultLogger</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Logger</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{}</span>
+<span style="color:#000;font-weight:bold">):</span> <span style="color:#000">MVFlow</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">&gt;</span>
+</code></pre></div><p>And then call <code>takeView</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#8f5902;font-style:italic">// in your activity
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000">lifecycleScope</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">launchWhenStarted</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#8f5902;font-style:italic">// this: CoroutineScope
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">mvFlow</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">takeView</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">view</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>If you are wondering what <code>Logger</code> is, that is just a method that receives one <code>String</code>. The library will call this
+with logging information and you can decide to print this to the logs or not.</p>
+<h3 id="special-effects">Special effects</h3>
+<p>Effects are an optional feature that can be very useful for UI-related operations like showing
+Toasts and navigating to new screens.</p>
+<p>Because the handler may have a different lifecycle from the view, it should not perform these operations directly (it
+would also break the single responsibility principle).</p>
+<p>To make this common scenario easier to address, there is a new set of interfaces that extend the interfaces we have seen
+until here. These interfaces have the suffix <code>WithEffects</code> and bring additional functionality to make external effects
+possible.</p>
+<p>The changes are very simple:</p>
+<p>The <code>Handler</code> instead of just receiving the current state and one action, receives one effect sender that can be used to
+send effects to be handled externally. <code>EffectSender</code> just exposes the two methods you can use to send values to a
+<a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-send-channel/index.html">SendChannel</a></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">
+<span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">EffectSender</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">T</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#8f5902;font-style:italic">// send might suspend if the channel is full
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#204a87;font-weight:bold">suspend</span> <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">send</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">effect</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">T</span><span style="color:#000;font-weight:bold">)</span>
+
+    <span style="color:#8f5902;font-style:italic">// offer never suspends nor blocks;
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#8f5902;font-style:italic">// returns true if the effect was successfully submitted to the channel 
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">offer</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">effect</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">T</span><span style="color:#000;font-weight:bold">):</span> <span style="color:#000">Boolean</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#000">typealias</span> <span style="color:#000">HandlerWithEffects</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Effect</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">=</span>
+    <span style="color:#000;font-weight:bold">(</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">EffectSender</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">Effect</span><span style="color:#000;font-weight:bold">&gt;)</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">Flow</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">&gt;</span>
+</code></pre></div><p>Now that you have a <code>HandlerWithEffects</code>, you can call another factory method which has the same name as before. It has
+only one difference in the signature:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#8f5902;font-style:italic">// this is a different factory method
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">fun</span> &lt;State, Action, Mutation, Effect&gt; <span style="color:#000">MVFlow</span><span style="color:#000;font-weight:bold">(</span>
+    <span style="color:#000">initialState</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span>
+<span style="display:block;width:100%;background-color:#dfdfdf">    <span style="color:#000">handler</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">HandlerWithEffects</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Effect</span><span style="color:#000;font-weight:bold">&gt;,</span>
+</span>    <span style="color:#000">reducer</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Reducer</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Mutation</span><span style="color:#000;font-weight:bold">&gt;,</span>
+    <span style="color:#000">mvflowCoroutineScope</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">CoroutineScope</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#000">defaultLogger</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Logger</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{}</span>
+<span style="color:#000;font-weight:bold">):</span> <span style="color:#000">MVFlowWithEffects</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Effect</span><span style="color:#000;font-weight:bold">&gt;</span></code></pre></div>
+<p>Now that you have got a <code>MVFlowWithEffects</code>, you have one more method that you can use:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">MVFlowWithEffects</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Effect</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#000">MVFlow</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">observeEffects</span><span style="color:#000;font-weight:bold">():</span> <span style="color:#000">Flow</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">Effect</span><span style="color:#000;font-weight:bold">&gt;</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#8f5902;font-style:italic">// in your activity:
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000">lifecycleScope</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">launchWhenResumed</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#8f5902;font-style:italic">// this: CoroutineScope
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">mvFlow</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">observeEffects</span><span style="color:#000;font-weight:bold">().</span><span style="color:#000">collect</span><span style="color:#000;font-weight:bold">{</span> <span style="color:#000">effect</span> <span style="color:#000;font-weight:bold">-&gt;</span> 
+        <span style="color:#8f5902;font-style:italic">// do something
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div>
+<div  class="callout" >
+
+<p><strong>Bonus:</strong> Because your flow collector is only called while the activity is resumed, this is a great way to ensure you only do fragment transactions during the allowed lifecycle states, protecting you from the dreaded</p>
+<pre><code>Exception java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
+</code></pre>
+</div>
+
+<h2 id="additional-reading">Additional Reading</h2>
+<p>There are some additional topics you might want to read about:</p>
+<ul>
+<li>
+<p><a href="https://pedroql.github.io/mvflow/implementing-your-view-actions-flow/">Implementing your view actions flow</a></p>
+</li>
+<li>
+<p>Read the full <a href="documentation/mvflow/net.pedroloureiro.mvflow/">KDocs</a></p>
+</li>
+<li>
+<p>Browse the source code of the <a href="https://github.com/pedroql/mvflow/tree/master/samples/android-app">sample android app</a></p>
+</li>
+</ul>
+<h2 id="inspiration">Inspiration</h2>
+<p>This library got a lot of inspiration from other libraries. We would like to thank:</p>
+<ul>
+<li><a href="https://github.com/babylonhealth/orbit-mvi/">Orbit MVI</a></li>
+<li><a href="https://badoo.github.io/MVICore/">MVICore</a></li>
+<li><a href="https://github.com/beworker/knot">Knot</a></li>
+</ul>
+<p>And everyone who contributed towards those libraries (and their respective inspirations).</p>
+</article>
+
+                    </div>
+                </div><script>
+
+var elements = document.getElementsByTagName("pre");
+function isHorizontallyScrollable(element) {
+    return element.scrollWidth > element.clientWidth;
+};
+var sidebar = document.querySelector(".sidebar");
+function hideSidebarWhenHovered(element) {
+    element.addEventListener('mouseenter', e => {
+        sidebar.classList.add("hide-for-horizontal-scroll");
+    });
+    element.addEventListener('mouseleave', e => {
+        sidebar.classList.remove("hide-for-horizontal-scroll");
+    });
+};
+Array.prototype.forEach.call(elements, function(el, i){
+  if(isHorizontallyScrollable(el)) {
+     el.classList.add("expand");
+     hideSidebarWhenHovered(el);
+  }
+});
+</script>
+
+<script data-goatcounter="https://wi3r4gjn.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+<noscript>
+    <img src="https://wi3r4gjn.goatcounter.com/count?p=/mvflow">
+</noscript>
+
+<script src="https://unpkg.com/in-view@0.6.1/dist/in-view.min.js"></script>
+<script>
+
+var sidebarContent = document.querySelector(".toc-container.transparent");
+if(sidebarContent != null) {
+    var lastElement = null;
+    const handleView = item => {
+      const linkEl = document.querySelector(`a[href='#${item.id}']`);
+
+      if(item.classList.contains("hide-from-toc")) {
+        linkEl.classList.add("hide-from-toc");
+        return;
+      }
+
+      let offsetHeight = 0.6*(window.innerHeight);
+      inView.offset({
+        bottom:offsetHeight
+      });
+
+      inView(`#${item.id}`)
+        .on("enter", () => {
+          if( lastElement != null) {
+            lastElement.classList.remove('active');
+          }
+          if( linkEl != null) {
+            linkEl.classList.add('active');
+          }
+          lastElement = linkEl;
+      })
+    };
+
+    
+    document.querySelectorAll("#content h1, #content h2, #content h3").forEach(handleView);
+
+    
+    sidebarContent.classList.remove("transparent");
+}
+</script>
+
+
+</div>
+    </body>
+</html>

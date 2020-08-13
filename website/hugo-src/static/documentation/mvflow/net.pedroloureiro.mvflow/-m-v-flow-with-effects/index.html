@@ -1,0 +1,37 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>MVFlowWithEffects - mvflow</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">mvflow</a>&nbsp;/&nbsp;<a href="../index.html">net.pedroloureiro.mvflow</a>&nbsp;/&nbsp;<a href="./index.html">MVFlowWithEffects</a><br/>
+<br/>
+<h1>MVFlowWithEffects</h1>
+<code><span class="keyword">interface </span><span class="identifier">MVFlowWithEffects</span><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">, </span><span class="identifier">Action</span><span class="symbol">, </span><span class="identifier">Effect</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-m-v-flow/index.html"><span class="identifier">MVFlow</span></a><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">,</span>&nbsp;<span class="identifier">Action</span><span class="symbol">&gt;</span></code> <a href="https://github.com/pedroql/mvflow/blob/master/mvflow-core/src/main/kotlin/net/pedroloureiro/mvflow/MVFlow.kt#L180">(source)</a>
+<p>Extension of <a href="../-m-v-flow/index.html">MVFlow</a> to be used together with a <a href="../-handler-with-effects.html">HandlerWithEffects</a>.</p>
+<p>This interface allows you to observe the external effects.</p>
+<h3>Parameters</h3>
+<p><a name="State"></a>
+<code>State</code> - a class that holds all information about the current state represented in this MVFlow object.</p>
+<p><a name="Action"></a>
+<code>Action</code> - a class that represents all the interactions that can happen inside this view and associated
+information.</p>
+<p><a name="Effect"></a>
+<code>Effect</code> - a class that represents things that you might need to handle outside the handler that deals with
+UI actions. Typically used for navigation and one-off events that do not mutate the state.</p>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="observe-effects.html">observeEffects</a></h4>
+</td>
+<td>
+<p>Observe external effects emitted by the handler.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">observeEffects</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/index.html"><span class="identifier">Flow</span></a><span class="symbol">&lt;</span><span class="identifier">Effect</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

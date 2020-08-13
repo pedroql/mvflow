@@ -1,0 +1,27 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>HandlerWithEffects - mvflow</title>
+<link rel="stylesheet" href="../../style.css">
+</HEAD>
+<BODY>
+<a href="../index.html">mvflow</a>&nbsp;/&nbsp;<a href="index.html">net.pedroloureiro.mvflow</a>&nbsp;/&nbsp;<a href="./-handler-with-effects.html">HandlerWithEffects</a><br/>
+<br/>
+<h1>HandlerWithEffects</h1>
+<code><span class="keyword">typealias </span><span class="identifier">HandlerWithEffects</span><span class="symbol">&lt;</span><span class="identifier">State</span><span class="symbol">, </span><span class="identifier">Action</span><span class="symbol">, </span><span class="identifier">Mutation</span><span class="symbol">, </span><span class="identifier">Effect</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;<span class="symbol">(</span><span class="identifier">State</span><span class="symbol">,</span>&nbsp;<span class="identifier">Action</span><span class="symbol">,</span>&nbsp;<a href="-effect-sender/index.html"><span class="identifier">EffectSender</span></a><span class="symbol">&lt;</span><span class="identifier">Effect</span><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/index.html"><span class="identifier">Flow</span></a><span class="symbol">&lt;</span><span class="identifier">Mutation</span><span class="symbol">&gt;</span></code> <a href="https://github.com/pedroql/mvflow/blob/master/mvflow-core/src/main/kotlin/net/pedroloureiro/mvflow/MVFlow.kt#L47">(source)</a>
+<p>A function that on top of what <a href="-handler.html">Handler</a> does, it also might emit side effects that are subscribed by an external
+component.</p>
+<pre><code class="lang-kotlin">val example: Handler&lt;State, Action, Mutation, Effect&gt; = { _, _, effects: EffectProducer&lt;Effect&gt; -&gt;
+    flow {
+        slowOperation1()
+        emit(Mutation.A)
+        slowOperation2()
+        emit(Mutation.B)
+        effects.send(Effects.OperationCompleted)
+    }
+}</code></pre>
+<p><strong>See Also</strong><br/>
+<p><a href="-handler.html">Handler</a></p>
+</p>
+</BODY>
+</HTML>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Articles on MVFLow: a simple MVI library using Kotlin coroutines and flows</title>
+    <link>https://pedroql.github.io/mvflow/articles/</link>
+    <description>Recent content in Articles on MVFLow: a simple MVI library using Kotlin coroutines and flows</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-GB</language>
+    <lastBuildDate>Wed, 12 Aug 2020 10:52:15 +0100</lastBuildDate>
+    
+	<atom:link href="https://pedroql.github.io/mvflow/articles/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Implementing Your View Actions Flow</title>
+      <link>https://pedroql.github.io/mvflow/implementing-your-view-actions-flow/</link>
+      <pubDate>Wed, 12 Aug 2020 10:52:15 +0100</pubDate>
+      
+      <guid>https://pedroql.github.io/mvflow/implementing-your-view-actions-flow/</guid>
+      <description>&lt;h1 id=&#34;implementing-your-view-actions-flow&#34;&gt;Implementing your view actions flow&lt;/h1&gt;
+&lt;p&gt;MVFlow defines the view interface as follows:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;interface&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;View&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;State&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;Action&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;{&lt;/span&gt;
+
+    &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;fun&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;render&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;state&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;State&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;)&lt;/span&gt;
+
+    &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;fun&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;actions&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;():&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;Flow&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;Action&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Most developers should have a reasonable idea of how to implement &lt;code&gt;render(state: State)&lt;/code&gt;, but implementing
+&lt;code&gt;actions(): Flow&amp;lt;Action&amp;gt;&lt;/code&gt; might not seem so obvious if this is the first time you are implementing your own
+&lt;a href=&#34;https://kotlinlang.org/docs/reference/coroutines/flow.html&#34;&gt;Flow&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;We can suggest three different ways to implement this, each with different pros and cons.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
