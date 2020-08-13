@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css"
+          integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/grids-responsive-min.css">
+
+    
+    <link rel="stylesheet" href="/mvflow/css/github.css">
+    
+
+    
+
+    
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+    <title>Implementing Your View Actions Flow</title>
+</head>
+<body>
+        <div class="pure-g"><div class="pure-u-1 header-parent">
+    <div class="content header">
+        <div class="pure-menu pure-menu-horizontal">
+            <ul class="custom-menu-list pure-menu-list">
+                <li class="pure-menu-item">
+                    
+                    <a href="https://pedroql.github.io/mvflow/" class="pure-menu-link">Home</a>
+                    
+                </li>
+                
+
+                
+                
+                <li class="pure-menu-item">
+                    
+                    
+                    
+                    
+                    <a href="https://pedroql.github.io/mvflow/articles/" class="pure-menu-link">Articles</a>
+                    
+                </li>
+                <li class="pure-menu-item">
+                    <a href="https://github.com/pedroql/mvflow" target="_blank" class="pure-menu-link">GitHub</a>
+                </li>
+                <li class="pure-menu-item">
+                    
+                    <a href="https://pedroql.github.io/mvflow/documentation/mvflow/net.pedroloureiro.mvflow/" target="_blank" class="pure-menu-link">Documentation</a>
+                    
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+            
+                <div class="content pure-u-1">
+            
+
+                    
+                    <div id="content" >
+<article><h1 id="implementing-your-view-actions-flow">Implementing your view actions flow</h1>
+<p>MVFlow defines the view interface as follows:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">View</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">render</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">state</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">State</span><span style="color:#000;font-weight:bold">)</span>
+
+    <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">actions</span><span style="color:#000;font-weight:bold">():</span> <span style="color:#000">Flow</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">Action</span><span style="color:#000;font-weight:bold">&gt;</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>Most developers should have a reasonable idea of how to implement <code>render(state: State)</code>, but implementing
+<code>actions(): Flow&lt;Action&gt;</code> might not seem so obvious if this is the first time you are implementing your own
+<a href="https://kotlinlang.org/docs/reference/coroutines/flow.html">Flow</a>.</p>
+<p>We can suggest three different ways to implement this, each with different pros and cons.</p>
+<h2 id="using-callback-flow">Using callback flow</h2>
+<p><code>kotlinx.coroutines.core</code> defines a flow builder very useful for our scenario: <code>callbackFlow</code>.</p>
+<p>Reading from the docs, this allows elements to be produced by code
+that is running in a different context or concurrently. Additionally, This builder ensures thread-safety and context
+preservation.</p>
+<p>All of that might sound a bit vague, here&rsquo;s a concrete example of how you use it:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#8f5902;font-style:italic">// in a class that implements View&lt;State, Action&gt;
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">override</span> <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">actions</span><span style="color:#000;font-weight:bold">():</span> <span style="color:#000">Flow</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">Action</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">callbackFlow</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">findViewById</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">R</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">someButton</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">setOnClickListener</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#8f5902;font-style:italic">// the next line makes the flow emit a &#34;Button pressed&#34; value
+</span><span style="color:#8f5902;font-style:italic"></span>        <span style="color:#000">offer</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">Action</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ButtonPressed</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    
+    <span style="color:#8f5902;font-style:italic">// makes the flow alive until the context of the collector is cancelled 
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#8f5902;font-style:italic">// (in our case this is the view context) 
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">awaitClose</span><span style="color:#000;font-weight:bold">()</span> 
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div>
+<div  class="callout" >
+
+<p><strong>Note</strong>:</p>
+<p>You can pass a lambda to <code>awaitClose()</code>  which is invoked when the context is about to be closed,</p>
+<p>For example, if you are using <a href="https://jakewharton.github.io/butterknife/">ButterKnife</a> in a Fragment, you should call
+the <code>unbinder</code> when the view is destroyed.</p>
+
+</div>
+
+<p>You can read more about <code>callbackFlow</code> in the
+<a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/callback-flow.html">official documentation</a></p>
+<p>Pros:</p>
+<ul>
+<li>
+<p>Simple</p>
+</li>
+<li>
+<p>Full control of emissions</p>
+</li>
+<li>
+<p>Easy to reason</p>
+</li>
+<li>
+<p>Coroutine scope handled automatically</p>
+</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>Might not be so easy (or clean) to apply this pattern when you need to emit values from items inside a recycler view.</li>
+</ul>
+<h2 id="using-a-channel">Using a channel</h2>
+<p>The main problem in the previous approach is that in some scenarios you might want to give another class the
+ability to send values into the flow and that&rsquo;s not easy to achieve.</p>
+<p>For example, if you have a non-trivial recycler view, you might want the adapter to be able to send values such as
+&ldquo;tapped on the second button of the third row&rdquo;.</p>
+<p>When your view is created, you probably would like to create the recycler view adapter and have something it could use
+to send values, but at this time the flow hasn&rsquo;t been created yet so you don&rsquo;t have a good way to do it.</p>
+<p>One solution is to have a mutable nullable property (or a lateinit property) in the adapter, and once you have a flow you
+can set it. Although this approach is valid, there is one alternative which we explain now. Each of these options have
+different tradeoffs and it is your choice which one to use.</p>
+<p>If you want to solve this problem using a
+<a href="https://kotlinlang.org/docs/reference/coroutines/channels.html">channel</a>, you can follow this approach:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#8f5902;font-style:italic">// in a class that implements View&lt;State, Action&gt;
+</span><span style="color:#8f5902;font-style:italic">// (usually your activity or fragment)
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">private</span> <span style="color:#204a87;font-weight:bold">val</span> <span style="color:#000">actionChannel</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">Channel</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">Action</span><span style="color:#000;font-weight:bold">&gt;()</span>
+<span style="color:#204a87;font-weight:bold">private</span> <span style="color:#204a87;font-weight:bold">val</span> <span style="color:#000">adapter</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">MyAdapter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">actionChannel</span><span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#8f5902;font-style:italic">// call this when the view is inflated
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">setupUi</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">with</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">recyclerView</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>        <span style="color:#8f5902;font-style:italic">// ...
+</span><span style="color:#8f5902;font-style:italic"></span>        <span style="color:#000">adapter</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">this</span><span style="color:#000">@MyActivity</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">adapter</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000">swipeRefreshLayout</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">setOnRefreshListener</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">actionChannel</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">offer</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">Action</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">LoadUsers</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">override</span> <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">render</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">state</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">State</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic">// ...
+</span><span style="color:#8f5902;font-style:italic"></span>
+<span style="color:#204a87;font-weight:bold">override</span> <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">actions</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">actionChannel</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">consumeAsFlow</span><span style="color:#000;font-weight:bold">()</span>
+
+<span style="color:#204a87;font-weight:bold">override</span> <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">onDestroy</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">onDestroy</span><span style="color:#000;font-weight:bold">()</span>
+    <span style="color:#000">actionChannel</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">close</span><span style="color:#000;font-weight:bold">()</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>And your adapter looks like this:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">UserRecyclerViewAdapter</span><span style="color:#000;font-weight:bold">(</span>
+    <span style="color:#204a87;font-weight:bold">private</span> <span style="color:#204a87;font-weight:bold">val</span> <span style="color:#000">sendChannel</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">SendChannel</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">MainView</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Action</span><span style="color:#000;font-weight:bold">&gt;</span>
+<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">override</span> <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">onCreateViewHolder</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">parent</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">ViewGroup</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">viewType</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Int</span><span style="color:#000;font-weight:bold">):</span> <span style="color:#000">ViewHolder</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#8f5902;font-style:italic">// inflate row
+</span><span style="color:#8f5902;font-style:italic"></span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">ViewHolder</span><span style="color:#000;font-weight:bold">().</span><span style="color:#000">apply</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">row</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">findViewById</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">R</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">button2</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">setOnClickListener</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#204a87;font-weight:bold">val</span> <span style="color:#000">user</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">users</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">adapterPosition</span><span style="color:#000;font-weight:bold">]</span>
+                <span style="color:#000">sendChannel</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">offer</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">Action</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Button2</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">user</span><span style="color:#000;font-weight:bold">))</span>
+            <span style="color:#000;font-weight:bold">}</span>    
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>Pros:</p>
+<ul>
+<li>
+<p>Easier to allow different classes emit values into the flow</p>
+</li>
+<li>
+<p>No need for mutable, nullable, or late init properties</p>
+</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>Need to take care of closing the channel</li>
+</ul>
+<h2 id="using-a-third-party-library">Using a third party library</h2>
+<p>You can also use another library to create a flow from the user actions.
+<a href="https://github.com/ReactiveCircus/FlowBinding">FlowBinding</a> is one example and you might find others.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#8f5902;font-style:italic">// in a class that implements View&lt;State, Action&gt;
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">val</span> <span style="color:#000">flow1</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Flow</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">Actions</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">findViewById</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">Button</span><span style="color:#000;font-weight:bold">&gt;(</span><span style="color:#000">R</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">button</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">.</span><span style="color:#000">clicks</span><span style="color:#000;font-weight:bold">()</span>
+    <span style="color:#000;font-weight:bold">.</span><span style="color:#000">map</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#000">Actions</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Proceed</span><span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">val</span> <span style="color:#000">flow2</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Flow</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">Actions</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">findViewById</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">Button</span><span style="color:#000;font-weight:bold">&gt;(</span><span style="color:#000">R</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">checkbox</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">.</span><span style="color:#000">checkedChanges</span><span style="color:#000;font-weight:bold">()</span>
+    <span style="color:#000;font-weight:bold">.</span><span style="color:#000">map</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#000">checked</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">Actions</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">DoMore</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">checked</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">override</span> <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">actions</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">merge</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">flow1</span><span style="color:#000;font-weight:bold">,</span><span style="color:#000">flow2</span><span style="color:#000;font-weight:bold">)</span>
+</code></pre></div><p>Pros:</p>
+<ul>
+<li>
+<p>Library provides useful bindings</p>
+</li>
+<li>
+<p>You might be used to this pattern if you used RxBindings</p>
+</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>You might still need some custom handling for something that doesn&rsquo;t fit any binding provided by the library</li>
+</ul>
+<h2 id="which-option-should-i-use">Which option should I use</h2>
+<p>We have shown three different ways to implement your flow. All three are valid options and have different tradeoffs as we
+saw. If by now you have a preferred way to do it, we suggest you apply it and don&rsquo;t finish reading this paragraph.
+If you are still reading this, we suggest you give a shot to callback flow.</p></article>
+
+                    </div>
+                </div><script>
+
+var elements = document.getElementsByTagName("pre");
+function isHorizontallyScrollable(element) {
+    return element.scrollWidth > element.clientWidth;
+};
+var sidebar = document.querySelector(".sidebar");
+function hideSidebarWhenHovered(element) {
+    element.addEventListener('mouseenter', e => {
+        sidebar.classList.add("hide-for-horizontal-scroll");
+    });
+    element.addEventListener('mouseleave', e => {
+        sidebar.classList.remove("hide-for-horizontal-scroll");
+    });
+};
+Array.prototype.forEach.call(elements, function(el, i){
+  if(isHorizontallyScrollable(el)) {
+     el.classList.add("expand");
+     hideSidebarWhenHovered(el);
+  }
+});
+</script>
+
+<script data-goatcounter="https://wi3r4gjn.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+<noscript>
+    <img src="https://wi3r4gjn.goatcounter.com/count?p=/mvflow/implementing-your-view-actions-flow/">
+</noscript>
+
+<script src="https://unpkg.com/in-view@0.6.1/dist/in-view.min.js"></script>
+<script>
+
+var sidebarContent = document.querySelector(".toc-container.transparent");
+if(sidebarContent != null) {
+    var lastElement = null;
+    const handleView = item => {
+      const linkEl = document.querySelector(`a[href='#${item.id}']`);
+
+      if(item.classList.contains("hide-from-toc")) {
+        linkEl.classList.add("hide-from-toc");
+        return;
+      }
+
+      let offsetHeight = 0.6*(window.innerHeight);
+      inView.offset({
+        bottom:offsetHeight
+      });
+
+      inView(`#${item.id}`)
+        .on("enter", () => {
+          if( lastElement != null) {
+            lastElement.classList.remove('active');
+          }
+          if( linkEl != null) {
+            linkEl.classList.add('active');
+          }
+          lastElement = linkEl;
+      })
+    };
+
+    
+    document.querySelectorAll("#content h1, #content h2, #content h3").forEach(handleView);
+
+    
+    sidebarContent.classList.remove("transparent");
+}
+</script>
+
+
+</div>
+    </body>
+</html>

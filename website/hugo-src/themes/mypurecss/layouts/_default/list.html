@@ -1,0 +1,24 @@
+{{ define "main" }}
+<article>
+    <section>
+        {{/* content from the _index.md file of a given section */}}
+        {{- .Content -}}
+    </section>
+    <section class="section-listing">
+        {{ range .Paginator.Pages }}
+            <div class="section-item">
+                <div class="">
+                    {{ .Summary }}
+                </div>
+                {{ if .Truncated }}
+                <!-- This <div> includes a read more link, but only if the summary is truncated... -->
+                <div class="section-item-link">
+                    <a href="{{ .RelPermalink }}">Read More…</a>
+                </div>
+                {{ end }}
+            </div>
+        {{ end }}
+    </section>
+    {{- template "_internal/pagination.html" . -}}
+</article>
+{{ end }}

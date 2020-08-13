@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+    {{- partial "head.html" . -}}
+    <body>
+        <div class="pure-g">
+            {{- block "header" . }}
+                {{- partial "header.html" . -}}
+            {{- end }}
+
+            {{ if not ($.Param "notoc") }}
+                <div class="sidebar pure-u-1 pure-u-md-1-4">
+                    {{/* transparent because we use javascript to hide some elements and only want to show it when
+                    everything is ready (otherwise you can see a quick change when the page loads) */}}
+                    <div class="toc-container transparent">
+                        {{/* One more div is required otherwise content would be laid out horizontally */}}
+                        <div>
+                            <h3>Jump to section:</h3>
+                            {{ .TableOfContents }}
+                        </div>
+                    </div>
+                </div>
+
+                {{/* At the end we start one div with different classes depending on whether we are showing the toc */}}
+                <div class="content next-to-toc pure-u-1 pure-u-md-3-4">
+            {{ else }}
+                <div class="content pure-u-1">
+            {{ end }}
+
+                    {{/* div inside div is required for properly working with pure */}}
+                    <div id="content" >
+                        {{- block "main" . }}{{- end }}
+                    </div>
+                </div>
+
+            {{- partial "footer.html" . -}}
+        </div>
+    </body>
+</html>

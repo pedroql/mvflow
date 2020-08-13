@@ -8,6 +8,20 @@ In no particular order
 [dokka/pull/955](https://github.com/Kotlin/dokka/pull/955) )
 
 * Write docs in a github.io page
+  
+  * Announce it!
+  
+  * Cleanup the theme code (better structure for partials, list pages vs content pages, etc)
+
+  * Put TOC inline with the content when on landscape
+  
+  * Optimize for SEO, run checks
+  
+  * See if I could integrate SASS / minify CSS/js
+  
+  * Follow [Tufte](https://edwardtufte.github.io/tufte-css/) guidelines for better styling
+  
+  * The homepage should contain links to the main sections (just like the header )
 
 * Write blog posts
 
@@ -37,6 +51,8 @@ same view for slightly different things. (This shows a good practice as well as 
 functionality to be developed)
 
 * Update the example using `launchWhenResumed` to use the new better approach
+
+* run https://github.com/plnice/can-i-drop-jetifier to see if can drop jetifier
 
 ## To consider
 

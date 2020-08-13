@@ -1,0 +1,17 @@
+baseURL = "https://pedroql.github.io/mvflow/"
+languageCode = "en-GB"
+title = "MVFLow: a simple MVI library using Kotlin coroutines and flows"
+theme = "mypurecss"
+publishDir = "../hugo-generated"
+disableKinds = ["taxonomy"]
+ignoreErrors = ["error-disable-taxonomy"]
+[permalinks]
+  articles = "/:title/"
+
+[params]
+    custom_css = ["css/github.css"]
+    notoc = true
+[markup]
+  [markup.highlight]
+    codeFences = true
+    style = "tango"

@@ -54,6 +54,9 @@ android {
     lintOptions {
         checkGeneratedSources = true
         warningsAsErrors = true
+
+        // allow dependencies go out of date in this sample project
+        informational("GradleDependency")
     }
 }
 
