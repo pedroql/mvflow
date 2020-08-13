@@ -18,8 +18,13 @@
                 <!--                    {{ end */}}-->
                 <!--                </li>-->
                 <li class="pure-menu-item">
+                    {{ $currentPage := .Permalink }}
                     {{ with .Site.GetPage "articles" }}
-                    <a href="{{ .Permalink  }}" class="pure-menu-link">Articles</a>
+                    {{ $class := "pure-menu-link" }}
+                    {{ if eq $currentPage .Permalink }}
+                        {{ $class = "pure-menu-link active" }}
+                    {{ end }}
+                    <a href="{{ .Permalink  }}" class="{{ $class }}">Articles</a>
                     {{ else }}
                     {{ errorf "Failed to get a link for the header %q" .Path }}
                     {{ end }}
