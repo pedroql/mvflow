@@ -1,7 +1,7 @@
 ---
 title: "Implementing Your View Actions Flow"
 date: 2020-08-12T10:52:15+01:00
-draft: true
+draft: false
 ---
 # Implementing your view actions flow
 
@@ -62,8 +62,11 @@ You can read more about `callbackFlow` in the
 Pros:
 
 * Simple
+
 * Full control of emissions
+
 * Easy to reason
+
 * Coroutine scope handled automatically
 
 Cons:
@@ -133,10 +136,13 @@ class UserRecyclerViewAdapter(
 ```
 
 Pros:
+
 * Easier to allow different classes emit values into the flow
+
 * No need for mutable, nullable, or late init properties
 
 Cons:
+
 * Need to take care of closing the channel
 
 ## Using a third party library

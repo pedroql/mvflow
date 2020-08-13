@@ -372,6 +372,8 @@ Exception java.lang.IllegalStateException: Can not perform this action after onS
 
 There are some additional topics you might want to read about:
 
+* [Implementing your view actions flow]({{< ref "articles/implementing-your-view-actions-flow.md" >}})
+
 * Read the full [KDocs](documentation/mvflow/net.pedroloureiro.mvflow/)
 
 * Browse the source code of the [sample android app](https://github.com/pedroql/mvflow/tree/master/samples/android-app)
