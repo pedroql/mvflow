@@ -8,10 +8,6 @@ In no particular order
 [dokka/pull/955](https://github.com/Kotlin/dokka/pull/955) )
 
 * Write docs in a github.io page
- 
-  * Add link to homepage from each article
-  
-  * Make the absolute url hide the "articles" part
   
   * Fix the list page (where it lists all articles)
   
@@ -28,6 +24,8 @@ In no particular order
   * See if I could integrate SASS / minify CSS/js
   
   * Follow [Tufte](https://edwardtufte.github.io/tufte-css/) guidelines for better styling
+  
+  * The homepage should contain links to the main sections (just like the header )
 
 * Write blog posts
 

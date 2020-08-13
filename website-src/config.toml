@@ -3,6 +3,9 @@ languageCode = "en-GB"
 title = "MVFLow: a simple MVI library using Kotlin coroutines and flows"
 theme = "mypurecss"
 
+[permalinks]
+  articles = "/:title/"
+
 [params]
     custom_css = ["css/github.css"]
     notoc = true
