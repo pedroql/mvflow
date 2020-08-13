@@ -12,6 +12,8 @@ MVI has a few concepts:
 
 * The state is immutable
 
+<!--more-->
+
 This means that if you have a current state and know that something changed (e.g. you had a counter that just
 incremented), you can't just update that property of the state. Instead, you need to create a new state and
 push it down the view.

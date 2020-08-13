@@ -22,6 +22,8 @@ Most developers should have a reasonable idea of how to implement `render(state:
 
 We can suggest three different ways to implement this, each with different pros and cons.
 
+<!--more-->
+
 ## Using callback flow
 
 `kotlinx.coroutines.core` defines a flow builder very useful for our scenario: `callbackFlow`.
@@ -172,3 +174,9 @@ Pros:
 Cons:
 
 * You might still need some custom handling for something that doesn't fit any binding provided by the library
+
+## Which option should I use
+
+We have shown three different ways to implement your flow. All three are valid options and have different tradeoffs as we
+saw. If by now you have a preferred way to do it, we suggest you apply it and don't finish reading this paragraph. 
+If you are still reading this, we suggest you give a shot to callback flow. 

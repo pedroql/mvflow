@@ -70,8 +70,6 @@ html, button, input, select, textarea,
     max-width: 660px;
   	margin: 0 auto;
   	padding: 20px 30px 40px 30px;
-	padding-top: 20px;
-    padding-bottom: 100px;
 }
 #content > ul:first-child,
 #content > ol:first-child{
@@ -634,3 +632,32 @@ p code:hover {
     margin: 0;
     padding: 0.5em 1em;
 }
+
+/* customise section listings */
+.section-item {
+    margin-bottom: 5em;
+
+/* leaving some experiments commented out */
+/* border: 1px solid #0005;
+   padding: 1em;
+   border-radius: 5px;
+   box-shadow: 1px 1px 1px 1px #0005; */
+}
+
+
+.section-item:last-of-type {
+    margin-bottom: 0;
+}
+
+.section-item h1 {
+    font-size: 1.5em;
+}
+
+.section-item h2 {
+    font-size: 1.25em;
+}
+
+.section-item-link {
+    padding-top: 0.5em;
+}
+

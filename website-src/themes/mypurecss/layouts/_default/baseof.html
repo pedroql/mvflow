@@ -3,8 +3,9 @@
     {{- partial "head.html" . -}}
     <body>
         <div class="pure-g">
-            {{- partial "header.html" . -}}
-            {{- block "header" . }}{{- end }}
+            {{- block "header" . }}
+                {{- partial "header.html" . -}}
+            {{- end }}
 
             {{ if not ($.Param "notoc") }}
                 <div class="sidebar pure-u-1 pure-u-md-1-4">

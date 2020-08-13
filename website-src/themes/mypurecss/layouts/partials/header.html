@@ -1,0 +1,39 @@
+<div class="pure-u-1 header-parent">
+    <div class="content header">
+        <div class="pure-menu pure-menu-horizontal">
+            <ul class="custom-menu-list pure-menu-list">
+                <li class="pure-menu-item">
+                    {{ with .Site.GetPage "/" }}
+                    <a href="{{ .Permalink  }}" class="pure-menu-link">Home</a>
+                    {{ else }}
+                    {{ errorf "Failed to get a link for the header %q" .Path }}
+                    {{ end }}
+                </li>
+                <!-- Add API link when we extract contents into one article -->
+<!--                <li class="pure-menu-item">-->
+                <!--                    {{/* with .Site.GetPage "articles/api.html" }}-->
+                <!--                    <a href="{{ .Permalink  }}" class="pure-menu-link">API</a>-->
+                <!--                    {{ else }}-->
+                <!--                    {{ errorf "Failed to get a link for the header %q" .Path }}-->
+                <!--                    {{ end */}}-->
+                <!--                </li>-->
+                <li class="pure-menu-item">
+                    {{ with .Site.GetPage "articles" }}
+                    <a href="{{ .Permalink  }}" class="pure-menu-link">Articles</a>
+                    {{ else }}
+                    {{ errorf "Failed to get a link for the header %q" .Path }}
+                    {{ end }}
+                </li>
+                <li class="pure-menu-item">
+                    <a href="https://github.com/pedroql/mvflow" target="_blank" class="pure-menu-link">GitHub</a>
+                </li>
+                <li class="pure-menu-item">
+                    {{ with .Site.BaseURL }}
+                    <a href="{{ . }}documentation/mvflow/net.pedroloureiro.mvflow/" target="_blank" class="pure-menu-link">Documentation</a>
+                    {{ else }}
+                    {{ end }}
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
