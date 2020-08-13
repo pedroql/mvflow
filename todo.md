@@ -9,10 +9,6 @@ In no particular order
 
 * Write docs in a github.io page
   
-  * Fix the list page (where it lists all articles)
-  
-  * Add some analytics (?)
-  
   * Announce it!
   
   * Cleanup the theme code (better structure for partials, list pages vs content pages, etc)
