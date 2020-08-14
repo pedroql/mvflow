@@ -4,6 +4,8 @@ In no particular order
 
 ## Documentation
 
+* add a link to the website on README.md of the docs folder
+
 * Ensure documenting public methods is required by CI (needs to wait for version 0.11 of plugin 
 [dokka/pull/955](https://github.com/Kotlin/dokka/pull/955) )
 
@@ -11,7 +13,20 @@ In no particular order
   
   * Announce it!
   
-  * Cleanup the theme code (better structure for partials, list pages vs content pages, etc)
+  * Check website on mobile
+  
+  * Cleanup the theme code
+  
+     * Better struture for partials & blocks
+     
+     * Separate different parts of the logic (e.g. footer has 3 or more different responsibilities
+      -  separate to different files and include all of them)
+      
+     * check if the structure of single page, list page, and baseof are well separated
+     
+     * css file could be separated into a few different files (and merged to one when published)
+     
+     * maybe should have a copy of the js files I import 
 
   * Put TOC inline with the content when on landscape
   
