@@ -1,0 +1,5 @@
+task generateWebsite(type: Exec) {
+    workingDir "$rootDir/website/hugo-src"
+
+    commandLine "hugo --cleanDestinationDir".split(" ")
+}

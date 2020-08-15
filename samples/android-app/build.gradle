@@ -47,8 +47,9 @@ android {
             java.srcDirs = ['src/androidTest/kotlin']
         }
     }
-    viewBinding {
-        enabled = true
+
+    buildFeatures {
+        viewBinding = true
     }
 
     lintOptions {

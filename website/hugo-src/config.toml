@@ -2,7 +2,7 @@ baseURL = "https://pedroql.github.io/mvflow/"
 languageCode = "en-GB"
 title = "MVFLow: a simple MVI library using Kotlin coroutines and flows"
 theme = "mypurecss"
-publishDir = "../hugo-generated"
+publishDir = "../../docs"
 disableKinds = ["taxonomy"]
 ignoreErrors = ["error-disable-taxonomy"]
 [permalinks]

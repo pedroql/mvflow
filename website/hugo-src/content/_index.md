@@ -16,7 +16,7 @@ dependencies {
 }
 ```
 
-Check our [releases on github](https://github.com/pedroql/mvflow/releases) to find the latest one.
+Check our [releases on github](https://github.com/pedroql/mvflow/releases) to see what's new. 
 
 ## Objectives
 
@@ -53,7 +53,7 @@ Any MVI library needs to accomplish the following tasks:
 
 &nbsp;
 
-We believe that coroutines and flows are extremely powerful concepts that can be applied to this problem. 
+We believe that coroutines and flows are extremely powerful concepts that can be applied to this architecture. 
 They enable us to build a very powerful API with a small and simple surface.
 
 Here are some advantages that they bring:
@@ -376,7 +376,7 @@ There are some additional topics you might want to read about:
 
 * Read the full [KDocs](documentation/mvflow/net.pedroloureiro.mvflow/)
 
-* Browse the source code of the [sample android app](https://github.com/pedroql/mvflow/tree/master/samples/android-app)
+* Browse the source code of the [sample Android app](https://github.com/pedroql/mvflow/tree/master/samples/android-app)
 
 
 ## Inspiration

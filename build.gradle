@@ -9,8 +9,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        // AGP 4.x requires IntelliJ 2020.2
-        classpath 'com.android.tools.build:gradle:3.6.4'
+        classpath 'com.android.tools.build:gradle:4.0.1'
     }
 }
 
@@ -28,7 +27,7 @@ allprojects {
     group = "net.pedroloureiro.mvflow"
     // when CI is making a release from a git tag, it will pass in the version
     // manually specify it with ./gradlew ... -DVERSION_OVERRIDE=123
-    version = System.getProperty("VERSION_OVERRIDE", "0.0.4-SNAPSHOT")
+    version = System.getProperty("VERSION_OVERRIDE", "1.0.0-SNAPSHOT")
 
     repositories {
         mavenCentral()
@@ -39,3 +38,4 @@ allprojects {
 
 apply from: "$rootDir/dokka.build.gradle"
 apply from: "$rootDir/apivalidation.build.gradle"
+apply from: "$rootDir/hugo.build.gradle"
