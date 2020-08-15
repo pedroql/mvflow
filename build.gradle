@@ -38,3 +38,4 @@ allprojects {
 
 apply from: "$rootDir/dokka.build.gradle"
 apply from: "$rootDir/apivalidation.build.gradle"
+apply from: "$rootDir/hugo.build.gradle"
