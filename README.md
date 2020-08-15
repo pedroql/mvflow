@@ -5,7 +5,7 @@
 
 [![CI status](https://github.com/pedroql/mvflow/workflows/Build%20project/badge.svg?branch=master)](https://github.com/pedroql/mvflow/actions?query=workflow%3A%22Build+project%22+branch%3Amaster) 
 [![CI status](https://github.com/pedroql/mvflow/workflows/Build%20and%20prepare%20release/badge.svg)](https://github.com/pedroql/mvflow/actions?query=workflow%3A%22Build+and+prepare+release%22)
-[![Download ](https://api.bintray.com/packages/pedroql/MVFlow/mvflow-core/images/download.svg?version=0.0.3)](https://bintray.com/pedroql/MVFlow/mvflow-core/_latestVersion) 
+[![Download ](https://api.bintray.com/packages/pedroql/MVFlow/mvflow-core/images/download.svg)](https://bintray.com/pedroql/MVFlow/mvflow-core/_latestVersion) 
 
 Check [our website](https://pedroql.github.io/mvflow/) for all information about the library! 
 
