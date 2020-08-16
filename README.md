@@ -25,7 +25,7 @@ The library introduces few - if any - new concepts outside MVI,
 [Kotlin coroutines](https://kotlinlang.org/docs/reference/coroutines/basics.html), and 
 [Kotlin flows](https://kotlinlang.org/docs/reference/coroutines/flow.html). 
 
-If you familiar with those concepts, you can start using the library without a problem; if you are new to some of these
+If you are familiar with those concepts, you can start using the library without a problem; if you are new to some of these
 concepts, you will be able to apply those concepts outside this library too.
 
 ### Coroutines and flows as powerful abstractions 
