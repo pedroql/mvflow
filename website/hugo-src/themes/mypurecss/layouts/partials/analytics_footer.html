@@ -1,0 +1,9 @@
+{{ if ne (getenv "HUGO_ENV") "production" }}
+<script data-goatcounter="https://wi3r4gjn.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+<noscript>
+    <img src="https://wi3r4gjn.goatcounter.com/count?p={{ .Permalink | relURL | safeURL }}">
+</noscript>
+{{ else }}
+<!-- no analytics for development -->
+{{ end }}
