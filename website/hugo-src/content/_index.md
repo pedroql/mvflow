@@ -8,7 +8,7 @@ notoc: false
 # MVFlow
 **Simple Android\* MVI architecture using kotlin flows**
 
- _\* The architecture is platform-neutral but was designed with Android in mind_
+ _\* The library is platform-neutral but was designed with Android in mind_
 
 ```groovy
 dependencies {
