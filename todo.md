@@ -22,6 +22,8 @@ In no particular order
      * remove the concept of content id 
      
      * try to fetch fonts remotely (because github pages content policy only caches it for 10 minutes)s
+     
+     * Maybe I can drop the use of responsive grid from pure css?
 
   * [HOMEPAGE] Put TOC inline with the content when on landscape
   
