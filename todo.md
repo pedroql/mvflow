@@ -38,6 +38,10 @@ In no particular order
   * The homepage should contain links to the main sections (just like the header )
   
   * Implement 404 page
+  
+  * explore https://web.dev/vitals/, 
+  https://lighthouse-dot-webdotdevsite.appspot.com//lh/html?url=https%3A%2F%2Fpedroql.github.io%2Fmvflow%2F#performance,
+  and https://search.google.com/search-console/welcome?hl=e
 
 * Write blog posts
 
