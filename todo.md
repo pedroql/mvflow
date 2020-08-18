@@ -21,8 +21,6 @@ In no particular order
   
   * Create one page alone for the API
     
-  * Follow [Tufte](https://edwardtufte.github.io/tufte-css/) guidelines for better styling
-  
   * The homepage should contain links to the main sections (just like the header )
   
   * Optimize for SEO (add tags and description)
