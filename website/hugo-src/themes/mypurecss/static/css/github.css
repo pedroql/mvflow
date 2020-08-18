@@ -4,6 +4,7 @@ list of changes:
 
 1. replace #write with #content
 2. comment out blocks regarding code fences
+3. added font-display: swap; to fonts so that the browser uses something local while it is loading the fonts
 
 */
 :root {
@@ -18,6 +19,7 @@ list of changes:
     font-style: normal;
     font-weight: normal;
     src: local('Open Sans Regular'),url('./github/400.woff') format('woff')
+    font-display: swap;
 }
 
 @font-face {
@@ -25,6 +27,7 @@ list of changes:
     font-style: italic;
     font-weight: normal;
     src: local('Open Sans Italic'),url('./github/400i.woff') format('woff')
+    font-display: swap;
 }
 
 @font-face {
@@ -32,6 +35,7 @@ list of changes:
     font-style: normal;
     font-weight: bold;
     src: local('Open Sans Bold'),url('./github/700.woff') format('woff')
+    font-display: swap;
 }
 
 @font-face {
@@ -39,6 +43,7 @@ list of changes:
     font-style: italic;
     font-weight: bold;
     src: local('Open Sans Bold Italic'),url('./github/700i.woff') format('woff')
+    font-display: swap;
 }
 
 /* Added this font for better code snippets */
@@ -47,6 +52,7 @@ list of changes:
     font-style: normal;
     font-weight: normal;
     src: local('JetBrainsMono-Regular'),url('./jetbrains/JetBrainsMono-Regular.woff') format('woff')
+    font-display: swap;
 }
 
 html {

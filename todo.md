@@ -20,6 +20,8 @@ In no particular order
      * cleanup css
      
      * remove the concept of content id 
+     
+     * try to fetch fonts remotely (because github pages content policy only caches it for 10 minutes)s
 
   * [HOMEPAGE] Put TOC inline with the content when on landscape
   
