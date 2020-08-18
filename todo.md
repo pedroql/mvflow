@@ -25,8 +25,6 @@ In no particular order
   
   * The homepage should contain links to the main sections (just like the header )
   
-  * Implement 404 page
-  
   * Optimize for SEO, run checks
   
     * explore https://web.dev/vitals/, 
@@ -57,8 +55,6 @@ In no particular order
 * Example of using a view with its own concept of state and action and then mapping this to two screens which use the 
 same view for slightly different things. (This shows a good practice as well as how to map views/actions - 
 functionality to be developed)
-
-* Update the example using `launchWhenResumed` to use the new better approach
 
 * run https://github.com/plnice/can-i-drop-jetifier to see if can drop jetifier
 
