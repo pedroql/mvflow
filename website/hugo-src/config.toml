@@ -9,7 +9,6 @@ ignoreErrors = ["error-disable-taxonomy"]
   articles = "/:title/"
 
 [params]
-    custom_css = ["css/github.css"]
     notoc = true
 [markup]
   [markup.highlight]
