@@ -12,11 +12,7 @@ In no particular order
   * Cleanup the theme code
          
      * check if the structure of single page, list page, and baseof are well separated
-     
-     * css file could be separated into a few different files (and merged to one when published)
-     
-     * maybe should have a copy of the js and css files I import 
-     
+               
      * cleanup css
      
      * remove the concept of content id 
@@ -29,8 +25,6 @@ In no particular order
   
   * Create one page alone for the API
   
-  * Optimize for SEO, run checks
-  
   * See if I could integrate SASS / minify CSS/js
   
   * Follow [Tufte](https://edwardtufte.github.io/tufte-css/) guidelines for better styling
@@ -39,7 +33,9 @@ In no particular order
   
   * Implement 404 page
   
-  * explore https://web.dev/vitals/, 
+  * Optimize for SEO, run checks
+  
+    * explore https://web.dev/vitals/, 
   https://lighthouse-dot-webdotdevsite.appspot.com//lh/html?url=https%3A%2F%2Fpedroql.github.io%2Fmvflow%2F#performance,
   and https://search.google.com/search-console/welcome?hl=e
 

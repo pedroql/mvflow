@@ -1,0 +1,100 @@
+/* Added to achieve the side bar on the left (where we have the TOC) */
+
+.sidebar {
+    background: rgb(61, 79, 93);
+    color: #fff;
+    transition: opacity 400ms;
+}
+
+@media (min-width: 48em) {
+    .content.next-to-toc {
+        margin-left: 25% !important;
+        z-index: 100;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        overflow-y:auto;
+    }
+
+    nav li a.active  {
+        background: #0004;
+        animation-duration: 200ms;
+    }
+}
+
+/* Customisation to the looks of the TOC */
+.toc-container h3 {
+    padding-left: 1em;
+    display: block;
+}
+
+@media (min-width: 48em) {
+    .toc-container h3 {
+        display: none;
+    }
+}
+
+.toc-container {
+  display: table;
+  height: 100%;
+}
+
+.toc-container > div {
+  display: table-cell;
+  vertical-align: middle;
+  animation: fadeInFromNone 1s ease-out;
+}
+
+.toc-container.transparent > div {
+    display:none;
+}
+
+@keyframes fadeInFromNone {
+    0% {
+        display: none;
+        opacity: 0;
+    }
+
+    1% {
+        display: block;
+        opacity: 0;
+    }
+
+    100% {
+        display: block;
+        opacity: 1;
+    }
+}
+
+nav ul {
+    list-style: none;
+    padding-left: 1em;
+}
+
+nav a {
+    background: transparent;
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 0.5em;
+    border-radius: 3px 0px 0px 3px;
+    /* this transition doesn't seem to work how it should... */
+    transition: background-color 0.5s ease;
+}
+nav a:hover,
+nav a:focus {
+    text-decoration: underline;
+}
+
+nav a.hide-from-toc {
+    display: none;
+}
+
+@media (min-width: 48em) {
+    .hide-for-horizontal-scroll.sidebar {
+        opacity: 0;
+    }
+}
