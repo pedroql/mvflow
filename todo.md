@@ -13,20 +13,14 @@ In no particular order
          
      * check if the structure of single page, list page, and baseof are well separated
                
-     * cleanup css
-     
      * remove the concept of content id 
-     
-     * try to fetch fonts remotely (because github pages content policy only caches it for 10 minutes)s
-     
+          
      * Maybe I can drop the use of responsive grid from pure css?
 
   * [HOMEPAGE] Put TOC inline with the content when on landscape
   
   * Create one page alone for the API
-  
-  * See if I could integrate SASS / minify CSS/js
-  
+    
   * Follow [Tufte](https://edwardtufte.github.io/tufte-css/) guidelines for better styling
   
   * The homepage should contain links to the main sections (just like the header )
