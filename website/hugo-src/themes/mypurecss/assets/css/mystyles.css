@@ -11,6 +11,19 @@
     border-color: #ccc;
 }
 
+/* Added this block to allow expanding long (wide) blocks of code */
+pre.expand:hover {
+  transition-duration: 250ms;
+  margin-right:-30vw;
+  max-width:1600px;
+  padding-right: 30px;
+}
+
+/* added this code style, based what was applied to code from github.css */
+code {
+    /* added JetBrains Mono font-family */
+    font-family: "JetBrains Mono", Consolas, "Liberation Mono", Courier, monospace;
+}
 
 /* Customise the look of inline code */
 p code {
