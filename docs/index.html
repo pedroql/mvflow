@@ -10,8 +10,18 @@
     <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/grids-responsive-min.css">
 
     
+    
+        
+        <link rel="stylesheet" href="https://pedroql.github.io/mvflow/css/bundled.min.css">
+    
+
+    
     <link rel="stylesheet" href="/mvflow/css/github.css">
     
+
+    <link rel="preload" href="https://unpkg.com/in-view@0.6.1/dist/in-view.min.js" as="script">
+
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
     
     
@@ -21,7 +31,7 @@
     
 
     
-    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
     
     <title>MVFLow: a simple MVI library using Kotlin coroutines and flows</title>
 </head>
@@ -73,7 +83,7 @@
                     <div id="content" >
 <article><h1 id="mvflow">MVFlow</h1>
 <p><strong>Simple Android* MVI architecture using kotlin flows</strong></p>
-<p><em>* The architecture is platform-neutral but was designed with Android in mind</em></p>
+<p><em>* The library is platform-neutral but was designed with Android in mind</em></p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-groovy" data-lang="groovy"><span style="color:#000">dependencies</span> <span style="color:#ce5c00;font-weight:bold">{</span>
     <span style="color:#000">implementation</span> <span style="color:#4e9a06">&#39;net.pedroloureiro.mvflow:mvflow-core:&lt;latest version&gt;&#39;</span>
 <span style="color:#ce5c00;font-weight:bold">}</span>
@@ -413,6 +423,7 @@ Array.prototype.forEach.call(elements, function(el, i){
 </noscript>
 
 <script src="https://unpkg.com/in-view@0.6.1/dist/in-view.min.js"></script>
+
 <script>
 
 var sidebarContent = document.querySelector(".toc-container.transparent");
@@ -450,8 +461,6 @@ if(sidebarContent != null) {
     sidebarContent.classList.remove("transparent");
 }
 </script>
-
-
 </div>
     </body>
 </html>

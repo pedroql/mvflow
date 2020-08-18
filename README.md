@@ -1,7 +1,7 @@
 # MVFlow
 **Simple Android* MVI architecture using kotlin flows**
 
- _\* The architecture is platform-neutral but was designed with Android in mind_
+ _\* The library is platform-neutral but was designed with Android in mind_
 
 [![CI status](https://github.com/pedroql/mvflow/workflows/Build%20project/badge.svg?branch=master)](https://github.com/pedroql/mvflow/actions?query=workflow%3A%22Build+project%22+branch%3Amaster) 
 [![CI status](https://github.com/pedroql/mvflow/workflows/Build%20and%20prepare%20release/badge.svg)](https://github.com/pedroql/mvflow/actions?query=workflow%3A%22Build+and+prepare+release%22)

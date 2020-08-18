@@ -4,43 +4,34 @@ In no particular order
 
 ## Documentation
 
-* add a link to the website on README.md of the docs folder
-
 * Ensure documenting public methods is required by CI (needs to wait for version 0.11 of plugin 
 [dokka/pull/955](https://github.com/Kotlin/dokka/pull/955) )
 
 * Write docs in a github.io page
-  
-  * Announce it!
-  
-  * Check website on mobile
-  
+    
   * Cleanup the theme code
-  
-     * Better struture for partials & blocks
-     
-     * Separate different parts of the logic (e.g. footer has 3 or more different responsibilities
-      -  separate to different files and include all of them)
-      
+         
      * check if the structure of single page, list page, and baseof are well separated
-     
-     * css file could be separated into a few different files (and merged to one when published)
-     
-     * maybe should have a copy of the js files I import 
+               
+     * remove the concept of content id 
+          
+     * Maybe I can drop the use of responsive grid from pure css?
 
-  * Put TOC inline with the content when on landscape
+  * [HOMEPAGE] Put TOC inline with the content when on landscape
   
-  * Optimize for SEO, run checks
-  
-  * See if I could integrate SASS / minify CSS/js
-  
+  * Create one page alone for the API
+    
   * Follow [Tufte](https://edwardtufte.github.io/tufte-css/) guidelines for better styling
   
   * The homepage should contain links to the main sections (just like the header )
+  
+  * Optimize for SEO, run checks
+  
+    * explore https://web.dev/vitals/, 
+  https://lighthouse-dot-webdotdevsite.appspot.com//lh/html?url=https%3A%2F%2Fpedroql.github.io%2Fmvflow%2F#performance,
+  and https://search.google.com/search-console/welcome?hl=e
 
 * Write blog posts
-
-* Simplify readme in main project
 
 * Write a page with "recipes" pointing certain problems to the sample projects I am writing
 
@@ -64,8 +55,6 @@ In no particular order
 * Example of using a view with its own concept of state and action and then mapping this to two screens which use the 
 same view for slightly different things. (This shows a good practice as well as how to map views/actions - 
 functionality to be developed)
-
-* Update the example using `launchWhenResumed` to use the new better approach
 
 * run https://github.com/plnice/can-i-drop-jetifier to see if can drop jetifier
 

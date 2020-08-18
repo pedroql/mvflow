@@ -1,1 +1,150 @@
-Page not found 😱
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css"
+          integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/grids-responsive-min.css">
+
+    
+    
+        
+        <link rel="stylesheet" href="https://pedroql.github.io/mvflow/css/bundled.min.css">
+    
+
+    
+    <link rel="stylesheet" href="/mvflow/css/github.css">
+    
+
+    <link rel="preload" href="https://unpkg.com/in-view@0.6.1/dist/in-view.min.js" as="script">
+
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+    
+
+    
+    <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+    
+    <title>404 Page not found</title>
+</head>
+<body>
+        <div class="pure-g"><div class="pure-u-1 header-parent">
+    <div class="content header">
+        <div class="pure-menu pure-menu-horizontal">
+            <ul class="custom-menu-list pure-menu-list">
+                <li class="pure-menu-item">
+                    
+                    <a href="https://pedroql.github.io/mvflow/" class="pure-menu-link">Home</a>
+                    
+                </li>
+                
+
+                
+                
+                <li class="pure-menu-item">
+                    
+                    
+                    
+                    
+                    <a href="https://pedroql.github.io/mvflow/articles/" class="pure-menu-link">Articles</a>
+                    
+                </li>
+                <li class="pure-menu-item">
+                    <a href="https://github.com/pedroql/mvflow" target="_blank" class="pure-menu-link">GitHub</a>
+                </li>
+                <li class="pure-menu-item">
+                    
+                    <a href="https://pedroql.github.io/mvflow/documentation/mvflow/net.pedroloureiro.mvflow/" target="_blank" class="pure-menu-link">Documentation</a>
+                    
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+            
+                <div class="content pure-u-1">
+            
+
+                    
+                    <div id="content" >
+
+<p style="text-align: center;">Page not found 😱</p>
+
+<p style="text-align: center;">Please try <a href="javascript:history.back()">going back</a> or try one of the links above.</p>
+
+                    </div>
+                </div><script>
+
+var elements = document.getElementsByTagName("pre");
+function isHorizontallyScrollable(element) {
+    return element.scrollWidth > element.clientWidth;
+};
+var sidebar = document.querySelector(".sidebar");
+function hideSidebarWhenHovered(element) {
+    element.addEventListener('mouseenter', e => {
+        sidebar.classList.add("hide-for-horizontal-scroll");
+    });
+    element.addEventListener('mouseleave', e => {
+        sidebar.classList.remove("hide-for-horizontal-scroll");
+    });
+};
+Array.prototype.forEach.call(elements, function(el, i){
+  if(isHorizontallyScrollable(el)) {
+     el.classList.add("expand");
+     hideSidebarWhenHovered(el);
+  }
+});
+</script>
+
+<script data-goatcounter="https://wi3r4gjn.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+<noscript>
+    <img src="https://wi3r4gjn.goatcounter.com/count?p=/mvflow/404.html">
+</noscript>
+
+<script src="https://unpkg.com/in-view@0.6.1/dist/in-view.min.js"></script>
+
+<script>
+
+var sidebarContent = document.querySelector(".toc-container.transparent");
+if(sidebarContent != null) {
+    var lastElement = null;
+    const handleView = item => {
+      const linkEl = document.querySelector(`a[href='#${item.id}']`);
+
+      if(item.classList.contains("hide-from-toc")) {
+        linkEl.classList.add("hide-from-toc");
+        return;
+      }
+
+      let offsetHeight = 0.6*(window.innerHeight);
+      inView.offset({
+        bottom:offsetHeight
+      });
+
+      inView(`#${item.id}`)
+        .on("enter", () => {
+          if( lastElement != null) {
+            lastElement.classList.remove('active');
+          }
+          if( linkEl != null) {
+            linkEl.classList.add('active');
+          }
+          lastElement = linkEl;
+      })
+    };
+
+    
+    document.querySelectorAll("#content h1, #content h2, #content h3").forEach(handleView);
+
+    
+    sidebarContent.classList.remove("transparent");
+}
+</script>
+</div>
+    </body>
+</html>

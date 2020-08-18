@@ -7,9 +7,23 @@
           integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/grids-responsive-min.css">
 
+    {{ $files := resources.Match "css/*.css"  }}
+    {{ if eq hugo.Environment "production" }}
+        {{ $bundledCss := $files | resources.Concat "css/bundled.css" | resources.Minify }}
+        <link rel="stylesheet" href="{{ $bundledCss.Permalink }}">
+    {{ else }}
+        {{ range $files }}
+        <link rel="stylesheet" href="{{ .Permalink }}">
+        {{ end }}
+    {{ end }}
+
     {{ range .Site.Params.custom_css }}
     <link rel="stylesheet" href="{{ relURL (.) }}">
     {{ end }}
+
+    <link rel="preload" href="https://unpkg.com/in-view@0.6.1/dist/in-view.min.js" as="script">
+
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
     {{ if .OutputFormats.Get "RSS" }}
     {{ with .OutputFormats.Get "RSS" }}
@@ -18,7 +32,7 @@
     {{ end }}
     {{ end }}
 
-    {{ if eq (getenv "HUGO_ENV") "production" | or (eq .Site.Params.env "production") }}
+    {{ if eq hugo.Environment "production" }}
     <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
     {{ else }}
     <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
