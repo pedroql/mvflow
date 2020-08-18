@@ -1,4 +1,4 @@
-{{ if ne (getenv "HUGO_ENV") "production" }}
+{{ if eq hugo.Environment "production" }}
 <script data-goatcounter="https://wi3r4gjn.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 <noscript>

@@ -18,6 +18,8 @@ In no particular order
      * maybe should have a copy of the js and css files I import 
      
      * cleanup css
+     
+     * remove the concept of content id 
 
   * [HOMEPAGE] Put TOC inline with the content when on landscape
   
@@ -30,6 +32,8 @@ In no particular order
   * Follow [Tufte](https://edwardtufte.github.io/tufte-css/) guidelines for better styling
   
   * The homepage should contain links to the main sections (just like the header )
+  
+  * Implement 404 page
 
 * Write blog posts
 
