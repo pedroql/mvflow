@@ -17,10 +17,6 @@ In no particular order
           
      * Maybe I can drop the use of responsive grid from pure css?
   
-  * Include full text in the RSS [template](https://github.com/gohugoio/hugo/blob/master/tpl/tplimpl/embedded/templates/_default/rss.xml)
-  
-  * Check if the description in the RSS looks correct (tags are html escaped)
-  
   * [HOMEPAGE] Put TOC inline with the content when on landscape
   
   * Create one page alone for the API
