@@ -16,7 +16,11 @@ In no particular order
      * remove the concept of content id 
           
      * Maybe I can drop the use of responsive grid from pure css?
-
+  
+  * Include full text in the RSS [template](https://github.com/gohugoio/hugo/blob/master/tpl/tplimpl/embedded/templates/_default/rss.xml)
+  
+  * Check if the description in the RSS looks correct (tags are html escaped)
+  
   * [HOMEPAGE] Put TOC inline with the content when on landscape
   
   * Create one page alone for the API
@@ -29,11 +33,16 @@ In no particular order
 
 * Write a page with "recipes" pointing certain problems to the sample projects I am writing
 
-* Could write a few examples of good patterns I found
+* Write a few examples of good patterns I found
 
-  * For example, having one class with a kotlin object to define the State, Action, Mutation, and Handler classes
+  * For example, having one class with a kotlin object to define the State, Action, and Mutation classes. 
+  Possibly the reducer and Handler implementations too.
   
   * Using static imports so you don't write `SomethingMVFlow.Action` (or State or Mutation) everywhere
+  
+  * How to deal with the initial load of data when you open a screen
+  
+  * Handling process death (and orientation changes) 
 
 ## Sample code to write
 

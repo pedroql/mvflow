@@ -1,9 +1,8 @@
 ---
-title: "Implementing Your View Actions Flow"
+title: "Implementing your view actions flow"
 date: 2020-08-12T10:52:15+01:00
 draft: false
 ---
-# Implementing your view actions flow
 
 MVFlow defines the view interface as follows:
 

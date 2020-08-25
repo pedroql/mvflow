@@ -1,5 +1,10 @@
 {{ define "main" }}
 <article>
+    {{- with $.Param "firstheading" -}}
+    <h1 id="{{ . | urlize }}">{{ . }}</h1>
+    {{- else -}}
+    <h1 id="{{ .Title | urlize }}">{{ .Title }}</h1>
+    {{- end -}}
     {{- .Content -}}
 </article>
 {{ end }}
