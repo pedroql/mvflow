@@ -32,7 +32,8 @@
             <pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
             {{ with .Site.Author.email }}<author>{{.}}{{ with $.Site.Author.name }} ({{.}}){{end}}</author>{{end}}
             <guid>{{ .Permalink }}</guid>
-            <description>{{ .Content | html }}</description>
+            {{- $analyticsPath := .Permalink | relURL | safeURL }}
+            <description>{{ .Content | html }} {{ printf `<img src="https://wi3r4gjn.goatcounter.com/count?p=%s%%26fromRss%%3Dtrue">` $analyticsPath | html }}</description>
         </item>
         {{ end }}
     </channel>
