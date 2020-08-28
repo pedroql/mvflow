@@ -2,7 +2,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    {{- with .Params.Description }}
+    <meta name="description" content="{{ . }}" />
+    {{- end }}
     <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css"
           integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/grids-responsive-min.css">
@@ -37,5 +39,9 @@
     {{ else }}
     <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
     {{ end }}
+    {{- if eq .Title .Site.Title }}
     <title>{{ .Title }}</title>
+    {{- else -}}
+    <title>{{ .Title }} - {{ .Site.Title }}</title>
+    {{- end }}
 </head>

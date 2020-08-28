@@ -4,6 +4,7 @@ firstheading: "MVFlow"
 date: 2020-08-04T13:27:21+01:00
 draft: false
 notoc: false
+description: "We set off with the objective of creating a minimalistic library, simple yet with all the capabilities you need."
 ---
 
 **Simple Android\* MVI architecture using kotlin flows**
