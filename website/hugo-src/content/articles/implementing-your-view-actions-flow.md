@@ -1,9 +1,9 @@
 ---
-title: "Implementing Your View Actions Flow"
+title: "Implementing your view actions flow"
 date: 2020-08-12T10:52:15+01:00
 draft: false
+description: "There are several ways to implement MVFlow's fun actions(): Flow<Action>. This article covers how to implement it using callbackFlow, a separate channel, or a third party library."
 ---
-# Implementing your view actions flow
 
 MVFlow defines the view interface as follows:
 

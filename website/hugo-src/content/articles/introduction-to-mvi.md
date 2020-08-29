@@ -2,9 +2,8 @@
 title: "Introduction to MVI"
 date: 2020-08-12T10:33:07+01:00
 draft: true
+firstheading: "This is the title in the article"
 ---
-
-# Introduction to MVI
 
 There are many great guides introducing MVI, so this will cover just the basics.
 

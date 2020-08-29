@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="description" content="There are several ways to implement MVFlow&#39;s fun actions(): Flow&lt;Action&gt;. This article covers how to implement it using callbackFlow, a separate channel, or a third party library." />
     <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css"
           integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/grids-responsive-min.css">
@@ -24,8 +24,7 @@
 
     
     <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
-    
-    <title>Implementing Your View Actions Flow</title>
+    <title>Implementing your view actions flow - MVFLow: a simple MVI library using Kotlin coroutines and flows</title>
 </head>
 <body>
         <div class="pure-g"><div class="pure-u-1 header-parent">
@@ -69,8 +68,7 @@
 
                     
                     <div id="content" >
-<article><h1 id="implementing-your-view-actions-flow">Implementing your view actions flow</h1>
-<p>MVFlow defines the view interface as follows:</p>
+<article><h1 id="implementing-your-view-actions-flow">Implementing your view actions flow</h1><p>MVFlow defines the view interface as follows:</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">View</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Action</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
 
     <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">render</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">state</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">State</span><span style="color:#000;font-weight:bold">)</span>

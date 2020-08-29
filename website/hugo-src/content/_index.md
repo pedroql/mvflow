@@ -1,11 +1,12 @@
 ---
 title: "MVFLow: a simple MVI library using Kotlin coroutines and flows"
+firstheading: "MVFlow"
 date: 2020-08-04T13:27:21+01:00
 draft: false
 notoc: false
+description: "We set off with the objective of creating a minimalistic library, simple yet with all the capabilities you need."
 ---
 
-# MVFlow
 **Simple Android\* MVI architecture using kotlin flows**
 
  _\* The library is platform-neutral but was designed with Android in mind_

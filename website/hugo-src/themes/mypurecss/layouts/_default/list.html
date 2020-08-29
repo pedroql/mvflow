@@ -7,7 +7,12 @@
     <section class="section-listing">
         {{ range .Paginator.Pages }}
             <div class="section-item">
-                <div class="">
+                <div>
+                    {{ with .Params.Get "firstheading" -}}
+                    <h2 id="{{ . | urlize }}">{{- . -}}</h2>
+                    {{- else -}}
+                    <h2 id="{{ .Title | urlize }}">{{ .Title }}</h2>
+                    {{ end }}
                     {{ .Summary }}
                 </div>
                 {{ if .Truncated }}
