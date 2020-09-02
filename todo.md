@@ -24,6 +24,10 @@ In no particular order
   * The homepage should contain links to the main sections (just like the header )
   
   * Optimize for SEO (add tags and description)
+  
+  * some things should be moved from the theme to the page (header.html)
+  
+  * fix top bar on mobile devices
 
 * Write blog posts
 
