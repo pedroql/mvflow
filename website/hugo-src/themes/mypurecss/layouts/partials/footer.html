@@ -1,3 +1,5 @@
 {{- partial "code_fences_footer.html" . -}}
 {{- partial "analytics_footer.html" . -}}
-{{- partial "toc_scrollspy.html" . -}}
+{{- if not ($.Param "notoc") -}}
+{{ partial "toc_scrollspy.html" . -}}
+{{- end -}}

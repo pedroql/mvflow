@@ -22,9 +22,7 @@ In no particular order
   * Create one page alone for the API
     
   * The homepage should contain links to the main sections (just like the header )
-  
-  * Optimize for SEO (add tags and description)
-
+    
 * Write blog posts
 
 * Write a page with "recipes" pointing certain problems to the sample projects I am writing

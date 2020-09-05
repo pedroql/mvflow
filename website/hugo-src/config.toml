@@ -10,6 +10,7 @@ ignoreErrors = ["error-disable-taxonomy"]
 
 [params]
     notoc = true
+    goatCounterId = "wi3r4gjn"
 [markup]
   [markup.highlight]
     codeFences = true

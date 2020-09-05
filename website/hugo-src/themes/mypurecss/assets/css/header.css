@@ -36,12 +36,6 @@
     color: #fffd;
 }
 
-.header .custom-menu-list {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
 .header .custom-menu-list li:first-of-type {
     align-self: flex-start;
 }
@@ -51,29 +45,15 @@
     padding: 0.5em 1em;
 }
 
-/* customise section listings */
-.section-item {
-    margin-bottom: 5em;
-
-/* leaving some experiments commented out */
-/* border: 1px solid #0005;
-   padding: 1em;
-   border-radius: 5px;
-   box-shadow: 1px 1px 1px 1px #0005; */
+@media(min-width: 35.5em) {
+    .header .custom-menu-list {
+        display: flex;
+        justify-content: center;
+    }
 }
 
-.section-item:last-of-type {
-    margin-bottom: 0;
-}
-
-.section-item h1 {
-    font-size: 1.5em;
-}
-
-.section-item h2 {
-    font-size: 1.25em;
-}
-
-.section-item-link {
-    padding-top: 0.5em;
+@media(max-width: 35.5em) {
+    .custom-menu-list .pure-menu-item {
+        display: list-item;
+    }
 }
