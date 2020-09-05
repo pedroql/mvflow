@@ -22,9 +22,7 @@ In no particular order
   * Create one page alone for the API
     
   * The homepage should contain links to the main sections (just like the header )
-  
-  * some things should be moved from the theme to the page (header.html)
-  
+    
 * Write blog posts
 
 * Write a page with "recipes" pointing certain problems to the sample projects I am writing
