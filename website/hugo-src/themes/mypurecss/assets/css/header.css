@@ -36,12 +36,6 @@
     color: #fffd;
 }
 
-.header .custom-menu-list {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
 .header .custom-menu-list li:first-of-type {
     align-self: flex-start;
 }
@@ -49,4 +43,17 @@
 .custom-menu-list p {
     margin: 0;
     padding: 0.5em 1em;
+}
+
+@media(min-width: 35.5em) {
+    .header .custom-menu-list {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+@media(max-width: 35.5em) {
+    .custom-menu-list .pure-menu-item {
+        display: list-item;
+    }
 }

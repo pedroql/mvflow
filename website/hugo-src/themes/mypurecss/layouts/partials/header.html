@@ -9,14 +9,13 @@
                     {{ errorf "Failed to get a link for the header %q" .Path }}
                     {{ end }}
                 </li>
-                <!-- Add API link when we extract contents into one article -->
-<!--                <li class="pure-menu-item">-->
-                <!--                    {{/* with .Site.GetPage "articles/api.html" }}-->
-                <!--                    <a href="{{ .Permalink  }}" class="pure-menu-link">API</a>-->
-                <!--                    {{ else }}-->
-                <!--                    {{ errorf "Failed to get a link for the header %q" .Path }}-->
-                <!--                    {{ end */}}-->
-                <!--                </li>-->
+                <li class="pure-menu-item">
+                    {{ with .Site.GetPage "/" }}
+                    <a href="{{ .Permalink  }}#api" class="pure-menu-link">API</a>
+                    {{ else }}
+                    {{ errorf "Failed to get a link for the header %q" .Path }}
+                    {{ end }}
+                </li>
                 <li class="pure-menu-item">
                     {{ $currentPage := .Permalink }}
                     {{ with .Site.GetPage "articles" }}
