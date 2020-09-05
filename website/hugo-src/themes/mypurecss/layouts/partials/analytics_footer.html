@@ -1,9 +1,12 @@
 {{ if eq hugo.Environment "production" }}
-<script data-goatcounter="https://wi3r4gjn.goatcounter.com/count"
+{{- $page := . -}}
+{{- with .Site.Params.goatCounterId }}
+<script data-goatcounter="https://{{ . }}.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 <noscript>
-    <img src="https://wi3r4gjn.goatcounter.com/count?p={{ .Permalink | relURL | safeURL }}">
+    <img src="https://{{ . }}.goatcounter.com/count?p={{ $page.Permalink | relURL | safeURL }}">
 </noscript>
+{{- end -}}
 {{ else }}
 <!-- no analytics for development -->
 {{ end }}
