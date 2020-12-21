@@ -3,12 +3,10 @@
 package net.pedroloureiro.mvflow
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
@@ -197,18 +195,19 @@ private class MVFlowImpl<State, Action, Mutation, Effect>(
     private val defaultLogger: Logger = {}
 ) : MVFlowWithEffects<State, Action, Effect> {
     private val state = MutableStateFlow(initialState)
-    private val externalEffectChannel = BroadcastChannel<Effect>(Channel.BUFFERED)
+    private val externalEffectFlow =
+        MutableSharedFlow<Effect>(extraBufferCapacity = 64/*Same as CHANNEL_DEFAULT_CAPACITY */)
     private val mutex = Mutex()
 
     private inner class LoggingEffectSender(private val logger: Logger) : EffectSender<Effect> {
         override suspend fun send(effect: Effect) {
             logger.invoke("Sending external effect $effect")
-            externalEffectChannel.send(effect)
+            externalEffectFlow.emit(effect)
         }
 
         override fun offer(effect: Effect): Boolean {
             logger.invoke("Offering external effect $effect")
-            return externalEffectChannel.offer(effect).also { accepted ->
+            return externalEffectFlow.tryEmit(effect).also { accepted ->
                 if (!accepted) {
                     logger.invoke("Channel rejected previous effect!")
                 }
@@ -216,7 +215,7 @@ private class MVFlowImpl<State, Action, Mutation, Effect>(
         }
     }
 
-    override fun observeEffects() = externalEffectChannel.openSubscription().consumeAsFlow()
+    override fun observeEffects() = externalEffectFlow
 
     override fun takeView(
         viewCoroutineScope: CoroutineScope,
