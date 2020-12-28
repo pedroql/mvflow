@@ -70,7 +70,7 @@ Here are some advantages that they bring:
   Read more about 
   [structured concurrency](https://kotlinlang.org/docs/reference/coroutines/basics.html#structured-concurrency); 
 
-### With MVFlow you are in control  {.hide-from-toc}
+### With MVFlow you are in control {.hide-from-toc}
 
 The library only gives you an implementation of MVI, but doesn't force you into specific patterns other than using MVI
 and coroutines.
@@ -81,7 +81,7 @@ manipulate your data.
 
 MVFlow plays well with Android's ViewModel, but you don't have to use it.  
 
-## What if I am new to MVI, coroutines, or flows?
+## What if I am new to MVI, coroutines, or flows? {.hide-from-toc}
 
 There are plenty of guides introducing these concepts. We are still working on a brief introduction to MVI,
 meanwhile we suggest you read the following articles:

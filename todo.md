@@ -16,6 +16,8 @@ In no particular order
      * remove the concept of content id 
           
      * Maybe I can drop the use of responsive grid from pure css?
+
+     * Header partial should be moved from theme to the site
   
   * [HOMEPAGE] Put TOC inline with the content when on landscape
   
