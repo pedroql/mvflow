@@ -90,6 +90,23 @@ internal class MVFlowWithEffectsTest {
     }
 
     @Test
+    fun `effect observer joins late`() = runBlockingTest {
+        val template = defaultTemplate()
+
+        lateinit var actionJob1: Job
+        val observed1 = mutableListOf<Effect>()
+
+        runTestTemplate(template) {
+            actionJob1 = launch {
+                delay(151)
+                mvflow.observeEffects().toList(observed1)
+            }
+        }
+        actionJob1.cancel()
+        assertEquals(4, observed1.size)
+    }
+
+    @Test
     fun `one observer can unsubscribe without affecting the others`() = runBlockingTest {
         val template = defaultTemplate()
 
@@ -114,5 +131,21 @@ internal class MVFlowWithEffectsTest {
         actionJob1.cancel()
         assertEquals(7, observed1.size)
         assertEquals(3, observed2.size)
+    }
+
+    @Test
+    fun `effects sent before firt subscription`() = runBlockingTest {
+        val pair = MVFlowCounterHelper.createFlowAndView(
+            // 6 times Action1
+            flowOf(Action.Action1, Action.Action1, Action.Action1, Action.Action1, Action.Action1, Action.Action1)
+                .onEach { delay(50) },
+            this,
+            true,
+            false
+        )
+        val mvflow = pair.first
+        val viewFake = pair.second
+
+
     }
 }
