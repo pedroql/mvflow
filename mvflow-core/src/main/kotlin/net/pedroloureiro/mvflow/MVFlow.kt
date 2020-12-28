@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
@@ -196,26 +197,26 @@ private class MVFlowImpl<State, Action, Mutation, Effect>(
 ) : MVFlowWithEffects<State, Action, Effect> {
     private val state = MutableStateFlow(initialState)
     private val externalEffectFlow =
-        MutableSharedFlow<Effect>(extraBufferCapacity = 64/*Same as CHANNEL_DEFAULT_CAPACITY */)
+        MutableSharedFlow<Effect>(extraBufferCapacity = 64)
     private val mutex = Mutex()
 
     private inner class LoggingEffectSender(private val logger: Logger) : EffectSender<Effect> {
         override suspend fun send(effect: Effect) {
-            logger.invoke("Sending external effect $effect")
+            logger.invoke("Emitting external effect $effect")
             externalEffectFlow.emit(effect)
         }
 
         override fun offer(effect: Effect): Boolean {
-            logger.invoke("Offering external effect $effect")
+            logger.invoke("Trying to emit external effect $effect")
             return externalEffectFlow.tryEmit(effect).also { accepted ->
                 if (!accepted) {
-                    logger.invoke("Channel rejected previous effect!")
+                    logger.invoke("SharedFlow rejected previous effect!")
                 }
             }
         }
     }
 
-    override fun observeEffects() = externalEffectFlow
+    override fun observeEffects() = externalEffectFlow.asSharedFlow()
 
     override fun takeView(
         viewCoroutineScope: CoroutineScope,
