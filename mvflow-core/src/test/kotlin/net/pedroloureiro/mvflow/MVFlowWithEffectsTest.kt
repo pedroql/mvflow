@@ -132,20 +132,4 @@ internal class MVFlowWithEffectsTest {
         assertEquals(7, observed1.size)
         assertEquals(3, observed2.size)
     }
-
-    @Test
-    fun `effects sent before firt subscription`() = runBlockingTest {
-        val pair = MVFlowCounterHelper.createFlowAndView(
-            // 6 times Action1
-            flowOf(Action.Action1, Action.Action1, Action.Action1, Action.Action1, Action.Action1, Action.Action1)
-                .onEach { delay(50) },
-            this,
-            true,
-            false
-        )
-        val mvflow = pair.first
-        val viewFake = pair.second
-
-
-    }
 }
