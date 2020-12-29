@@ -90,6 +90,23 @@ internal class MVFlowWithEffectsTest {
     }
 
     @Test
+    fun `effect observer joins late`() = runBlockingTest {
+        val template = defaultTemplate()
+
+        lateinit var actionJob1: Job
+        val observed1 = mutableListOf<Effect>()
+
+        runTestTemplate(template) {
+            actionJob1 = launch {
+                delay(151)
+                mvflow.observeEffects().toList(observed1)
+            }
+        }
+        actionJob1.cancel()
+        assertEquals(4, observed1.size)
+    }
+
+    @Test
     fun `one observer can unsubscribe without affecting the others`() = runBlockingTest {
         val template = defaultTemplate()
 
