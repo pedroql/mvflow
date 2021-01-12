@@ -24,6 +24,8 @@ In no particular order
   * Create one page alone for the API
     
   * The homepage should contain links to the main sections (just like the header )
+  
+  * Add mention of the unit tests in the sample project to the docs
     
 * Write blog posts
 
