@@ -132,4 +132,37 @@ internal class MVFlowWithEffectsTest {
         assertEquals(7, observed1.size)
         assertEquals(3, observed2.size)
     }
+
+    @Test
+    fun `effects emitted while there are no subscribers`() = runBlockingTest {
+        val template = MVFlowCounterTestTemplate(
+            this,
+            viewActions = flowOf(Action.Action1)
+                .onEach { delay(500) }
+        )
+
+        lateinit var actionJob1: Job
+        val observed1 = mutableListOf<Effect>()
+        lateinit var actionJob2: Job
+        val observed2 = mutableListOf<Effect>()
+        runTestTemplate(template) {
+            actionJob1 = launch {
+                mvflow.observeEffects().toList(observed1)
+            }
+            actionJob2 = launch {
+                // the effect should be emitted at time 550
+                delay(1000)
+                mvflow.observeEffects().toList(observed2)
+            }
+            launch {
+                delay(100)
+                actionJob1.cancel()
+            }
+        }
+
+        advanceUntilIdle()
+        actionJob2.cancel()
+        assertEquals(1, observed2.size)
+        assertEquals(0, observed1.size)
+    }
 }
