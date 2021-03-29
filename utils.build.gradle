@@ -1,0 +1,12 @@
+def readProperty(propertyName) {
+    def value = project.properties[propertyName] ?: System.getProperty(propertyName) ?: System.getenv(propertyName)
+    if (value == null) {
+        println("readProperty: Failed to read $propertyName")
+    }
+    return value
+}
+
+// this is required for other files to be able to call these methods after doing "apply from: $rootDir/utils.build.gradle"
+ext {
+    readProperty = this.&readProperty
+}

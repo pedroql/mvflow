@@ -1,0 +1,15 @@
+apply from: "$rootDir/utils.build.gradle"
+
+// note: unlike most gradle files, publishing.build.gradle applies this so you don't need to add this to each module
+
+signing {
+    def isCI = System.getenv("CI") == "true"
+    println("Signing: isCI? $isCI")
+    if (isCI) {
+//    def signingKeyId = readProperty 'signing_keyId'
+        def signingKey = readProperty 'signing_key'
+        def signingPassword = readProperty 'signing_password'
+        useInMemoryPgpKeys signingKey, signingPassword
+        sign publishing.publications.MVFlow
+    }
+}
