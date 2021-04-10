@@ -37,7 +37,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build (Compile, lint, checkApi, test, etc)
-      run: ./gradlew --no-daemon -DVERSION_OVERRIDE=${{ steps.parse_tag.outputs.VERSION }} build
+      run: ./gradlew -DVERSION_OVERRIDE=${{ steps.parse_tag.outputs.VERSION }} build
     - name: Archive build reports artifacts
       if: always()
       uses: actions/upload-artifact@v2
@@ -47,7 +47,7 @@ jobs:
     - name: Ensure documentation is up to date
       id: doc-check
       run: |
-        ./gradlew --no-daemon cleanDokka dokka
+        ./gradlew cleanDokka dokka
         # the next command will list documentation files out of date. Please run ./gradlew dokka
         git diff --exit-code --name-only || echo ::set-output name=status::failure
     - name: Check which documentation files have changed
@@ -119,7 +119,7 @@ jobs:
           echo Previous release tag name: ${{ steps.extract_previous_release_tag.NAME }}
 
   publish:
-    name: Publish to Bintray
+    name: Publish to Maven Central
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -142,10 +142,33 @@ jobs:
         restore-keys: ${{ runner.os }}-gradle
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Upload to bintray
+
+    - name: Import GPG key
+      id: import_gpg
+      uses: crazy-max/ghaction-import-gpg@v3
+      with:
+        gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+        passphrase: ${{ secrets.GPG_PASSPHRASE }}
+    - name: GPG user IDs
+      run: |
+        echo "fingerprint:  ${{ steps.import_gpg.outputs.fingerprint }}"
+        echo "keyid:       ${{ steps.import_gpg.outputs.keyid }}"
+        echo "name:        ${{ steps.import_gpg.outputs.name }}"
+        echo "email:       ${{ steps.import_gpg.outputs.email }}"
+
+    - name: sign with gpg
       env:
-        VCS_TAG: ${{ steps.parse_tag.outputs.NAME }}
-        BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
-        BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
-      run: ./gradlew --no-daemon -DVERSION_OVERRIDE=${{  steps.parse_tag.outputs.VERSION }} bintrayUpload
+        signing_keyId: ${{ secrets.SIGNING_KEY_ID }}
+        signing_password: ${{ secrets.GPG_PASSPHRASE }}
+        signing_key: ${{ secrets.GPG_PRIVATE_KEY }}
+      run: ./gradlew -DVERSION_OVERRIDE=${{  steps.parse_tag.outputs.VERSION }} signMVFlowPublication
+
+    - name: publish to OSSRH
+      env:
+        signing_keyId: ${{ secrets.SIGNING_KEY_ID }}
+        signing_password: ${{ secrets.GPG_PASSPHRASE }}
+        signing_key: ${{ secrets.GPG_PRIVATE_KEY }}
+        OSSRH_USER: ${{ secrets.OSSRH_USER}}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD}}
+      run: ./gradlew -DVERSION_OVERRIDE=${{  steps.parse_tag.outputs.VERSION }} publishMVFlowPublicationToOSSRHRepository
 

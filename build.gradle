@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     ext {
         kotlin_version = "1.4.21"
@@ -14,6 +14,9 @@ buildscript {
 }
 
 plugins {
+    id "maven-publish"
+    id "signing"
+    id "maven"
     id "org.jetbrains.kotlin.jvm" version "$kotlin_version"
     id "com.jfrog.bintray" version "1.8.5" apply false
     id "org.jetbrains.dokka" version "0.10.1"
@@ -31,8 +34,8 @@ allprojects {
 
     repositories {
         mavenCentral()
-        jcenter()
         google()
+        jcenter() // TODO remove this
     }
 }
 
