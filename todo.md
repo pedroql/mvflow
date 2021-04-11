@@ -12,6 +12,8 @@ In no particular order
     InboundExternalLinkResolutionService(format = `kotlin-website`) for 
     ExternalDocumentationLinkImpl(url=https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/, packageListUrl=https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/package-list),
     using Dokka default
+    
+  * For some reason dokka is changing the styles.css file which means that CI can't verify if your remaining kdoc is up to date
 
 * Ensure documenting public methods is required by CI (needs to wait for version 0.11 of plugin 
 [dokka/pull/955](https://github.com/Kotlin/dokka/pull/955) )
