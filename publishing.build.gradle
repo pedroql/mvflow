@@ -24,6 +24,7 @@ publishing {
             artifact sourceJar
             artifact javadocJar
             pom {
+                name = "MVFlow"
                 description = "Simple MVI architecture using Kotlin Flows"
                 url = "https://github.com/pedroql/mvflow"
                 licenses {
