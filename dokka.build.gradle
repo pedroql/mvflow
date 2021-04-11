@@ -1,7 +1,9 @@
+def documentationRoot = "${project.rootDir}/website/hugo-src/static/documentation"
+
 dokka {
     // https://github.com/Kotlin/dokka#using-dokka
     outputFormat = 'html'
-    outputDirectory = "${project.rootDir}/website-src/static/documentation"
+    outputDirectory = documentationRoot
 
     subProjects = ["mvflow-core"]
     configuration {
@@ -40,7 +42,7 @@ dokka {
 
 task removeAbsolutePathsFromDokkaFiles {
     doLast {
-        fileTree("${project.rootDir}/website-src/static/documentation/").matching {
+        fileTree(documentationRoot).matching {
             include "**/index-outline.html"
         }
                 .forEach { File file ->
