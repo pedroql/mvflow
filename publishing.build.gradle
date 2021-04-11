@@ -8,6 +8,13 @@ task sourceJar(type: Jar) {
     classifier "sources"
 }
 
+tasks.register('javadocJar', Jar) {
+    def dokkaTask = rootProject.tasks.named('dokka').get()
+    dependsOn dokkaTask
+    archiveClassifier.set 'javadoc'
+    from dokkaTask.outputDirectory
+}
+
 publishing {
     // https://docs.gradle.org/5.0/dsl/org.gradle.api.publish.maven.MavenPublication.html
     // https://dev.to/madhead/no-bullshit-guide-on-publishing-your-gradle-projects-to-maven-central-3ok4
@@ -15,6 +22,7 @@ publishing {
         MVFlow(MavenPublication) {
             from components.java
             artifact sourceJar
+            artifact javadocJar
             pom {
                 description = "Simple MVI architecture using Kotlin Flows"
                 url = "https://github.com/pedroql/mvflow"
@@ -39,7 +47,6 @@ publishing {
                 }
             }
         }
-
     }
     repositories {
         maven {

@@ -4,6 +4,15 @@ In no particular order
 
 ## Documentation
 
+* make sure CI forces the documentation and the website to always be up to date
+
+  * call hugo on CI https://github.com/marketplace/actions/hugo-build
+
+  * see if this error message might affect results: Couldn't find 
+    InboundExternalLinkResolutionService(format = `kotlin-website`) for 
+    ExternalDocumentationLinkImpl(url=https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/, packageListUrl=https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/package-list),
+    using Dokka default
+
 * Ensure documenting public methods is required by CI (needs to wait for version 0.11 of plugin 
 [dokka/pull/955](https://github.com/Kotlin/dokka/pull/955) )
 

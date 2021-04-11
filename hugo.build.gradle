@@ -1,4 +1,6 @@
 task generateWebsite(type: Exec) {
+    dependsOn "dokka"
+
     workingDir "$rootDir/website/hugo-src"
 
     commandLine "hugo --cleanDestinationDir".split(" ")

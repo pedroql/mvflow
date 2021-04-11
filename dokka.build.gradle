@@ -1,7 +1,7 @@
 dokka {
     // https://github.com/Kotlin/dokka#using-dokka
     outputFormat = 'html'
-    outputDirectory = "${project.rootDir}/website-src/static/documentation"
+    outputDirectory = "${project.rootDir}/website/hugo-src/static/documentation"
 
     subProjects = ["mvflow-core"]
     configuration {
