@@ -35,7 +35,6 @@ allprojects {
     repositories {
         mavenCentral()
         google()
-        jcenter() // TODO remove this
     }
 }
 
